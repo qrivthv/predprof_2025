@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{%block content%}
+  <main class="{{theme}}">
+      <div class="container {{theme}}">
+      <div class="py-5 text-center {{theme}}">
+          <h2>Что-то пошло не так</h2>
+          <p class="lead {{theme}}">Вернуться на <a href="/" style="decorations: none">главную</a> </p>
+          <p class="lead {{theme}}">{{message}}</p>
+      </div>
+    </div>
+  </main>
+
+{%endblock%}

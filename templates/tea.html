@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{%block content%}
+    <div id="carouselExampleCaptions" class="carousel slide" style="margin-top: 3em; height: 57vh">
+<!--      <div class="carousel-indicators">-->
+<!--        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>-->
+<!--      </div>-->
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="box">
+                <img src="{{url_for('static', filename='img/img2.jpg')}}" class="" alt="...">
+            </div>
+                <!--          <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: First slide" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em"></text></svg>-->
+          <div class="carousel-caption d-none d-md-block">
+            <h3>ЕГЭ по информатике</h3>
+            <h4>Это программа сдохни или умри! </h4>
+          </div>
+        </div>
+    </div>
+    </div>
+
+
+    <main style="height: fit-content; padding: 1.5em">
+      <div class="container">
+          <h3 style="text-align: center; margin-right: 5em">Задачи</h3>
+        {%set arr=[
+          " ",
+          "Анализ информационных моделей",
+          "Построение таблиц истинности логических выражений",
+          "Поиск информации в реляционных базах данных",
+          "Кодирование и декодирование информации", "Анализ и построение алгоритмов для исполнителей",
+          "Определение результатов работы простейших алгоритмов",
+          "Кодирование и декодирование информации. Передача информации",
+          "Перебор слов и системы счисления",
+          "Работа с таблицами",
+          "Поиск символов в текстовом редакторе",
+          "Вычисление количества информации",
+          "Выполнение алгоритмов для исполнителей",
+          "Организация компьютерных сетей. Адресация",
+          "Кодирование чисел. Системы счисления",
+          "Преобразование логических выражений",
+          "Рекурсивные алгоритмы",
+          "Обработки числовой последовательности",
+          "Робот-сборщик монет",
+          "Выигрышная стратегия. Задание 1",
+          "Выигрышная стратегия. Задание 2",
+          "Выигрышная стратегия. Задание 3",
+          "Многопроцессорные системы",
+          "Оператор присваивания и ветвления. Перебор вариантов, построение дерева",
+          "Обработка символьных строк",
+          "Обработка целочисленной информации",
+          "Обработка целочисленной информации",
+          "Программирование"
+          ]%}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
+          {%for i in range(1, 28)%}
+          <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+            <div class="card-body" style="">
+              <h5 class="card-title">№{{i}}</h5>
+              <p class="card-text">{{arr[i]}}</p>
+                <div class="btn-group">
+                    <a href="/test/{{i}}" class="btn btn-primary tea" style="background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
+                    <a href="/train/{{i}}" class="btn btn-primary tea" style="">Тренировка</a>
+                </div>
+
+            </div>
+          </div>
+          {%endfor%}
+        </div>
+        </div>
+        <div style="margin-bottom: 5em"></div>
+<!--            <h3 class="{{theme}}">FAQs</h3>-->
+<!--            <div class="dropdown" style="width: fit-content;">-->
+<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                Question 1-->
+<!--              </a>-->
+<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
+<!--                Your answer 1 is not ready, soory :/ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste corporis minus et voluptatibus consequuntur quia non voluptate porro, repellat, cumque necessitatibus, explicabo provident eius eveniet libero facere. Hic, repellat provident!-->
+<!--              </p>-->
+<!--            </div>-->
+<!--            <div class="dropdown" style="width: fit-content;">-->
+<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                Question 2-->
+<!--              </a>-->
+<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
+<!--                Your answer 2 is not ready, soory :/-->
+<!--              </p>-->
+<!--            </div>-->
+<!--            <div class="dropdown" style="width: fit-content;">-->
+<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                Question 3-->
+<!--              </a>-->
+<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
+<!--                Your answer 3 is not ready, soory :/-->
+<!--              </p>-->
+<!--            </div>-->
+<!--            <div class="dropdown" style="width: fit-content;">-->
+<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                Question 4-->
+<!--              </a>-->
+<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
+<!--                Your answer 4 is not ready, soory :/-->
+<!--              </p>-->
+<!--            </div>-->
+
+        </div>
+
+
+
+    </main>
+{%endblock%}

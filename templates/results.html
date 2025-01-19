@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{%block content%}
+<style>
+</style>
+
+<div class="container">
+    <main>
+        {%for r in res%}
+        {%if r[2] == "right"%}
+        <div class="container right">
+            <p> </p>
+          <p style="width: 80%" style="font-size: 1.1rem; font-style: italic">№{{tasks[r[0]][0]}} <span style="color: #009600">Верный ответ</span></p>
+          <p style="width: 80%">{{tasks[r[0]][1]}}</p>
+          <input class="col-4 themed-grid-col" disabled value="{{r[1]}}"></input>
+            <p></p>
+            {%if show%}
+          <p class="col-4 themed-grid-col">Правильный ответ: {{tasks[r[0]][2]}}</p>
+            {%endif%}
+
+        </div>
+        {%else%}
+        <div class="container wrong">
+            <p> </p>
+            <p style="width: 80%">№{{tasks[r[0]][0]}} <span style="color: #960000">Неверный ответ</span></p>
+          <p style="width: 80%">{{tasks[r[0]][1]}}</p>
+          <input class="col-4 themed-grid-col" disabled value="{{r[1]}}"></input>
+            <p></p>
+            {%if show%}
+          <p class="col-4 themed-grid-col">Правильный ответ: {{tasks[r[0]][2]}}</p>
+            {%endif%}
+        </div>
+        {%endif%}
+        {%endfor%}
+        <hr class="my-4">
+        <h4 style="font-style: none"> Общий результат: {{right}}/{{res|length}} ({{right*100/res|length}}%)</h4>
+    </main>
+
+</div>
+
+
+{%endblock%}

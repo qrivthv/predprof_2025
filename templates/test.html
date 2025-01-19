@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="container">
+    <main class="{{theme}}">
+        <div class="container">
+          <div class="width1">
+            <form class="" method="POST">
+              <div class="row g-3">
+                  {% for task in tasks %}
+                <div class="col-12">
+                    <span style="font-size: 1.1rem; font-style: italic">id {{task[0]}}</span>
+                    {%if task[6] == 'base'%}
+                    <p>Сложность: база</p>
+                    {%elif task[6] == 'ke'%}
+                    <p>Сложность: сюрприз от Кирилла Евгеньевича</p>
+                    {%else%}
+                    <p>Сложность: решаемо</p>
+                    {%endif%}
+                    <label for="{{task[0]}}" class="form-label">{{task[1]}}</label>
+                    <input type="number" name="{{task[0]}}" class="form-control" id="{{task[0]}}" placeholder="" value="">
+
+                </div>
+                  {% endfor %}
+              </div>
+                <hr class="my-4">
+                <input type="checkbox" class="form-check-input" id="show-ans" name="show">
+                <label class="form-check-label" for="show-ans">Показать ответы </label>
+              <hr class="my-4">
+
+              <button class=" btn btn-primary btn-lg" type="submit" style="width: fit-content">Проверить</button>
+            </form>
+          </div>
+        </div>
+    </main>
+
+</div>
+
+
+{%endblock%}

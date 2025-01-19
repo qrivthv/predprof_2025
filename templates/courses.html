@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{%block content%}
+  <main class="{{theme}}">
+      <div class="container {{theme}}">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+              {%for course in courses%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <h5 class="card-title">id : {{course[0]}}</h5>
+                  <p class="card-text">{{course[1]}}</p>
+                  <p class="card-text">{{course[1]}}</p>
+                    <div class="btn-group">
+                        <a href="/course/{{course[0]}}" class="btn btn-primary tea" style="background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+
+                </div>
+              </div>
+
+
+              {%endfor%}
+          </div>
+    </div>
+  </main>
+
+{%endblock%}

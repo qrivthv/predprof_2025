@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{%block content%}
+  <main class="{{theme}}">
+      <div class="container">
+      <div class="py-5 text-center">
+          <h2>Настройки</h2>
+          <p class="lead">Минимализм - наше все</p>
+      </div>
+      <form method="post" class="width2">
+          <h4 class="mb-3">Тема сайта</h4>
+          <div class="my-3">
+            <div class="form-check">
+              <input id="dark" name="changetheme" value="dark" type="radio" class="form-check-input" checked >
+              <label class="form-check-label" for="dark">Темная</label>
+            </div>
+            <div class="form-check">
+              <input id="light" name="changetheme" value="light" type="radio" class="form-check-input">
+              <label class="form-check-label" for="light">Светлая</label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary  py-2" type="submit" style="width: fit-content; margin-top:2vh">Готово</button>
+      </form>
+    </div>
+  </main>
+
+{%endblock%}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{%block content%}
+
+ <div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <h2>{{s}}</h2>
+      <p class="lead">Минимализм - наше все</p>
+      {%if message !=''%}
+      <p class="lead" style="color: #AE0B19"><strong>{{message}}</strong></p>
+      {%endif%}
+    </div>
+
+    <div class="container">
+      <div class="width1">
+        <form class="" method="post">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="firstName" class="form-label">Имя</label>
+              <input type="text" name="name" class="form-control" id="firstName" placeholder="" value="{{name}}">
+              <div class="invalid-feedback">
+                Valid first name is required.
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Фамилия</label>
+              <input type="text" name="surname" class="form-control" id="lastName" placeholder="" value="{{surname}}">
+              <div class="invalid-feedback">
+                Valid last name is required.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="username" class="form-label">Username</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text">@</span>
+                <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{username}}">
+              <div class="invalid-feedback">
+                  Your username is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 has-validation">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email" value="{{email}}">
+              <div class="invalid-feedback">
+                Please enter a valid email address.
+              </div>
+            </div>
+            <div class="col-12 has-validation">
+              <label for="tel" class="form-label">Номер телефона </label>
+              <input type="tel" class="form-control" id="tel" placeholder="+x (xxx) xxx-xx-xx" name="phone" value="{{phone}}">
+              <div class="invalid-feedback">
+                Please enter a valid phone number.
+              </div>
+            </div>
+            <div class="input-group" >
+              <label class="form-check-label" for="school" style="width:100%">Ссылка на сайт школы</label>
+              <input id="school" name="school" type="url" class="form-control mt-2">
+            </div>
+            <div class="col-md-4">
+              <label for="city" class="form-label">Город</label>
+              <select class="form-select" id="city" name="city" >
+                <option value="">Выбрать...</option>
+                <option value="msc">Москва</option>
+                <option value="spb" selected>Санкт-Петербург</option>
+                <option value="nsk">Новосибирск</option>
+                <option value="ekb">Екатеринбург</option>
+              </select>
+              <div class="invalid-feedback">
+                Please provide a valid state.
+              </div>
+            </div>
+            <hr class="my-4">
+            <div class="has-validation">
+              <label class="form-check-label" for="password" style="width:100%">Введите пароль</label>
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="{{password}}">
+            </div>
+            <div class="has-validation">
+              <label class="form-check-label" for="passwordcheck" style="width:100%">Повторите пароль</label>
+              <input type="password" name="passwordcheck" id="passwordcheck" class="form-control" placeholder="Password" value="{{password}}">
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="my-3">
+            <div class="has-validation">
+              <label class="form-check-label" for="grade" style="width: 100%">В каком вы классе?</label>
+              <input type="number" id="grade" name="grade" class="form-control" style="width: fit-content" placeholder="enter grade" value="{{grade}}">
+            </div>
+          </div>
+          <div class="my-3">
+            <div class="has-validation">
+              <label class="form-check-label" for="birth" style="width: 100%">Дата рождения</label>
+              <input type="date" id="birth" name="birth" class="form-control" style="width: fit-content" placeholder="">
+            </div>
+          </div>
+          <hr class="my-4">
+
+          <h4 class="mb-3">Чего же я хочу</h4>
+
+          <div class="my-3">
+            <div class="form-check">
+              <input id="home" name="iwant" value="home" type="radio" class="form-check-input" checked >
+              <label class="form-check-label" for="home">Домой</label>
+            </div>
+            <div class="form-check">
+              <input id="sleep" name="iwant" value="sleep" type="radio" class="form-check-input">
+              <label class="form-check-label" for="sleep">Спать</label>
+            </div>
+            <div class="form-check">
+              <input id="less4pairs" name="iwant" value="less4pairs" type="radio" class="form-check-input">
+              <label class="form-check-label" for="less4pairs">Меньше 4х пар</label>
+            </div>
+            <div class="input-group" style="width: fit-content;">
+              <label class="form-check-label" for="document" style="width:100%">Почему?</label>
+              <input id="document" name="why" type="file" class="form-control mt-2">
+            </div>
+            <div class="my-3">
+            <div class="has-validation">
+              <label class="form-check-label" for="when" style="width: 100%">В котором часу вы ложитесь спать</label>
+              <input type="time" id="when" name="when" class="form-control" style="width: fit-content" placeholder="" value="04:00">
+            </div>
+          </div>
+          </div>
+
+
+
+          <hr class="my-4">
+
+          <h4 class="mb-3">Пожелания</h4>
+          <div class="my-3">
+            <div class="input-group" >
+              <label class="form-check-label" for="colour" style="width:100%">Ваш любимый цвет <span class="text-body-secondary">(будут сделаны темы на основе ваших пожеланий)</span></label>
+              <input id="colour" name="colour" type="color" class="form-control mt-2" value="{{favcolor}}">
+            </div>
+            <div class="input-group" style="width: fit-content;">
+              <p style="width:100%"></p>
+              <label class="form-check-label" for="rate" style="width:100%">Оцените нас, пожалуйста</label>
+              <input id="rate" name="rate" type="range" min="0" max="10"  step="1" class=" mt-2 form-range">
+              <p style="width:100%">Value: <output id="value"></output></p>
+              <script>
+                const value = document.querySelector("#value");
+                const input = document.querySelector("#rate");
+                value.textContent = input.value;
+                input.addEventListener("input", (event) => {
+                  value.textContent = event.target.value;
+                });
+
+              </script>
+
+            </div>
+          </div>
+
+          <hr class="my-4">
+           <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="cpp" name="cpp">
+            <label class="form-check-label" for="cpp"> C++</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="py" name="py">
+            <label class="form-check-label" for="py"> Python</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="KU" name="KU">
+            <label class="form-check-label" for="KU"> Кумир</label>
+          </div>
+          <hr class="my-4">
+          <input type="reset" class="btn btn-secondary btn-lg" value="Что-то какую-то фигню написал(а)" style="width: fit-content">
+          <hr class="my-4">
+          <button class=" btn btn-primary btn-lg" type="submit" style="width: fit-content">Готово</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+{%endblock%}
