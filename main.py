@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from time import *
 from calendar import *
 # from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -334,7 +335,7 @@ def courses():
     return render_template('courses.html', courses=a, theme=theme)
 
 
-@app.route('/f', methods=['POST', 'GET'])
+@app.route('/forum', methods=['POST', 'GET'])
 def ff():
     s = f"select * from Questions"
     a = get_data(s)
