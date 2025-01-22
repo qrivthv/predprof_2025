@@ -4,7 +4,7 @@
 
 <h2 style="margin-top: 3em" class="text-center">{{course[1]}}</h2>
 
-<nav class="nav" style="margin-top: 3em">
+<nav class="nav" style="margin-top: 3em; margin-left: 2em">
     {%for i in range(1, 28)%}
       <a class="nav-link" href="/course/{{course[0]}}/{{i}}">№{{i}}</a>
     {%endfor%}
@@ -13,10 +13,14 @@
 
     <div class="container {{theme}}">
         <h3>№ {{course[2]}}</h3>
+        <h4>Видеоурок по теме</h4>
         <iframe
           src="{{course[3]}}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen
           style="width: 60vw; height: 60vh">
         </iframe>
+        <hr>
+        <br>
+        <h4>Отработка задания</h4>
         <a href="/test/{{course[2]}}" class="btn btn-primary tea" style="width:fit-content; background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
     </div>
 </main>

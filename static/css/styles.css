@@ -9,6 +9,11 @@
         padding: 1em;
         background: #072b11 !important;
     }
+    .dropdown-item:hover {
+        background-color: #121212 !important;
+        color: white !important;
+        filter: brightness(120%);
+    }
 }
 
 
