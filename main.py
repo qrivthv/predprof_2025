@@ -378,7 +378,10 @@ def ff():
         return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o)
     return render_template('forum.html', category="Недавние", questions=b, theme=theme)
 
-
+@app.route('/course/<int:id>')
+def course(id):
+    s = f'select * from Courses where id={id}'
+    return render_template('course.html', course=[1,'Мегакурс', 0], theme=theme)
 
 
 loggedin = False
