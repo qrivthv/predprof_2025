@@ -378,10 +378,14 @@ def ff():
         return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o)
     return render_template('forum.html', category="Недавние", questions=b, theme=theme)
 
-@app.route('/course/<int:id>')
-def course(id):
-    s = f'select * from Courses where id={id}'
-    return render_template('course.html', course=[1,'Мегакурс', 0], theme=theme)
+
+@app.route('/course/<int:id>/<int:num>')
+def course(id, num):
+    s = f'select Courses.CID, CName, Type, Link from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
+    a = get_data(s)
+    if len(a) == 1:
+        a = a[0]
+    return render_template('course.html', course=a, theme=theme)
 
 
 loggedin = False
