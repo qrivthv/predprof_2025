@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask import Flask, render_template, request, redirect, url_for
 from time import *
 from calendar import *
 # from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -377,6 +376,24 @@ def ff():
                 b.append(k)
         return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o)
     return render_template('forum.html', category="Недавние", questions=b, theme=theme)
+
+
+@app.route('/question/<int:qid>', methods=['POST', 'GET'])
+def ans(qid):
+    s = f'select * from Answers where QID = {qid}'
+    x = get_data(s)
+    s1 = f'select * from Questions where QID = {qid}'
+    x1 = get_data(s1)
+    q = x1[0]
+    if request.method == 'POST':
+        user = request.form['username']
+        tm = timegm(gmtime())
+        text = request.form['answer']
+        s = f'insert into Answers (QID, Author, Statement, date) values (?, ?, ?, ?)'
+        a = [qid, user, text, tm]
+        print(a)
+        insrt(a, s)
+    return render_template('question.html', answers=x, question=q, theme=theme)
 
 
 @app.route('/course/<int:id>/<int:num>')

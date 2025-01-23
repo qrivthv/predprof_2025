@@ -1,7 +1,35 @@
 {% extends "base.html" %}
 
 {%block content%}
+  <main class="{{theme}}">
+      <h4>{{question[0][2]}}</h4>
+      <div class="container {{theme}}">
+          <form method="post" class="width2">
+          <div class="form-floating">
+              <input type="text" name="username" class="form-control {{theme}}" id="username" placeholder="">
+              <label for="username">Enter username</label>
+          </div>
+          <div class="form-floating">
+              <textarea type="text" name="answer" class="form-control {{theme}}" id="answer" placeholder=""> </textarea>
+              <label for="answer">Текст комментария</label>
+          </div>
+          <button class="btn btn-primary  py-2" type="submit" style="width: fit-content; margin-top:2vh">Готово</button>
+          </form>
+		  <hr>
+            <div class="my-3 p-3 rounded shadow-lg">
+          {%for q in answers%}
+              <div class="d-flex text-muted pt-3" style="min-width:30vh !important">
+          	<p class="pb-3 mb-0 small lh-sm border-bottom">
+				<strong class="d-block text-gray-dark">@{{q[2]}}</strong>
+				{{q[3]}}
+                <br>
+			  </p>
 
+			</div>
 
+          {%endfor%}
+    </div>
+      </div>
+  </main>
 
 {%endblock%}
