@@ -2,12 +2,12 @@
 
 {%block content%}
   <main class="{{theme}}">
-      <h4>{{question[0][2]}}</h4>
+      <h4>{{question[2]}}</h4>
       <div class="container {{theme}}">
-          <form method="post" class="width2">
+          <form method="post" class="widthTest">
           <div class="form-floating">
               <input type="text" name="username" class="form-control {{theme}}" id="username" placeholder="">
-              <label for="username">Enter username</label>
+              <label for="username">Введите username</label>
           </div>
           <div class="form-floating">
               <textarea type="text" name="answer" class="form-control {{theme}}" id="answer" placeholder=""> </textarea>
@@ -24,7 +24,6 @@
 				{{q[3]}}
                 <br>
 			  </p>
-
 			</div>
 
           {%endfor%}
