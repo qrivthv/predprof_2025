@@ -15,11 +15,24 @@
         filter: brightness(120%);
     }
 }
-
+.dropdown-menu{
+    padding: 0 !important;
+    padding-top: 1em !important;
+    padding-bottom: 1em !important;
+}
 
 .light {
     background: white;
-    color: black;
+    color: black !important;
+    .dropdown-item {
+        background-color: white;
+        color: black !important;
+        width: 100%;
+    }
+    .dropdown-item:hover {
+        background-color: #dddede;
+        color: black !important;
+    }
     .wrong{
         background: #FFF0F0 !important;
         padding: 1em;
