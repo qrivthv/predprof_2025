@@ -380,11 +380,8 @@ def ff():
 
 @app.route('/question/<int:qid>', methods=['POST', 'GET'])
 def ans(qid):
-    s = f'select * from Answers where QID = {qid}'
-    x = get_data(s)
-    s1 = f'select * from Questions where QID = {qid}'
-    x1 = get_data(s1)
-    q = x1[0]
+    # s1 = f'select * from Questions where QID = {qid}'
+    # x1 = get_data(s1)
     if request.method == 'POST':
         user = request.form['username']
         tm = timegm(gmtime())
@@ -393,7 +390,10 @@ def ans(qid):
         a = [qid, user, text, tm]
         print(a)
         insrt(a, s)
-    return render_template('question.html', answers=x, question=q, theme=theme)
+    s2 = f'select * from Answers where QID = {qid} order by date desc'
+    x2 = get_data(s2)
+    q = x2[0]
+    return render_template('question.html', answers=x2, question=q, theme=theme)
 
 
 @app.route('/course/<int:id>/<int:num>')
