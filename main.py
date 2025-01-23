@@ -393,6 +393,7 @@ def ans(qid):
     s2 = f'select * from Answers where QID = {qid} order by date desc'
     x2 = get_data(s2)
     q = x2[0]
+
     return render_template('question.html', answers=x2, question=q, theme=theme)
 
 
