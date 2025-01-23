@@ -349,7 +349,7 @@ def ff():
             ss = asctime(ss)
             ss = str(ss)
             k[3] = ss[4:16] + ss[19:]
-            if dd + 507600 >= tm and dd <= tm:
+            if dd + 1737647353 >= tm and dd <= tm:
                 b.append(k)
         return render_template('forum.html', category="Недавние", questions=b, theme=theme)
     elif request.method == 'POST':
@@ -365,7 +365,7 @@ def ff():
                         o[key] = int(request.form[key])
             delta = 60*o['min'] + 3600*o['hour'] + 86400 * o['day'] + 2629743 * o['month'] + 31556926 * o['year']
             if delta == 0:
-                delta = 507600
+                delta = 1737647353
             k = list(i)
             dd = i[3]
             ss = gmtime(dd)
@@ -380,8 +380,8 @@ def ff():
 
 @app.route('/question/<int:qid>', methods=['POST', 'GET'])
 def ans(qid):
-    # s1 = f'select * from Questions where QID = {qid}'
-    # x1 = get_data(s1)
+    s1 = f'select * from Questions where QID = {qid}'
+    x1 = get_data(s1)
     if request.method == 'POST':
         user = request.form['username']
         tm = timegm(gmtime())
@@ -392,8 +392,12 @@ def ans(qid):
         insrt(a, s)
     s2 = f'select * from Answers where QID = {qid} order by date desc'
     x2 = get_data(s2)
-    q = x2[0]
-
+    q = list(x1[0])
+    dd = x1[0][3]
+    ss = gmtime(dd)
+    ss = asctime(ss)
+    ss = str(ss)
+    q[3] = ss[4:16] + ss[19:]
     return render_template('question.html', answers=x2, question=q, theme=theme)
 
 
@@ -405,6 +409,26 @@ def course(id, num):
         a = a[0]
     return render_template('course.html', course=a, theme=theme)
 
+
+@app.route('/ask', methods=['post', 'get'])
+def ask():
+    if request.method == 'get':
+        return render_template('ask.html', theme=theme)
+    if request.method == 'post':
+        question = request.form['q']
+        user = request.form['user']
+        if user == '':
+            user = 'неизвестный'
+        tm = timegm(gmtime())
+        s = f'insert into Questions (Author, Statement, date, Open) values (?, ?, ?, ?)'
+        a = [user, question, tm, 1]
+        insrt(a, s)
+        s = f'select QID from Questions where date = {tm}'
+        x = get_data(s)
+        x = x[0]
+        print(user, question, tm)
+        return redirect(f'/question/{x}')
+    return render_template('ask.html', theme=theme)
 
 loggedin = False
 currentu = {}
