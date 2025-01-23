@@ -335,8 +335,8 @@ def courses():
 
 
 @app.route('/forum', methods=['POST', 'GET'])
-def ff():
-    s = f"select * from Questions"
+def forum():
+    s = f"select * from Questions order by date desc"
     a = get_data(s)
     b = []
     tm = timegm(gmtime())
@@ -410,13 +410,13 @@ def course(id, num):
     return render_template('course.html', course=a, theme=theme)
 
 
-@app.route('/ask', methods=['post', 'get'])
+@app.route('/ask', methods=['POST', 'GET'])
 def ask():
-    if request.method == 'get':
+    if request.method == 'GET':
         return render_template('ask.html', theme=theme)
-    if request.method == 'post':
+    if request.method == 'POST':
         question = request.form['q']
-        user = request.form['user']
+        user = request.form['username']
         if user == '':
             user = 'неизвестный'
         tm = timegm(gmtime())
@@ -427,7 +427,7 @@ def ask():
         x = get_data(s)
         x = x[0]
         print(user, question, tm)
-        return redirect(f'/question/{x}')
+        return render_template('tea.html', theme=theme)
     return render_template('ask.html', theme=theme)
 
 loggedin = False
