@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{%block content%}
+ <div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <h2>{{s}}</h2>
+      <p class="lead">Минимализм - наше все</p>
+      {%if message !=''%}
+      <p class="lead" style="color: #AE0B19"><strong>{{message}}</strong></p>
+      {%endif%}
+    </div>
+
+    <div class="container">
+      <div class="width1">
+        <form class="" method="post">
+          <div class="row g-3">
+            <div class="col-4 has-validation">
+              <label for="ans" class="form-label">Название работы</label>
+              <input type="text" class="form-control" id="ans" placeholder="" name="ans">
+              <div class="invalid-feedback">
+                Это поле обязательно
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <label for="stat" class="form-label">перечислите ID задач, которые хотите добавить, через пробел</label>
+                <textarea name="stat" class="form-control" id="stat" placeholder=""></textarea>
+              <div class="invalid-feedback">
+                Это поле обязательно
+              </div>
+            </div>
+
+            <div class="has-validation">
+              <label class="form-check-label" for="author" style="width:100%">Укажите автора задачи</label>
+              <input type="text" name="author" id="author" class="form-control" placeholder="">
+            </div>
+            <div class="invalid-feedback">
+                Это поле обязательно
+            </div>
+          </div>
+          <div class="col-md-4">
+              <label for="type" class="form-label">Показать ответ?</label>
+              <select class="form-select" id="type" name="type" >
+
+                <option value="">Выбрать...</option>
+
+                <option value="0">Да</option>
+                <option value="1">Нет</option>
+              </select>
+              <div class="invalid-feedback">
+                Это поле обязательно
+              </div>
+            </div>
+          <hr class="my-4">
+          <hr class="my-4">
+          <button class=" btn btn-primary btn-lg" type="submit" style="width: fit-content">Готово</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+{%endblock%}
