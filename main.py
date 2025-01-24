@@ -461,6 +461,7 @@ def dashboard(id):
     works = get_data(s)
     return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName, teachers=teachers, students=students, works=works)
 
+
 @app.route('/addTest', methods=['POST', 'GET'])
 def addTest():
     if request.method == 'GET':
