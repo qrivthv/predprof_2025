@@ -370,13 +370,14 @@ def forum():
         tm = timegm(gmtime())
         b =[]
         for i in a:
-            o = {}
+            o = {} #фильтрация по времени
             for key in request.form:
                 if key != 'txt':
                     if request.form[key] == '':
                         o[key] = 0
                     else:
                         o[key] = int(request.form[key])
+            txt = request.form['txt']
             delta = 60*o['min'] + 3600*o['hour'] + 86400 * o['day'] + 2629743 * o['month'] + 31556926 * o['year']
             if delta == 0:
                 delta = 1737647353
@@ -386,9 +387,9 @@ def forum():
             ss = asctime(ss)
             ss = str(ss)
             k[3] = ss[4:16] + ss[19:]
-            if dd + delta >= tm and dd <= tm:
+            if dd + delta >= tm and dd <= tm and txt != '' and txt in i[2]:
                 b.append(k)
-        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin)
+        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin, txt=txt)
     return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
 
 

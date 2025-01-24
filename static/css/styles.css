@@ -99,6 +99,7 @@ html,body {
   display: block;
   width: 100%;
   margin-bottom: 2em;
+  width:fit-content
 
 }
 .btn-primary{
@@ -113,6 +114,7 @@ html,body {
 }
 
 .btn-secondary{
+    margin-top: 1em;
     font-size: medium;
     background: #C79480;
     border: none;
@@ -176,11 +178,11 @@ summary {
    cursor: pointer;
 }
 summary:before {
-  content: "+";
+  content: ">";
   margin-right: .3em;
 }
 details[open] > summary:before {
-  content: "–";
+  content: "<";
 }
 summary ~ * {
    padding:0 1em 0 1em;
