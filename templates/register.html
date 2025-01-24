@@ -100,24 +100,16 @@
           </div>
           <hr class="my-4">
 
-          <h4 class="mb-3">Чего же я хочу</h4>
+          <h4 class="mb-3">Роль</h4>
 
           <div class="my-3">
             <div class="form-check">
-              <input id="home" name="iwant" value="home" type="radio" class="form-check-input" checked >
-              <label class="form-check-label" for="home">Домой</label>
+              <input id="student" name="iam" value="student" type="radio" class="form-check-input" checked >
+              <label class="form-check-label" for="student">Ученик</label>
             </div>
             <div class="form-check">
-              <input id="sleep" name="iwant" value="sleep" type="radio" class="form-check-input">
-              <label class="form-check-label" for="sleep">Спать</label>
-            </div>
-            <div class="form-check">
-              <input id="less4pairs" name="iwant" value="less4pairs" type="radio" class="form-check-input">
-              <label class="form-check-label" for="less4pairs">Меньше 4х пар</label>
-            </div>
-            <div class="input-group" style="width: fit-content;">
-              <label class="form-check-label" for="document" style="width:100%">Почему?</label>
-              <input id="document" name="why" type="file" class="form-control mt-2">
+              <input id="teacher" name="iam" value="teacher" type="radio" class="form-check-input">
+              <label class="form-check-label" for="teacher">Учитель</label>
             </div>
             <div class="my-3">
             <div class="has-validation">
@@ -137,22 +129,22 @@
               <label class="form-check-label" for="colour" style="width:100%">Ваш любимый цвет <span class="text-body-secondary">(будут сделаны темы на основе ваших пожеланий)</span></label>
               <input id="colour" name="colour" type="color" class="form-control mt-2" value="{{favcolor}}">
             </div>
-            <div class="input-group" style="width: fit-content;">
-              <p style="width:100%"></p>
-              <label class="form-check-label" for="rate" style="width:100%">Оцените нас, пожалуйста</label>
-              <input id="rate" name="rate" type="range" min="0" max="10"  step="1" class=" mt-2 form-range">
-              <p style="width:100%">Value: <output id="value"></output></p>
-              <script>
-                const value = document.querySelector("#value");
-                const input = document.querySelector("#rate");
-                value.textContent = input.value;
-                input.addEventListener("input", (event) => {
-                  value.textContent = event.target.value;
-                });
+<!--            <div class="input-group" style="width: fit-content;">-->
+<!--              <p style="width:100%"></p>-->
+<!--              <label class="form-check-label" for="rate" style="width:100%">Оцените нас, пожалуйста</label>-->
+<!--              <input id="rate" name="rate" type="range" min="0" max="10"  step="1" class=" mt-2 form-range">-->
+<!--              <p style="width:100%">Value: <output id="value"></output></p>-->
+<!--              <script>-->
+<!--                const value = document.querySelector("#value");-->
+<!--                const input = document.querySelector("#rate");-->
+<!--                value.textContent = input.value;-->
+<!--                input.addEventListener("input", (event) => {-->
+<!--                  value.textContent = event.target.value;-->
+<!--                });-->
 
-              </script>
+<!--              </script>-->
 
-            </div>
+<!--            </div>-->
           </div>
 
           <hr class="my-4">
