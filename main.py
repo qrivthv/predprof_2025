@@ -160,6 +160,7 @@ def register():
     if request.method == 'GET':
         if loggedin:
             return redirect('/my_profile')
+
         return render_template("register.html", s="Зарегистрироваться", auth=loggedin, message='', theme=theme)
     elif request.method == 'POST':
         new_user = {}
