@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{%block content%}
+ <div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <h2>{{s}}</h2>
+      <p class="lead">Минимализм - наше все</p>
+      {%if message !=''%}
+      <p class="lead" style="color: #AE0B19"><strong>{{message}}</strong></p>
+      {%endif%}
+    </div>
+
+    <div class="container">
+      <div class="width1">
+        <form class="" method="POST">
+          <div class="row g-3">
+            <div class="col-sm-12">
+              <label for="username" class="form-label">Username</label>
+                <input name="username" class="form-control" id="username" placeholder="">
+            </div>
+
+            <div class="col-4 has-validation">
+              <label for="q" class="form-label">Собственно, сам вопрос</label>
+                <textarea  class="form-control" id="q" placeholder="" name="q"></textarea>
+              <div class="invalid-feedback">
+                Задайте вопрос, пожалуйста
+              </div>
+            </div>
+          </div>
+          <hr class="my-4">
+          <button class=" btn btn-primary btn-lg" type="submit" style="width: fit-content">Готово</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+{%endblock%}
