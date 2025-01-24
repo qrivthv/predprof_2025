@@ -79,27 +79,30 @@ def insrt(data, what):
 def get_my(id):
     s = f'select * from PrepCourse join Courses on PrepCourse.CID = Courses.CID where PrepID={id}'
     a = get_data(s)
-    print(a)
     b = []
     for i in a:
         k = list(i)
-        k = k[2:]
+        temp = []
+        temp.append(k[0])
+        for j in k[2:]:
+            temp.append(j)
+        k = temp
         b.append(k)
-    s = f'select * from Group join GroupTeacher on Group.GroupID = GroupTeacher.GroupID where GroupTeacher.CreatorID = {id}'
+    s = f'select * from Groups join GroupTeacher on Groups.GroupID = GroupTeacher.GroupID where GroupTeacher.CreatorID = {id}'
     a = get_data(s)
-    print(a)
     c = []
     for i in a:
         k = list(i)
-        k = k[2:]
+        k = k[:-1]
         c.append(k)
-    s = f'select * from Work CreatorID={id}'
+    s = f'select * from Work where CreatorID={id}'
     a = get_data(s)
-    print(a)
     d = []
     for i in a:
         k = list(i)
-        k = k[2:]
         d.append(k)
     r = [b, c, d]
+    print(b)
+    print(c)
+    print(d)
     return r

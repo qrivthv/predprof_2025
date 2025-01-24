@@ -38,6 +38,107 @@
             {%endif%}
           </div>
           <div class="card-body p-4 text-black {{theme}}">
+            {%if courses|length != 0 or mycourses|length != 0%}
+            <div class="courses {{theme}}">
+              {%if courses|length != 0%}
+              <h4>Мои курсы (я учитель)</h4>
+              {%for c in courses%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <h5 class="card-title">{{c[1]}}</h5>
+                  <p class="card-text">{{c[2]}}</p>
+                    <div class="btn-group">
+                        <a href="/course/{{c[0]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+              {%endif%}
+              {%if mycourses|length != 0%}
+            <div class="courses {{theme}}">
+              <h4>Мои курсы (я ученик)</h4>
+              {%for c in mycourses%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <h5 class="card-title">id : {{c[0]}}</h5>
+                  <p class="card-text">{{c[1]}}</p>
+                  <p class="card-text">{{c[1]}}</p>
+                    <div class="btn-group">
+                        <a href="/course/{{c[0]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+            </div>
+              {%endif%}
+            </div>
+            {%endif%}
+            {%if works|length != 0 or myworks|length != 0%}
+            <div class="works {{theme}}">
+              {%if works|length != 0%}
+              <h4>Мои работы (я составитель)</h4>
+              {%for c in works%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <p class="card-text">{{c[2]}}</p>
+                    <div class="btn-group">
+                        <a href="/test/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+              {%endif%}
+              {%if myworks|length != 0%}
+            <div class="courses {{theme}}">
+              <h4>Мои работы (я ученик)</h4>
+              {%for c in myworks%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <h5 class="card-title">id : {{c[0]}}</h5>
+                  <p class="card-text">{{c[1]}}</p>
+                  <p class="card-text">{{c[1]}}</p>
+                    <div class="btn-group">
+                        <a href="/test/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+            </div>
+              {%endif%}
+            </div>
+            {%endif%}
+            {%if groups|length != 0 or mygroups|length != 0%}
+            <div class="groups {{theme}}">
+              {%if groups|length != 0%}
+              <h4>Мои группы (я учитель)</h4>
+              {%for c in groups%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <h5 class="card-title"> {{c[1]}}</h5>
+                    <div class="btn-group">
+                        <a href="/dashboard/{{c[0]}}/teacher" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+              {%endif%}
+              {%if mygroups|length != 0%}
+            <div class="courses {{theme}}">
+              <h4>Мои группы (я ученик)</h4>
+              {%for c in mygroups%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <p class="card-text">{{c[1]}}</p>
+                    <div class="btn-group">
+                        <a href="/dashboard/{{c[0]}}/student" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+            </div>
+              {%endif%}
+            </div>
+            {%endif%}
             <div class="mb-5  text-body {{theme}}">
               <p class="lead fw-normal mb-1">Обо мне</p>
               <div class="p-4 bg-body-tertiary">

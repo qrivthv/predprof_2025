@@ -58,7 +58,6 @@ def myprofile():
         print(currentuser)
         print(loggedin)
         x = get_my(currentuser['StudentID'])
-
         return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2])
     else:
         return login()
@@ -89,7 +88,7 @@ def login():
                 if u['password'] == request.form["password"].strip():
                     currentuser = u
                     loggedin = True
-                    return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
+                    return render_template('tea.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
         return render_template('login.html', message="Неверный логил или пароль", theme=theme, **currentuser, loggedin=loggedin)
 
 
