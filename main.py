@@ -383,6 +383,46 @@ def bank():
                         b.append(k)
         return render_template('bank.html', category="Выбранные", tasks=b, theme=theme)
 
+@app.route('/addTest', methods=['POST', 'GET'])
+def addTest():
+    if request.method == 'GET':
+        return render_template('addTest.html', theme=theme, **currentuser, loggedin=loggedin)
+    if request.method == 'POST':
+        typ = int(request.form['type'])
+        creator = request.form['author']
+        answer = request.form['ans']
+        sA = f"select * from Users order by StudentID "
+        aA = get_data(sA)
+        id = 0
+        for i in aA:
+            if i[1] == creator:
+                id = i[0]
+                break
+
+        s = f'insert into Work (CreatorID, WorkName) values (?, ?)'
+        a = [id, answer]
+        insrt(a, s)
+
+        sW = f'select * from Work order by CreatorID'
+        aW = get_data(sW)
+        wID = 0
+
+        for i in aW:
+            if i[1] == id and i[2] == answer:
+                wID = i[0]
+        pr = request.form['stat']
+        x = pr.split()
+        arr = []
+        for i in x:
+            arr.append(int(i))
+        print(arr)
+        for i in arr:
+            s1 = f'insert into WorkProblem (WorkID, ProblemID) values (?, ?)'
+            a1 = [wID, i]
+            print(1)
+            insrt(a1, s1)
+
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
 if __name__ == "__main__":
