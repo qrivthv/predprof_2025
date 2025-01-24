@@ -11,14 +11,23 @@
                   <p class="card-text">{{course[1]}}</p>
                   <p class="card-text">{{course[1]}}</p>
                     <div class="btn-group">
-                        <a href="/course/{{course[0]}}" class="btn btn-primary tea" style="background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                        <a href="/course/{{course[0]}}/1" class="btn btn-primary tea" style="background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
                     </div>
 
                 </div>
               </div>
-
-
               {%endfor%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <h5 class="card-title">id : 0</h5>
+                  <p class="card-text">Архив</p>
+                  <p class="card-text">Что сказать? Архив он и есть архив</p>
+                    <div class="btn-group">
+                        <a href="/course/archive" class="btn btn-primary tea" style="background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+
+                </div>
+              </div>
           </div>
     </div>
   </main>

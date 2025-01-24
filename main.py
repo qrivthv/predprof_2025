@@ -10,7 +10,8 @@ import _sqlite3
 app = Flask(__name__)
 
 theme = 'dark'
-
+currentuser = {}
+loggedin = False
 
 def get_data(what):
     c = _sqlite3.connect('db.db')
@@ -20,6 +21,58 @@ def get_data(what):
     c.commit()
     c.close()
     return line
+
+
+def get_user(username=None, email = None):
+    c = _sqlite3.connect('db.db')
+    curs = c.cursor()
+    what = f"select * from Student where username = '{username}'"
+    what1 = f"select * from Student where username = '{email}'"
+    curs.execute(what)
+    line = curs.fetchall()
+    c.commit()
+    c.close()
+    c = _sqlite3.connect('db.db')
+    curs = c.cursor()
+    curs.execute(what1)
+    line2 = curs.fetchall()
+    c.commit()
+    c.close()
+    if len(line) == 1:
+        line = line[0]
+    if len(line2) == 1:
+        line2 = line2[0]
+    if len(line) == 0 and len(line2) == 0:
+        return 'No such user'
+    x = line
+    if len(line) == 0:
+        x = line2
+    user = {
+        "username": x[1],
+        "email": x[2].replace('?', '@'),
+        "phone": x[3],
+        "password": x[4],
+        "name": x[5],
+        "surname": x[6],
+        "grade": x[7],
+        "color": x[9],
+        "bright": x[10]
+    }
+    r = []
+    k = 0
+    n = 0
+    for i in x[8]:
+        if i == "$":
+            r.append([n, k])
+            k = 0
+        elif i == '!':
+            n = k
+            k = 0
+        else:
+            k *= 10
+            k += int(i)
+    user['results'] = r
+    return user
 
 
 def insrt(data, what):
@@ -50,7 +103,7 @@ def gn_user_check(user):
 
 @app.route('/error')
 def err():
-    return render_template('error.html', message="Этой страницы пока нет :(", theme=theme)
+    return render_template('error.html', message="Этой страницы пока нет :(", theme=theme, loggedin=loggedin, **currentuser)
 
 
 @app.route('/logout')
@@ -58,101 +111,61 @@ def logout():
     global loggedin
     global currentu
     loggedin = False
-    currentu = {}
+    currentu = []
     return index()
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('tea.html', theme=theme)
+    return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
 
 
-@app.route('/myprofile/<username>')
-def myprofile(x):
+@app.route('/my_profile')
+def myprofile():
+    global loggedin
+    global currentuser
     if loggedin:
-        print(x)
-        user = {
-            "username": x[1],
-            "email": x[2].replace('?', '@'),
-            "phone": x[3],
-            "name": x[5],
-            "surname": x[6],
-            "grade": x[7],
-            "color": x[9],
-            "bright": x[10]
-        }
-        r = []
-        k = 0
-        n = 0
-        for i in x[8]:
-            if i == "$":
-                r.append([n, k])
-                k = 0
-            elif i == '!':
-                n = k
-                k = 0
-            else:
-                k *= 10
-                k += int(i)
-        return render_template('myprofile.html', res=r, **user, auth=loggedin, theme=theme)
+        print(currentuser)
+        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
     else:
         return login()
 
 
-@app.route('/my_profile')
-#@app.route('/myprofile')
-def profile(user):
+@app.route('/profile')
+def profile(username):
     # s = f"select * from Student where username = '{username}'"
-    x = user
-    if len(x) != 0:
-        user = {
-            "username": x[1],
-            "email": x[2],
-            "phone": x[3],
-            "name": x[5],
-            "surname": x[6],
-            "grade": x[7],
-            "color": x[9],
-            "bright": x[10]
-        }
-        r =[]
-        k = 0
-        n = 0
-        for i in x[8]:
-            if i == "$":
-                r.append([n, k])
-                k = 0
-            if i == '!':
-                n = k
-                k = 0
-            else:
-                k *= 10
-                k += int(i)
-        return render_template('profile.html',res=r, **user, auth=loggedin, theme=theme)
-    return err()
+    x = get_user(username)
+    return render_template('profile.html',res=x['results'], user=x, **currentuser, loggedin=loggedin, theme=theme)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     global loggedin
+    global currentuser
     if loggedin:
-        return redirect('/myprofile')
+        return redirect('/my_profile')
     if request.method == 'GET':
-        return render_template('login.html', message=' ',theme=theme)
+        return render_template('login.html', message=' ',theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
-        s = f"select * from Student where username = '{request.form['EmailOrUname'].strip()}' or email = '{request.form['EmailOrUname'].strip()}'"
-        u = get_data(s)
-        if len(u[0]) > 1:
-            u = u[0]
-        if u != ():
-            print(u)
-            if u[4] == request.form["password"].strip():
-                global currentu
-                loggedin = True
-                currentu = u
-                return myprofile(u)
-        return render_template('login.html', message="Неверный логил или пароль", theme=theme)
+        ss = 'EmailOrUname'
+        s = request.form[ss].strip()
+        u = get_user(s, s)
+        cu = currentuser
+        if u != 'No such user':
+            if u != ():
+                print(u)
+                print(request.form["password"].strip())
+                if u['password'] == request.form["password"].strip():
+                    #global currentuser
+                    currentuser = u
+                    #global loggedin
+                    loggedin = True
+
+                    print(currentuser)
+                    print(loggedin)
+                    return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
+        return render_template('login.html', message="Неверный логил или пароль", theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -160,8 +173,7 @@ def register():
     if request.method == 'GET':
         if loggedin:
             return redirect('/my_profile')
-
-        return render_template("register.html", s="Зарегистрироваться", auth=loggedin, message='', theme=theme)
+        return render_template("register.html", s="Зарегистрироваться", loggedin=loggedin, message='', theme=theme, **currentuser)
     elif request.method == 'POST':
         new_user = {}
         for k in request.form:
@@ -170,7 +182,7 @@ def register():
         new_user["password"] = request.form['password'].strip()
         new_user["passwordcheck"] = request.form['passwordcheck'].strip()
         if new_user["passwordcheck"] != new_user["password"]:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, пароли не совпадают", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, пароли не совпадают", theme=theme, **currentuser)
         new_user = gn_user_check(new_user)
         email = str(new_user["email"]).replace('@', '?')
         print(email)
@@ -188,11 +200,11 @@ def register():
         x2 = get_data(s2)
         x3 = get_data(s3)
         if len(x2) != 0:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, этот никнейм уже занят", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот никнейм уже занят", theme=theme)
         if len(x1) != 0:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, эта почта уже зарегестрирована", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, эта почта уже зарегестрирована", theme=theme)
         if len(x3) != 0:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
         #  genius user check
 
         s = f'''
@@ -208,7 +220,7 @@ def register():
 
 @app.route('/edit', methods=['POST', 'GET'])
 def edit():
-    return render_template('error.html', message='Этой страницы пока нет')
+    return render_template('error.html', message='Этой страницы пока нет', loggedin=loggedin, **currentuser)
     # global currentu
     # if request.method == "GET":
     #     return render_template('register.html', s="Редактировать", auth=loggedin, **currentu, message='')
@@ -287,7 +299,7 @@ def test(num):
                 results[i][2] = "wrong"
         show = str(request.form.get("show")) != "None"
         print(results, show)
-        return render_template('results.html', tasks=x, res=results, show=show, right=rcount, theme=theme)
+        return render_template('results.html', tasks=x, res=results, show=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
@@ -298,13 +310,13 @@ def train(num):
     ans = []
     for task in x:
         ans.append(task[2])
-    return render_template('train.html', tasks=x, answers=ans, theme=theme)
+    return render_template('train.html', tasks=x, answers=ans, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/add', methods=['POST', 'GET'])
 def add():
     if request.method == 'GET':
-        return render_template('add.html', theme=theme)
+        return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         statement = request.form['stat']
         answer = request.form['ans']
@@ -316,24 +328,24 @@ def add():
         a = [statement, answer, typ, creator, solution, diff]
         print(a)
         insrt(a, s)
-        return render_template('tea.html', theme=theme)
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
     global theme
     if request.method == 'GET':
-        return render_template('settings.html', theme=theme)
+        return render_template('settings.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         theme = request.form['changetheme']
-        return render_template('tea.html', theme=theme)
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/courses')
 def courses():
     s = f"select * from Courses"
     a = get_data(s)
-    return render_template('courses.html', courses=a, theme=theme)
+    return render_template('courses.html', courses=a, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/forum', methods=['POST', 'GET'])
@@ -376,8 +388,8 @@ def forum():
             k[3] = ss[4:16] + ss[19:]
             if dd + delta >= tm and dd <= tm:
                 b.append(k)
-        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o)
-    return render_template('forum.html', category="Недавние", questions=b, theme=theme)
+        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin)
+    return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/question/<int:qid>', methods=['POST', 'GET'])
@@ -400,7 +412,7 @@ def ans(qid):
     ss = asctime(ss)
     ss = str(ss)
     q[3] = ss[4:16] + ss[19:]
-    return render_template('question.html', answers=x2, question=q, theme=theme)
+    return render_template('question.html', answers=x2, question=q, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/course/<int:id>/<int:num>')
@@ -409,13 +421,13 @@ def course(id, num):
     a = get_data(s)
     if len(a) == 1:
         a = a[0]
-    return render_template('course.html', course=a, theme=theme)
+    return render_template('course.html', course=a, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/ask', methods=['POST', 'GET'])
 def ask():
     if request.method == 'GET':
-        return render_template('ask.html', theme=theme)
+        return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         question = request.form['q']
         user = request.form['username']
@@ -429,10 +441,9 @@ def ask():
         x = get_data(s)
         x = x[0]
         print(user, question, tm)
-        return render_template('tea.html', theme=theme)
-    return render_template('ask.html', theme=theme)
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
+    return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
 
-loggedin = False
-currentu = {}
+
 if __name__ == "__main__":
     app.run(port=8080, host="127.0.0.1")
