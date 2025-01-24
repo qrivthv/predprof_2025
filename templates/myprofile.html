@@ -10,8 +10,8 @@
           <div class="rounded-top text-white d-flex flex-row" style="background-color: {{color}}; height:200px;">
             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px; margin-top: 120px !important;">
               <div class="btn-group-vertical">
-                {% if brigth %}
-              <a role="button" href="/error" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1;">
+                {% if bright %}
+              <a role="button" href="/error" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1; margin-bottom: 0 !important;">
                 Редактировать
               </a>
               <a role="button" href="/error" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1;">
@@ -27,9 +27,15 @@
                 {%endif%}
                 </div>
             </div>
-            <div class="ms-3" style="margin-top: 130px;">
+            {% if bright %}
+            <div class="ms-3" style="margin-top: 130px; color: black;">
               <h5>{{name}} {{surname}}</h5>
             </div>
+            {%else%}
+            <div class="ms-3" style="margin-top: 130px; color: white;">
+              <h5>{{name}} {{surname}}</h5>
+            </div>
+            {%endif%}
           </div>
           <div class="card-body p-4 text-black {{theme}}">
             <div class="mb-5  text-body {{theme}}">
@@ -44,10 +50,7 @@
                 {%endif%}
               </div>
             </div>
-            <div>
-
-
-            </div>
+            {%if res|length != 0%}
             <div class="res {{theme}}" style="height:fit-content">
               <h5>Результаты</h5>
               <ul style="height:fit-content">
@@ -65,9 +68,7 @@
                 {%endfor%}
               </ul>
             </div>
-<!--            <div>-->
-<!--              <h5>Мои варианты: </h5>-->
-<!--            </div>-->
+            {%endif%}
           </div>
         </div>
       </div>

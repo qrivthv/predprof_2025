@@ -19,30 +19,30 @@
                     <label for="task{{i}}" class="form-label">{{tasks[i][1]}}</label>
                     <input type="text" name="task{{i}}" class="form-control" id="task{{i}}" placeholder="" value="">
                     <div ><output id="val{{i}}"></output></div>
-                    <script>
-                      const val = document.querySelector("#val{{i}}");
-                      const input = document.querySelector("#task{{i}}");
-                      const answer = {{tasks[i][2]}};
-                      const element = document.getElementById("card-task{{i}}");
-                      input.addEventListener("input", (event) => {
-                        console.log(input.value, answer, {{i}});
-                        if (input.value == answer){
-                            val.textContent = "Верный ответ";
-                            element.classList.remove('wrong');
-                            element.classList.add('right');
-                        }
-                        else{
-                            val.textContent = "Неверный ответ";
-                            element.classList.remove('right');
-                            element.classList.add('wrong');
-                        }
-                        if (input.value == ''){
-                            val0.textContent = "";
-                            element.classList.remove('right');
-                            element.classList.remove('wrong');
-                        }
-                      });
-                    </script>
+<!--                    <script>-->
+<!--                      const val = document.querySelector("#val{{i}}");-->
+<!--                      const input = document.querySelector("#task{{i}}");-->
+<!--                      const answer = {{tasks[i][2]}};-->
+<!--                      const element = document.getElementById("card-task{{i}}");-->
+<!--                      input.addEventListener("input", (event) => {-->
+<!--                        console.log(input.value, answer, {{i}});-->
+<!--                        if (input.value == answer){-->
+<!--                            val.textContent = "Верный ответ";-->
+<!--                            element.classList.remove('wrong');-->
+<!--                            element.classList.add('right');-->
+<!--                        }-->
+<!--                        else{-->
+<!--                            val.textContent = "Неверный ответ";-->
+<!--                            element.classList.remove('right');-->
+<!--                            element.classList.add('wrong');-->
+<!--                        }-->
+<!--                        if (input.value == ''){-->
+<!--                            val0.textContent = "";-->
+<!--                            element.classList.remove('right');-->
+<!--                            element.classList.remove('wrong');-->
+<!--                        }-->
+<!--                      });-->
+<!--                    </script>-->
                     <div>
                         <details>
                             <summary>Показать ответ</summary>

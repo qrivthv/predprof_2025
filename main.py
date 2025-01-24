@@ -56,10 +56,10 @@ def myprofile():
     global currentuser
     if loggedin:
         print(currentuser)
-        s = f'select * from PrepCourse join Courses on Courses.CID = PrepCourse.CID where PrepID = {currentuser["StudentID"]}'
-        a = get_data(s)
-        print(a)
-        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
+        print(loggedin)
+        x = get_my(currentuser['StudentID'])
+
+        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2])
     else:
         return login()
 
@@ -87,9 +87,7 @@ def login():
         if u != 'No such user':
             if u != ():
                 if u['password'] == request.form["password"].strip():
-                    #global currentuser
                     currentuser = u
-                    #global loggedin
                     loggedin = True
                     return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
         return render_template('login.html', message="Неверный логил или пароль", theme=theme, **currentuser, loggedin=loggedin)
