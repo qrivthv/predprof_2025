@@ -1,10 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{%block content%}
+  <main class="{{theme}}">
+      <div class="container {{theme}}">
+          <details>
+              <summary class="toggle"><span>Фильтры:</span></summary>
+              <form method="POST">
+                <h5>За последние:</h5>
+                  <div class="row g-0">
+                <div class="my-3 col-4">
+                <div class="">
+                  <label class="form-check-label" for="kim" style="width: 100%">Минут</label>
+                  <input type="number" id="kim" name="kim" class="form-control" style="width: fit-content" value="{{min}}">
+                </div>
+              </div>
+                  <div class="my-3 col-4">
+                <div class="">
+                  <label class="form-check-label" for="diff" style="width: 100%">Часов</label>
+                  <input type="number" id="diff" name="diff" class="form-control" style="width: fit-content" value="{{hour}}">
+                </div>
+              </div>
+                              <div class="my-3 col-4">
+                <div class="">
+                  <label class="form-check-label" for="txt" style="width: 100%" value="{{txt}}">Источник</label>
+                  <input type="text" id="txt" name="txt" class="form-control" style="width: fit-content" value="{{txt}}">
+                </div>
+
+                  <a class="btn btn-secondary tea" href="/forum">Сбросить</a>
+              </div>
+                  <button type="submit" class="btn btn-primary" style="width:fit-content">Применить</button>
+              </form>
+            </details>
+
+			<hr>
+          <a href="/add" class="btn btn-primary tea" style="width: fit-content">Добавить задание</a>
+			<hr>
+          <h3>{{category}}: </h3>
+		  <hr>
+            <div class="my-3 p-3 rounded shadow-lg">
+          {% for i in range(tasks|length) %}
+                <div class="col-12 {{theme}}" id="card-task{{i}}">
+                    <span style="font-size: 1.1rem; font-style: italic">id {{tasks[i][0]}} - № в КИМ {{tasks[i][3]}}</span>
+                    {%if tasks[i][6] == 1%}
+                    <p>Сложность: база</p>
+                    {%elif tasks[i][6] == 3%}
+                    <p>Сложность: сюрприз от Кирилла Евгеньевича</p>
+                    {%else%}
+                    <p>Сложность: решаемо</p>
+                    {%endif%}
+                    <label for="task{{i}}" class="form-label">{{tasks[i][1]}}</label>
+                    <input type="text" name="task{{i}}" class="form-control" id="task{{i}}" placeholder="" value="">
+                    <div ><output id="val{{i}}"></output></div>
+
+                    <div>
+                        <details>
+                            <summary>Показать ответ</summary>
+                            <p id="ans">{{tasks[i][2]}}</p>
+                        </details>
+                        <details>
+                            <summary>Показать решение</summary>
+                            <p>{{tasks[i][5]|safe}}</p>
+                        </details>
+                    </div>
+                </div>
+                  {% endfor %}
+    </div>
+      </div>
+  </main>
+
+{%endblock%}
