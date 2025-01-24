@@ -102,13 +102,13 @@ html,body {
 
 }
 .btn-primary{
-  background: #7C4935;
+  background: #E65B9A;
   border: none;
   margin-bottom: 0.1em;
 }
 .btn-primary:hover{
-  background: #7C4935;
-  border: #7C4935 solid;
+  background: #E65B9A;
+  border: #E65B9A solid;
   margin-bottom: 0.1em;
 }
 
