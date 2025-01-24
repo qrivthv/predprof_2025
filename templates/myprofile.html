@@ -139,7 +139,7 @@
                 <div class="card-body" style="">
                   <h5 class="card-title"> {{c[1]}}</h5>
                     <div class="btn-group">
-                        <a href="/dashboard/{{c[0]}}/teacher" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                        <a href="/dashboard/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
                     </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@
                 <div class="card-body" style="">
                   <p class="card-text">{{c[1]}}</p>
                     <div class="btn-group">
-                        <a href="/dashboard/{{c[0]}}/student" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                        <a href="/dashboard/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
                     </div>
                 </div>
               </div>
@@ -165,7 +165,7 @@
             </div>
             {%endif%}
             <hr>
-            <a href="" class="btn btn-primary tea">Добавить группу</a>
+            <a href="/add_group" class="btn btn-primary tea">Добавить группу</a>
             <hr>
             {%if res|length != 0%}
             <div class="res {{theme}}" style="height:fit-content">

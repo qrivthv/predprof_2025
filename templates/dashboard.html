@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{%block content%}
+  <main class="{{theme}}">
+      <div class="container">
+      <div class="card-body p-4 text-black {{theme}}">
+          <h3>{{GName}}</h3>
+
+          <hr>
+          <details>
+              <summary>Преподаватели данной группы:</summary>
+              {%for prep in teachers%}
+              <p class="card-text">{{prep[1]}} {{prep[0]}} (@{{prep[2]}})</p>
+              {%endfor%}
+          </details>
+
+          <hr>
+          <details>
+              <summary>Работы, заданные этой группе:</summary>
+              {%for c in works%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <p class="card-text">{{c[2]}}</p>
+                    <div class="btn-group">
+                        <a href="/test/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+                </div>
+              </div>
+              {%endfor%}
+          </details>
+
+          <hr>
+            <details>
+                <summary>Участники:</summary>
+                {%for c in students%}
+                  <p class="card-text">{{c[1]}} {{c[0]}} (@{{c[2]}})</p>
+                {%endfor%}
+
+            </details>
+
+      </div>
+    </div>
+  </main>
+
+{%endblock%}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{%block content%}
+ <div class="container">
+  <main>
+    <div class="py-5 text-center">
+      <h2>{{s}}</h2>
+      <p class="lead">Минимализм - наше все</p>
+      {%if message !=''%}
+      <p class="lead" style="color: #AE0B19"><strong>{{message}}</strong></p>
+      {%endif%}
+    </div>
+
+    <div class="container">
+      <div class="width1">
+        <form class="" method="post">
+          <div class="row g-3">
+            <div class="col-sm-12">
+              <label for="name" class="form-label">Название группы</label>
+                <input type="text" name="name" class="form-control" id="name" placeholder=""></input>
+              <div class="invalid-feedback">
+                Как, группа и без названия?(((
+              </div>
+            </div>
+
+            <div class="col-4 has-validation">
+              <label for="teach" class="form-label">Если у этой группы есть другие учителя кроме вас, запишити их никнеймы через пробел</label>
+              <input type="text" class="form-control" id="teach" placeholder="" name="teach">
+            </div>
+
+            <div class="col-md-4">
+              <label for="stud" class="form-label">Перечислите через запятую никнеймы учеников</label>
+              <input type="text" class="form-control" id="stud" placeholder="" name="stud">
+              <div class="invalid-feedback">
+                Как, группа и без учеников?(((
+              </div>
+            </div>
+
+          </div>
+
+          <hr class="my-4">
+          <button class=" btn btn-primary btn-lg" type="submit" style="width: fit-content">Готово</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+{%endblock%}
