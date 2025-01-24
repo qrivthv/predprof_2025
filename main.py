@@ -55,6 +55,10 @@ def myprofile():
     global loggedin
     global currentuser
     if loggedin:
+        print(currentuser)
+        s = f'select * from PrepCourse join Courses on Courses.CID = PrepCourse.CID where PrepID = {currentuser["StudentID"]}'
+        a = get_data(s)
+        print(a)
         return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
     else:
         return login()
