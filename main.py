@@ -62,7 +62,7 @@ def myprofile():
 
 @app.route('/profile')
 def profile(username):
-    # s = f"select * from Student where username = '{username}'"
+    # s = f"select * from Users where username = '{username}'"
     x = get_user(username)
     return render_template('profile.html',res=x['results'], user=x, **currentuser, loggedin=loggedin, theme=theme)
 
@@ -114,9 +114,9 @@ def register():
             new_user["bright"] = True
         else:
             new_user["bright"] = False
-        s1 = f'select email, username, phone from Student where email = "{email}"'
-        s2 = f'select email, username, phone from Student where username = "{new_user["username"]}"'
-        s3 = f'select email, username, phone from Student where phone="{new_user["phone"]}"'
+        s1 = f'select email, username, phone from Users where email = "{email}"'
+        s2 = f'select email, username, phone from Users where username = "{new_user["username"]}"'
+        s3 = f'select email, username, phone from Users where phone="{new_user["phone"]}"'
         x1 = get_data(s1)
         x2 = get_data(s2)
         x3 = get_data(s3)
@@ -127,14 +127,13 @@ def register():
         if len(x3) != 0:
             return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
         #  genius user check
-
         s = f'''
-        insert into Student (username, email, phone, password, SName, SSurname,  Grade, avgresults, color, bright) 
+        insert into Users (username, email, phone, password, SName, SSurname,  Grade, avgresults, color, bright, adm) 
         values 
         (?, ?, ?, ?, ?, ?,  ?, ?, ?, ?)
         '''
         rr = "0!0$"*27
-        a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"], new_user["surname"], int(new_user["grade"]), rr, new_user["colour"], new_user["bright"])
+        a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"], new_user["surname"], int(new_user["grade"]), rr, new_user["colour"], new_user["bright"], 0)
         insrt(a, s)
         return redirect('/login')
 

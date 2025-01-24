@@ -13,8 +13,8 @@ def get_data(what):
 def get_user(username=None, email = None):
     c = _sqlite3.connect('db.db')
     curs = c.cursor()
-    what = f"select * from Student where username = '{username}'"
-    what1 = f"select * from Student where username = '{email}'"
+    what = f"select * from Users where username = '{username}'"
+    what1 = f"select * from Users where username = '{email}'"
     curs.execute(what)
     line = curs.fetchall()
     c.commit()
