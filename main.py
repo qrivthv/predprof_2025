@@ -389,9 +389,78 @@ def add_group():
     if request.method == 'GET':
         return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
+        print(-1)
         name = request.form['name']
-        students = request.form['stud']
-        teachers = request.form['teach']
+        students = request.form['stud'].split()
+        teachers = request.form['teach'].split()
+        print(0)
+        s = f'select GroupID from Groups where GroupName = "{name}"'
+        a = get_data(s)
+        if a !=[]:
+            return render_template('add_group.html', message='Группа с таким названием уже есть', theme=theme, **currentuser, loggedin=loggedin)
+        s = f'insert into Groups (GroupName) values (?)'
+        a = [name]
+        insrt(a, s)
+        print(1)
+        s = f'select GroupID from Groups where GroupName = "{name}"'
+        a = get_data(s)
+        a = a[0]
+        if type(a) is not int:
+            id = a[0]
+        else:
+            id = a
+        s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
+        a = [id, currentuser['StudentID']]
+        print(a)
+        insrt(a, s)
+        print(1)
+        if teachers != []:
+            for user in teachers:
+                if ',' in user:
+                    user = user.replace(',', '')
+                s = f'select StudentID from Users where username={user}'
+                a = get_data(s)
+                a = a[0]
+                if type(a) is not int:
+                    id1 = a[0]
+                else:
+                    id1 = a
+                s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
+                a = [id, id1]
+                insrt(a, s)
+        for user in students:
+            if ',' in user:
+                user = user.replace(',', '')
+            s = f'select StudentID from Users where username="{user}"'
+            a = get_data(s)
+            a = a[0]
+            if type(a) is not int:
+                id1 = a[0]
+            else:
+                id1 = a
+            s = f'insert into GroupStud (GroupID, StudID) values (?, ?)'
+            a = [id, id1]
+            insrt(a, s)
+        return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
+
+
+@app.route('/dashboard/<int:id>')
+def dashboard(id):
+    s = f'select GroupName from Groups where GroupID = {id}'
+    a = get_data(s)
+    a = a[0]
+    if type(a) is not str:
+        GName = a[0]
+    else:
+        GName = a
+    s = f'select SName, SSurname, username from GroupTeacher join Users on GroupTeacher.CreatorID = Users.StudentID where GroupID = {id}'
+    teachers = get_data(s)
+    s = f'select SName, SSurname, username from GroupStud join Users on GroupStud.StudID = Users.StudentID where GroupID = {id}'
+    students = get_data(s)
+    s = f'select Work.WorkID, CreatorID, WorkName from WorkGroup join Work on WorkGroup.WorkID = Work.WorkID where GroupID = {id}'
+    works = get_data(s)
+    return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName, teachers=teachers, students=students, works=works)
+
 
 
 if __name__ == "__main__":

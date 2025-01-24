@@ -126,10 +126,4 @@ def get_my(id):
         k = list(i)
         g.append(k)
     r = [b, c, d, e, f, g]
-    print(b)
-    print(c)
-    print(d)
-    print(e)
-    print(f)
-    print(g)
     return r
