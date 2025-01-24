@@ -103,7 +103,7 @@ def gn_user_check(user):
 
 @app.route('/error')
 def err():
-    return render_template('error.html', message="Этой страницы пока нет :(", theme=theme)
+    return render_template('error.html', message="Этой страницы пока нет :(", theme=theme, loggedin=loggedin, **currentuser)
 
 
 @app.route('/logout')
@@ -118,14 +118,16 @@ def logout():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('tea.html', theme=theme, loggedin=loggedin)
+    return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
 
 
-@app.route('/my_profile/<username>')
+@app.route('/my_profile')
 def myprofile():
+    global loggedin
+    global currentuser
     if loggedin:
         print(currentuser)
-        return render_template('myprofile.html', res=currentuser['results'], **currentuser, auth=loggedin, theme=theme)
+        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
     else:
         return login()
 
@@ -134,16 +136,17 @@ def myprofile():
 def profile(username):
     # s = f"select * from Student where username = '{username}'"
     x = get_user(username)
-    return render_template('profile.html',res=x['results'], **x, auth=loggedin, theme=theme)
+    return render_template('profile.html',res=x['results'], user=x, **currentuser, loggedin=loggedin, theme=theme)
 
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     global loggedin
+    global currentuser
     if loggedin:
         return redirect('/my_profile')
     if request.method == 'GET':
-        return render_template('login.html', message=' ',theme=theme)
+        return render_template('login.html', message=' ',theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
         ss = 'EmailOrUname'
         s = request.form[ss].strip()
@@ -154,14 +157,15 @@ def login():
                 print(u)
                 print(request.form["password"].strip())
                 if u['password'] == request.form["password"].strip():
-                    global currentuser
+                    #global currentuser
                     currentuser = u
-                    global loggedin
+                    #global loggedin
                     loggedin = True
 
                     print(currentuser)
-                    return myprofile()
-        return render_template('login.html', message="Неверный логил или пароль", theme=theme, **cu, loggedin=loggedin)
+                    print(loggedin)
+                    return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
+        return render_template('login.html', message="Неверный логил или пароль", theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -169,7 +173,7 @@ def register():
     if request.method == 'GET':
         if loggedin:
             return redirect('/my_profile')
-        return render_template("register.html", s="Зарегистрироваться", auth=loggedin, message='', theme=theme)
+        return render_template("register.html", s="Зарегистрироваться", loggedin=loggedin, message='', theme=theme, **currentuser)
     elif request.method == 'POST':
         new_user = {}
         for k in request.form:
@@ -178,7 +182,7 @@ def register():
         new_user["password"] = request.form['password'].strip()
         new_user["passwordcheck"] = request.form['passwordcheck'].strip()
         if new_user["passwordcheck"] != new_user["password"]:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, пароли не совпадают", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, пароли не совпадают", theme=theme, **currentuser)
         new_user = gn_user_check(new_user)
         email = str(new_user["email"]).replace('@', '?')
         print(email)
@@ -196,11 +200,11 @@ def register():
         x2 = get_data(s2)
         x3 = get_data(s3)
         if len(x2) != 0:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, этот никнейм уже занят", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот никнейм уже занят", theme=theme)
         if len(x1) != 0:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, эта почта уже зарегестрирована", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, эта почта уже зарегестрирована", theme=theme)
         if len(x3) != 0:
-            return render_template('register.html', s="Зарегистрироваться", auth=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
         #  genius user check
 
         s = f'''
@@ -216,7 +220,7 @@ def register():
 
 @app.route('/edit', methods=['POST', 'GET'])
 def edit():
-    return render_template('error.html', message='Этой страницы пока нет')
+    return render_template('error.html', message='Этой страницы пока нет', loggedin=loggedin, **currentuser)
     # global currentu
     # if request.method == "GET":
     #     return render_template('register.html', s="Редактировать", auth=loggedin, **currentu, message='')
@@ -295,7 +299,7 @@ def test(num):
                 results[i][2] = "wrong"
         show = str(request.form.get("show")) != "None"
         print(results, show)
-        return render_template('results.html', tasks=x, res=results, show=show, right=rcount, theme=theme)
+        return render_template('results.html', tasks=x, res=results, show=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
@@ -306,13 +310,13 @@ def train(num):
     ans = []
     for task in x:
         ans.append(task[2])
-    return render_template('train.html', tasks=x, answers=ans, theme=theme)
+    return render_template('train.html', tasks=x, answers=ans, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/add', methods=['POST', 'GET'])
 def add():
     if request.method == 'GET':
-        return render_template('add.html', theme=theme)
+        return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         statement = request.form['stat']
         answer = request.form['ans']
@@ -324,24 +328,24 @@ def add():
         a = [statement, answer, typ, creator, solution, diff]
         print(a)
         insrt(a, s)
-        return render_template('tea.html', theme=theme)
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
     global theme
     if request.method == 'GET':
-        return render_template('settings.html', theme=theme)
+        return render_template('settings.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         theme = request.form['changetheme']
-        return render_template('tea.html', theme=theme)
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/courses')
 def courses():
     s = f"select * from Courses"
     a = get_data(s)
-    return render_template('courses.html', courses=a, theme=theme)
+    return render_template('courses.html', courses=a, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/forum', methods=['POST', 'GET'])
@@ -384,8 +388,8 @@ def forum():
             k[3] = ss[4:16] + ss[19:]
             if dd + delta >= tm and dd <= tm:
                 b.append(k)
-        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o)
-    return render_template('forum.html', category="Недавние", questions=b, theme=theme)
+        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin)
+    return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/question/<int:qid>', methods=['POST', 'GET'])
@@ -408,7 +412,7 @@ def ans(qid):
     ss = asctime(ss)
     ss = str(ss)
     q[3] = ss[4:16] + ss[19:]
-    return render_template('question.html', answers=x2, question=q, theme=theme)
+    return render_template('question.html', answers=x2, question=q, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/course/<int:id>/<int:num>')
@@ -417,13 +421,13 @@ def course(id, num):
     a = get_data(s)
     if len(a) == 1:
         a = a[0]
-    return render_template('course.html', course=a, theme=theme)
+    return render_template('course.html', course=a, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/ask', methods=['POST', 'GET'])
 def ask():
     if request.method == 'GET':
-        return render_template('ask.html', theme=theme)
+        return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         question = request.form['q']
         user = request.form['username']
@@ -437,8 +441,8 @@ def ask():
         x = get_data(s)
         x = x[0]
         print(user, question, tm)
-        return render_template('tea.html', theme=theme)
-    return render_template('ask.html', theme=theme)
+        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
+    return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
 if __name__ == "__main__":
