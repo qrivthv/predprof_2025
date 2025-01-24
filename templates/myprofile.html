@@ -38,7 +38,20 @@
             {%endif%}
           </div>
           <div class="card-body p-4 text-black {{theme}}">
+            <div class="mb-5  text-body {{theme}}">
+              <p class="lead fw-normal mb-1">Обо мне</p>
+              <div class="p-4 bg-body-tertiary">
+                <p class="font-italic mb-1">Username: {{username}}</p>
+                {%if email != ""%}
+                <p class="font-italic mb-1">Email: {{email}}</p>
+                {%endif%}
+                {%if tel != ""%}
+                <p class="font-italic mb-1">Phone number: {{phone}}</p>
+                {%endif%}
+              </div>
+            </div>
             {%if courses|length != 0 or mycourses|length != 0%}
+            <hr>
             <div class="courses {{theme}}">
               {%if courses|length != 0%}
               <h4>Мои курсы (я учитель)</h4>
@@ -53,6 +66,7 @@
                 </div>
               </div>
               {%endfor%}
+              <hr>
               {%endif%}
               {%if mycourses|length != 0%}
             <div class="courses {{theme}}">
@@ -60,8 +74,8 @@
               {%for c in mycourses%}
               <div class="card mb-3 {{theme}}"  style="width: 18rem;">
                 <div class="card-body" style="">
-                  <h5 class="card-title">id : {{c[0]}}</h5>
-                  <p class="card-text">{{c[1]}}</p>
+                  <h5 class="card-title">{{c[2]}}</h5>
+                  <p class="card-text">{{c[3]}}</p>
                     <div class="btn-group">
                         <a href="/course/{{c[0]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
                     </div>
@@ -69,10 +83,14 @@
               </div>
               {%endfor%}
             </div>
+              <hr>
               {%endif%}
             </div>
+
             {%endif%}
+            <a href="" class="btn btn-primary tea">Добавить курс</a>
             {%if works|length != 0 or myworks|length != 0%}
+            <hr>
             <div class="works {{theme}}">
               {%if works|length != 0%}
               <h4>Мои работы (я составитель)</h4>
@@ -86,6 +104,7 @@
                 </div>
               </div>
               {%endfor%}
+              <hr>
               {%endif%}
               {%if myworks|length != 0%}
             <div class="courses {{theme}}">
@@ -102,10 +121,16 @@
               </div>
               {%endfor%}
             </div>
+
               {%endif%}
             </div>
+
             {%endif%}
+            <hr>
+            <a href="" class="btn btn-primary tea">Добавить работу</a>
+
             {%if groups|length != 0 or mygroups|length != 0%}
+            <hr>
             <div class="groups {{theme}}">
               {%if groups|length != 0%}
               <h4>Мои группы (я учитель)</h4>
@@ -119,6 +144,7 @@
                 </div>
               </div>
               {%endfor%}
+              <hr>
               {%endif%}
               {%if mygroups|length != 0%}
             <div class="courses {{theme}}">
@@ -135,20 +161,12 @@
               {%endfor%}
             </div>
               {%endif%}
+
             </div>
             {%endif%}
-            <div class="mb-5  text-body {{theme}}">
-              <p class="lead fw-normal mb-1">Обо мне</p>
-              <div class="p-4 bg-body-tertiary">
-                <p class="font-italic mb-1">Username: {{username}}</p>
-                {%if email != ""%}
-                <p class="font-italic mb-1">Email: {{email}}</p>
-                {%endif%}
-                {%if tel != ""%}
-                <p class="font-italic mb-1">Phone number: {{phone}}</p>
-                {%endif%}
-              </div>
-            </div>
+            <hr>
+            <a href="" class="btn btn-primary tea">Добавить группу</a>
+            <hr>
             {%if res|length != 0%}
             <div class="res {{theme}}" style="height:fit-content">
               <h5>Результаты</h5>

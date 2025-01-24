@@ -129,4 +129,7 @@ def get_my(id):
     print(b)
     print(c)
     print(d)
+    print(e)
+    print(f)
+    print(g)
     return r
