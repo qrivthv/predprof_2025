@@ -4,7 +4,7 @@
   <main class="{{theme}}">
       <div class="container {{theme}}">
           <details>
-              <summary class="toggle"><h4>Фильтры:</h4></summary>
+              <summary class="toggle"><span>Фильтры:</span></summary>
               <form method="POST">
                 <h5>За последние:</h5>
                   <div class="row g-0">
@@ -41,9 +41,11 @@
                   </div>
                               <div class="my-3 col-4">
                 <div class="">
-                  <label class="form-check-label" for="txt" style="width: 100%">Возможно, содержит</label>
+                  <label class="form-check-label" for="txt" style="width: 100%" value="{{txt}}">Возможно, содержит</label>
                   <input type="text" id="txt" name="txt" class="form-control" style="width: fit-content" value="{{txt}}">
                 </div>
+
+                  <a class="btn btn-secondary tea" href="/forum">Сбросить</a>
               </div>
                   <button type="submit" class="btn btn-primary" style="width:fit-content">Применить</button>
               </form>

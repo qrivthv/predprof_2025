@@ -6,83 +6,12 @@ from calendar import *
 # from flask_login import UserMixin
 import json
 import _sqlite3
-
+from sql_func import *
 app = Flask(__name__)
 
 theme = 'dark'
 currentuser = {}
 loggedin = False
-
-def get_data(what):
-    c = _sqlite3.connect('db.db')
-    curs = c.cursor()
-    curs.execute(what)
-    line = curs.fetchall()
-    c.commit()
-    c.close()
-    return line
-
-
-def get_user(username=None, email = None):
-    c = _sqlite3.connect('db.db')
-    curs = c.cursor()
-    what = f"select * from Student where username = '{username}'"
-    what1 = f"select * from Student where username = '{email}'"
-    curs.execute(what)
-    line = curs.fetchall()
-    c.commit()
-    c.close()
-    c = _sqlite3.connect('db.db')
-    curs = c.cursor()
-    curs.execute(what1)
-    line2 = curs.fetchall()
-    c.commit()
-    c.close()
-    if len(line) == 1:
-        line = line[0]
-    if len(line2) == 1:
-        line2 = line2[0]
-    if len(line) == 0 and len(line2) == 0:
-        return 'No such user'
-    x = line
-    if len(line) == 0:
-        x = line2
-    user = {
-        "username": x[1],
-        "email": x[2].replace('?', '@'),
-        "phone": x[3],
-        "password": x[4],
-        "name": x[5],
-        "surname": x[6],
-        "grade": x[7],
-        "color": x[9],
-        "bright": x[10]
-    }
-    r = []
-    k = 0
-    n = 0
-    for i in x[8]:
-        if i == "$":
-            r.append([n, k])
-            k = 0
-        elif i == '!':
-            n = k
-            k = 0
-        else:
-            k *= 10
-            k += int(i)
-    user['results'] = r
-    return user
-
-
-def insrt(data, what):
-    c = _sqlite3.connect('db.db')
-    curs = c.cursor()
-    curs.execute(what, data)
-    line = curs.fetchall()
-    c.commit()
-    c.close()
-    return
 
 
 def gn_user_check(user):
@@ -126,7 +55,6 @@ def myprofile():
     global loggedin
     global currentuser
     if loggedin:
-        print(currentuser)
         return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
     else:
         return login()
@@ -154,16 +82,11 @@ def login():
         cu = currentuser
         if u != 'No such user':
             if u != ():
-                print(u)
-                print(request.form["password"].strip())
                 if u['password'] == request.form["password"].strip():
                     #global currentuser
                     currentuser = u
                     #global loggedin
                     loggedin = True
-
-                    print(currentuser)
-                    print(loggedin)
                     return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
         return render_template('login.html', message="Неверный логил или пароль", theme=theme, **currentuser, loggedin=loggedin)
 
@@ -178,14 +101,12 @@ def register():
         new_user = {}
         for k in request.form:
             new_user[k] = request.form[k].strip()
-            print(k, request.form[k].strip())
         new_user["password"] = request.form['password'].strip()
         new_user["passwordcheck"] = request.form['passwordcheck'].strip()
         if new_user["passwordcheck"] != new_user["password"]:
             return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, пароли не совпадают", theme=theme, **currentuser)
         new_user = gn_user_check(new_user)
         email = str(new_user["email"]).replace('@', '?')
-        print(email)
         r = int(new_user["colour"][1:3], 16)
         g = int(new_user["colour"][3:5], 16)
         b = int(new_user["colour"][5:7], 16)
@@ -298,7 +219,6 @@ def test(num):
                 results[i][1] = ""
                 results[i][2] = "wrong"
         show = str(request.form.get("show")) != "None"
-        print(results, show)
         return render_template('results.html', tasks=x, res=results, show=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
 
 
@@ -326,7 +246,6 @@ def add():
         creator = request.form['author']
         s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
         a = [statement, answer, typ, creator, solution, diff]
-        print(a)
         insrt(a, s)
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
@@ -370,13 +289,14 @@ def forum():
         tm = timegm(gmtime())
         b =[]
         for i in a:
-            o = {}
+            o = {} #фильтрация по времени
             for key in request.form:
                 if key != 'txt':
                     if request.form[key] == '':
                         o[key] = 0
                     else:
                         o[key] = int(request.form[key])
+            txt = request.form['txt']
             delta = 60*o['min'] + 3600*o['hour'] + 86400 * o['day'] + 2629743 * o['month'] + 31556926 * o['year']
             if delta == 0:
                 delta = 1737647353
@@ -386,9 +306,9 @@ def forum():
             ss = asctime(ss)
             ss = str(ss)
             k[3] = ss[4:16] + ss[19:]
-            if dd + delta >= tm and dd <= tm:
+            if dd + delta >= tm and dd <= tm and txt != '' and txt in i[2]:
                 b.append(k)
-        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin)
+        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin, txt=txt)
     return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
 
 
@@ -402,7 +322,6 @@ def ans(qid):
         text = request.form['answer']
         s = f'insert into Answers (QID, Author, Statement, date) values (?, ?, ?, ?)'
         a = [qid, user, text, tm]
-        print(a)
         insrt(a, s)
     s2 = f'select * from Answers where QID = {qid} order by date desc'
     x2 = get_data(s2)
@@ -440,7 +359,6 @@ def ask():
         s = f'select QID from Questions where date = {tm}'
         x = get_data(s)
         x = x[0]
-        print(user, question, tm)
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
     return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
 
