@@ -35,6 +35,7 @@ def get_user(username=None, email = None):
     if len(line) == 0:
         x = line2
     user = {
+        "StudentID": x[0],
         "username": x[1],
         "email": x[2].replace('?', '@'),
         "phone": x[3],
@@ -48,16 +49,19 @@ def get_user(username=None, email = None):
     r = []
     k = 0
     n = 0
-    for i in x[8]:
-        if i == "$":
-            r.append([n, k])
-            k = 0
-        elif i == '!':
-            n = k
-            k = 0
-        else:
-            k *= 10
-            k += int(i)
+    if len(x) == 0:
+        r = []
+    else:
+        for i in x[8]:
+            if i == "$":
+                r.append([n, k])
+                k = 0
+            elif i == '!':
+                n = k
+                k = 0
+            else:
+                k *= 10
+                k += int(i)
     user['results'] = r
     return user
 
