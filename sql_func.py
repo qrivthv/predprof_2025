@@ -101,7 +101,31 @@ def get_my(id):
     for i in a:
         k = list(i)
         d.append(k)
-    r = [b, c, d]
+    for i in a:
+        k = list(i)
+        d.append(k)
+    s = f'select * from CourseStud join Courses on CourseStud.CID = Courses.CID where StudID={id}'
+    a = get_data(s)
+    e = []
+    for i in a:
+        k = list(i)
+        temp = []
+        k = k[2:]
+        e.append(k)
+    s = f'select * from Groups join GroupStud on Groups.GroupID = GroupStud.GroupID where GroupStud.StudID = {id}'
+    a = get_data(s)
+    f = []
+    for i in a:
+        k = list(i)
+        k = k[:-1]
+        f.append(k)
+    s = f'select WorkGroup.WorkID, WorkName from Work join WorkGroup on Work.WorkID = WorkGroup.WorkID join GroupStud on WorkGroup.GroupID = GroupStud.GroupID where StudID = {id}'
+    a = get_data(s)
+    g = []
+    for i in a:
+        k = list(i)
+        g.append(k)
+    r = [b, c, d, e, f, g]
     print(b)
     print(c)
     print(d)

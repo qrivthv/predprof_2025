@@ -58,7 +58,7 @@ def myprofile():
         print(currentuser)
         print(loggedin)
         x = get_my(currentuser['StudentID'])
-        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2])
+        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
     else:
         return login()
 
