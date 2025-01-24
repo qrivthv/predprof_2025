@@ -12,15 +12,14 @@
 </head>
 <body id="all" class="{{theme}}">
     <header class="sticky-top" style="position: fixed; width: 100vw; ">
-    <nav class="nav">
+    <nav class="nav d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a class="nav-link active" aria-current="page" href="/">Ботать</a>
       <a class="nav-link" href="/courses">Курсы</a>
       <a class="nav-link" href="/forum">Форум</a>
       <a class="nav-link" href="/settings">Настройки</a>
-      <div class="btn-group" style="margin-right: 0">
           <div class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Я
+          <a class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="{{url_for('static', filename='img/profile.png')}}" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu {{theme}}">
               {%if loggedin%}
@@ -33,7 +32,7 @@
               <li><a class="dropdown-item nav-link {{theme}}" href="/add">Добавить задачу</a> </li>
 
           </ul>
-        </div>
+
 
     </div>
 
