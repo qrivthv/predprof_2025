@@ -284,7 +284,7 @@ def forum():
             k[3] = ss[4:16] + ss[19:]
             if dd + 1737647353 >= tm and dd <= tm:
                 b.append(k)
-        return render_template('forum.html', category="Недавние", questions=b, theme=theme)
+        return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
         tm = timegm(gmtime())
         b =[]
@@ -372,7 +372,7 @@ def bank():
         for i in a:
             k = list(i)
             b.append(k)
-        return render_template('bank.html', category="Все", tasks=b, theme=theme)
+        return render_template('bank.html', category="Все", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
         b = []
         for i in a:
@@ -381,8 +381,17 @@ def bank():
                 if (request.form['diff'] != '' and k[6] == request.form['diff']) or request.form['diff'] == '':
                     if (request.form['txt'] != '' and request.form['txt'] in k[1]) or request.form['txt'] != '':
                         b.append(k)
-        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme)
+        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
 
+
+@app.route('/add_group', methods=['POST', 'GET'])
+def add_group():
+    if request.method == 'GET':
+        return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
+    if request.method == 'POST':
+        name = request.form['name']
+        students = request.form['stud']
+        teachers = request.form['teach']
 
 
 if __name__ == "__main__":
