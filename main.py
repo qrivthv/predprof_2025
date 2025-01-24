@@ -362,6 +362,28 @@ def ask():
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
     return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
 
+@app.route('/bank')
+def bank():
+    s = f"select * from Problem order by ProblemID, Diff "
+    a = get_data(s)
+    b = []
+    tm = timegm(gmtime())
+    if request.method == 'GET':
+        for i in a:
+            k = list(i)
+            b.append(k)
+        return render_template('bank.html', category="Все", tasks=b, theme=theme)
+    elif request.method == 'POST':
+        b = []
+        for i in a:
+            k = list(i)
+            if (request.form['kim'] != '' and k[3] == request.form['kim']) or request.form['kim'] == '':
+                if (request.form['diff'] != '' and k[6] == request.form['diff']) or request.form['diff'] == '':
+                    if (request.form['txt'] != '' and request.form['txt'] in k[1]) or request.form['txt'] != '':
+                        b.append(k)
+        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme)
+
+
 
 if __name__ == "__main__":
     app.run(port=8080, host="127.0.0.1")
