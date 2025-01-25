@@ -41,7 +41,7 @@ def logout():
     global currentu
     loggedin = False
     currentu = []
-    return index()
+    return redirect(url_for("index"))
 
 
 @app.route('/')
@@ -60,7 +60,7 @@ def myprofile():
         x = get_my(currentuser['StudentID'])
         return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
     else:
-        return login()
+        return redirect(url_for("login"))
 
 
 @app.route('/profile')
@@ -75,7 +75,7 @@ def login():
     global loggedin
     global currentuser
     if loggedin:
-        return redirect('/my_profile')
+        return redirect('myprofile')
     if request.method == 'GET':
         return render_template('login.html', message=' ',theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
@@ -88,7 +88,7 @@ def login():
                 if u['password'] == request.form["password"].strip():
                     currentuser = u
                     loggedin = True
-                    return render_template('tea.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme)
+                    return  redirect(url_for("myprofile"))
         return render_template('login.html', message="Неверный логил или пароль", theme=theme, **currentuser, loggedin=loggedin)
 
 
@@ -96,7 +96,7 @@ def login():
 def register():
     if request.method == 'GET':
         if loggedin:
-            return redirect('/my_profile')
+            return redirect('my_profile')
         return render_template("register.html", s="Зарегистрироваться", loggedin=loggedin, message='', theme=theme, **currentuser)
     elif request.method == 'POST':
         new_user = {}
@@ -136,7 +136,7 @@ def register():
         rr = "0!0$"*27
         a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"], new_user["surname"], int(new_user["grade"]), rr, new_user["colour"], new_user["bright"], 0)
         insrt(a, s)
-        return redirect('/login')
+        return redirect('login')
 
 
 @app.route('/edit', methods=['POST', 'GET'])
@@ -247,17 +247,17 @@ def add():
         s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
         a = [statement, answer, typ, creator, solution, diff]
         insrt(a, s)
-        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
+        return redirect(url_for('bank'))
 
 
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
     global theme
     if request.method == 'GET':
-        return render_template('settings.html', theme=theme, **currentuser, loggedin=loggedin)
+        return redirect(url_for('index'))
     if request.method == 'POST':
         theme = request.form['changetheme']
-        return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
+        return redirect(url_for('index'))
 
 
 @app.route('/courses')
@@ -273,7 +273,6 @@ def forum():
     a = get_data(s)
     b = []
     tm = timegm(gmtime())
-
     if request.method == 'GET':
         for i in a:
             k = list(i)
@@ -336,7 +335,7 @@ def ans(qid):
 
 @app.route('/course/<int:id>/<int:num>')
 def course(id, num):
-    s = f'select Courses.CID, CName, Type, Link from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
+    s = f'select Courses.CID, CName, Type, Link, text, lang, code from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
     a = get_data(s)
     if len(a) == 1:
         a = a[0]
@@ -361,6 +360,7 @@ def ask():
         x = x[0]
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
     return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
+
 
 @app.route('/bank')
 def bank():
@@ -418,7 +418,7 @@ def add_group():
             for user in teachers:
                 if ',' in user:
                     user = user.replace(',', '')
-                s = f'select StudentID from Users where username={user}'
+                s = f'select StudentID from Users where username="{user}"'
                 a = get_data(s)
                 a = a[0]
                 if type(a) is not int:
@@ -459,7 +459,8 @@ def dashboard(id):
     students = get_data(s)
     s = f'select Work.WorkID, CreatorID, WorkName from WorkGroup join Work on WorkGroup.WorkID = Work.WorkID where GroupID = {id}'
     works = get_data(s)
-    return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName, teachers=teachers, students=students, works=works)
+    return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName, teachers=teachers, students=students, works=works, id=id)
+
 
 @app.route('/addTest', methods=['POST', 'GET'])
 def addTest():
@@ -502,6 +503,50 @@ def addTest():
 
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
 
+
+@app.route('/add_gr/<int:id>', methods=['POST', 'GET'])
+def add1(id):
+    if request.method == 'GET':
+        return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
+    if request.method == 'POST':
+        print(-1)
+        name = request.form['name']
+        students = request.form['stud'].split()
+        teachers = request.form['teach'].split()
+        if teachers != []:
+            for user in teachers:
+                if ',' in user:
+                    user = user.replace(',', '')
+                s = f'select StudentID from Users where username="{user}"'
+                a = get_data(s)
+                a = a[0]
+                if type(a) is not int:
+                    id1 = a[0]
+                else:
+                    id1 = a
+                s = f'select GroupID, CreatorID from GroupTeacher where CreatorID={id1} and GroupID={id}'
+                a = get_data(s)
+                if a == []:
+                    s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
+                    a = [id, id1]
+                    insrt(a, s)
+        for user in students:
+            if ',' in user:
+                user = user.replace(',', '')
+            s = f'select StudentID from Users where username="{user}"'
+            a = get_data(s)
+            a = a[0]
+            if type(a) is not int:
+                id1 = a[0]
+            else:
+                id1 = a
+            s = f'select GroupID, StudID from GroupStud where StudID={id1} and GroupID={id}'
+            a = get_data(s)
+            if a == []:
+                s = f'insert into GroupStud (GroupID, StudID) values (?, ?)'
+                a = [id, id1]
+                insrt(a, s)
+        return redirect(url_for('dashboard', id=id))
 
 if __name__ == "__main__":
     app.run(port=8080, host="127.0.0.1")
