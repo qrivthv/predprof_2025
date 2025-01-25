@@ -510,7 +510,6 @@ def add1(id):
         return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         print(-1)
-        name = request.form['name']
         students = request.form['stud'].split()
         teachers = request.form['teach'].split()
         if teachers != []:
