@@ -13,7 +13,7 @@
 
     <div class="container">
       <div class="width1">
-        <form class="" method="post">
+        <form class="" method="post" enctype="multipart/form-data">
           <div class="row g-3">
             <div class="col-sm-12">
               <label for="stat" class="form-label">Условие</label>
@@ -23,7 +23,15 @@
               </div>
             </div>
             <div class="col-sm-12">
-              <label for="file" class="form-label">Если требуется картинка или другой файл для условия</label>
+              <label for="img1" class="form-label">Если требуется картинка для условия</label>
+                <input type="file" name="img1" class="form-control" id="img1" placeholder="">
+            </div>
+            <div class="col-sm-12">
+              <label for="img2" class="form-label">Если требуется вторая картинка для условия</label>
+                <input type="file" name="img2" class="form-control" id="img2" placeholder="">
+            </div>
+            <div class="col-sm-12">
+              <label for="file" class="form-label">Если требуется файл для условия</label>
                 <input type="file" name="file" class="form-control" id="file" placeholder="">
             </div>
             <div class="col-4 has-validation">

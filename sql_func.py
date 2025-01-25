@@ -127,3 +127,11 @@ def get_my(id):
         g.append(k)
     r = [b, c, d, e, f, g]
     return r
+
+
+def upd(s):
+    c = _sqlite3.connect('db.db')
+    curs = c.cursor()
+    curs.execute(s)
+    c.commit()
+    c.close()

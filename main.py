@@ -244,9 +244,68 @@ def add():
         diff = request.form['diff']
         typ = int(request.form['type'])
         creator = request.form['author']
-        s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
-        a = [statement, answer, typ, creator, solution, diff]
+        filename = request.files['file'].filename
+        file = request.files['file']
+        img1name = request.files['img1'].filename
+        img1 = request.files['img1']
+        img2name = request.files['img2'].filename
+        img2 = request.files['img2']
+
+        s = f'select * from Problem where Statement="{statement}"'
+        a = get_data(s)
+        if diff == 'base':
+            diff = 1
+        elif diff == 'ke':
+            diff = 3
+        else:
+            diff = 2
+        if a != []:
+            return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin, message='Задача с таким условием уже есть :(')
+        if filename != '':
+            if_file = 1
+        else:
+            if_file = 0
+        if img1name != '':
+            if_img1 = 1
+        else:
+            if_img1 = 0
+        if img2name != '':
+            if_img2 = 1
+        else:
+            if_img2 = 0
+        s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff, file) values (?, ?, ?, ?, ?, ?, ?)'
+        a = [statement, answer, typ, creator, solution, diff, if_file]
         insrt(a, s)
+        if if_file:
+            s = f'select ProblemID from Problem where Statement="{statement}"'
+            a = get_data(s)
+            while type(a) is not int:
+                a = a[0]
+            typee = filename.split('.')[1]
+            path = 'static/files/problem' + str(a) + str(typee)
+            file.save(path)
+            s = f'update Problem set filename="{path[7:]}" where ProblemID={a}'
+            upd(s)
+        if if_img1:
+            s = f'select ProblemID from Problem where Statement="{statement}"'
+            a = get_data(s)
+            while type(a) is not int:
+                a = a[0]
+            typee = img1name.split('.')[1]
+            path = 'static/files/img1' + str(a) + str(typee)
+            img1.save(path)
+            s = f'update Problem set img1="{path[7:]}" where ProblemID={a}'
+            upd(s)
+        if img2name:
+            s = f'select ProblemID from Problem where Statement="{statement}"'
+            a = get_data(s)
+            while type(a) is not int:
+                a = a[0]
+            typee = img2name.split('.')[1]
+            path = 'static/files/img2' + str(a) + str(typee)
+            img2.save(path)
+            s = f'update Problem set img2="{path[7:]}" where ProblemID={a}'
+            upd(s)
         return redirect(url_for('bank'))
 
 
@@ -362,7 +421,7 @@ def ask():
     return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
 
 
-@app.route('/bank')
+@app.route('/bank', methods=['POST', 'GET'])
 def bank():
     s = f"select * from Problem order by ProblemID, Diff "
     a = get_data(s)
@@ -377,9 +436,12 @@ def bank():
         b = []
         for i in a:
             k = list(i)
-            if (request.form['kim'] != '' and k[3] == request.form['kim']) or request.form['kim'] == '':
-                if (request.form['diff'] != '' and k[6] == request.form['diff']) or request.form['diff'] == '':
-                    if (request.form['txt'] != '' and request.form['txt'] in k[1]) or request.form['txt'] != '':
+            kim = request.form['kim']
+            diff = request.form['diff']
+            txt = request.form['txt']
+            if (len(kim) != 0 and k[3] == int(kim)) or len(kim) == 0:
+                if (len(diff) != 0 and k[7] == int(diff)) or len(diff) == 0:
+                    if (len(txt) != 0 and txt in k[1]) or len(txt) == 0:
                         b.append(k)
         return render_template('bank.html', category="Выбранные", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
 
