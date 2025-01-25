@@ -22,6 +22,14 @@
         <br>
         <h4>Отработка задания</h4>
         <a href="/test/{{course[2]}}" class="btn btn-primary tea" style="width:fit-content; background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
+        {%if text != ''%}
+        <h4>Текстовая версия</h4>
+        <p>{{course[4]|safe}}</p>
+        {%endif%}
+        {%if text != ''%}
+        <h4>Код для задачи</h4>
+        <pre><code class="language-{{course[5]}}">{{course[6]}}</code></pre>
+        {%endif%}
     </div>
 </main>
 {%endblock%}
