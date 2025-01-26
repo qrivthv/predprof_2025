@@ -22,7 +22,10 @@
                 <div class="card-body" style="">
                   <p class="card-text">{{c[2]}}</p>
                     <div class="btn-group">
-                        <a href="/test/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                        <a href="/work/{{c[0]}}/{{id}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Написать работу</a>
+                        {%if teacher%}
+                         <a href="/work_results/{{c[0]}}/{{id}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть результаты группы</a>
+                        {%endif%}
                     </div>
                 </div>
               </div>

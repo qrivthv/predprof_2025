@@ -154,7 +154,7 @@ def get_group_result(groupid, timer=timegm(gmtime())):
     for i in a:
         students.append(i[0])
     for stud in students:
-        rr = get_user_result(stud)
+        rr = get_user_result(stud, timer)
         for i in range(27):
             res[i][0] += rr[i][0]
             res[i][1] += rr[i][1]
