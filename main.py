@@ -292,7 +292,7 @@ def add():
             while type(a) is not int:
                 a = a[0]
             typee = img1name.split('.')[1]
-            path = 'static/files/img1' + str(a) + str(typee)
+            path = 'static/files/img1' + str(a) + '.' + str(typee)
             img1.save(path)
             s = f'update Problem set img1="{path[7:]}" where ProblemID={a}'
             upd(s)
