@@ -175,10 +175,10 @@
                 <li style="height: 2.5em; margin-top: 1em">{{i}} :
                   {%if res[i - 1][1] == 0%}
                   <span class="{{theme}} wrong">{{0}}%</span>
-                  {%elif res[i - 1][0]/res[i - 1][1] <= 50%}
-                  <span class="{{theme}} wrong">{{res[i - 1][0]/res[i - 1][1]}}%</span>
+                  {%elif 100*res[i - 1][0]/res[i - 1][1] <= 50%}
+                  <span class="{{theme}} wrong">{{100*res[i - 1][0]/res[i - 1][1]}}%</span>
                   {%else%}
-                  <span class="{{theme}} right">{{res[i - 1][0]/res[i - 1][1]}}%</span>
+                  <span class="{{theme}} right">{{(100*res[i - 1][0]/res[i - 1][1])|round(1)}}%</span>
                   {%endif%}
                   <span>Всего решено: {{res[i - 1][1]}} задач</span>
                 </li>

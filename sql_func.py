@@ -1,4 +1,6 @@
 import _sqlite3
+from time import *
+from calendar import *
 
 
 def get_data(what):
@@ -9,62 +11,6 @@ def get_data(what):
     c.commit()
     c.close()
     return line
-
-
-def get_user(username=None, email = None):
-    c = _sqlite3.connect('db.db')
-    curs = c.cursor()
-    what = f"select * from Users where username = '{username}'"
-    what1 = f"select * from Users where username = '{email}'"
-    curs.execute(what)
-    line = curs.fetchall()
-    c.commit()
-    c.close()
-    c = _sqlite3.connect('db.db')
-    curs = c.cursor()
-    curs.execute(what1)
-    line2 = curs.fetchall()
-    c.commit()
-    c.close()
-    if len(line) == 1:
-        line = line[0]
-    if len(line2) == 1:
-        line2 = line2[0]
-    if len(line) == 0 and len(line2) == 0:
-        return 'No such user'
-    x = line
-    if len(line) == 0:
-        x = line2
-    user = {
-        "StudentID": x[0],
-        "username": x[1],
-        "email": x[2].replace('?', '@'),
-        "phone": x[3],
-        "password": x[4],
-        "name": x[5],
-        "surname": x[6],
-        "grade": x[7],
-        "color": x[9],
-        "bright": x[10]
-    }
-    r = []
-    k = 0
-    n = 0
-    if len(x) == 0:
-        r = []
-    else:
-        for i in x[8]:
-            if i == "$":
-                r.append([n, k])
-                k = 0
-            elif i == '!':
-                n = k
-                k = 0
-            else:
-                k *= 10
-                k += int(i)
-    user['results'] = r
-    return user
 
 
 def insrt(data, what):
@@ -137,9 +83,119 @@ def upd(s):
     c.commit()
     c.close()
 
-def get_group_result(groupid):
-    pass
+
+def get_user_result_work(userid, groupid, workid, timer=timegm(gmtime())):
+    template = ['name', 'surname']
+    s = f'select SSurname, SName from Users where StudentID = {userid}'
+    a = get_data(s)
+    template = [a[0][0], a[0][1]]
+    s = f'select count(ProblemID) from WorkProblem where WorkID = {workid}'
+    a = get_data(s)
+    while type(a) is not int:
+        a = a[0]
+    n = a
+    cur_time = timegm(gmtime())
+    s = f'''select distinct ProblemID, StudentID, result
+        from WorkResult
+        where date >= {cur_time - timer} and GroupID={groupid} and WorkID={workid} and StudentID="{userid}" 
+        order by ProblemID desc, date desc'''
+    a = get_data(s)
+    total = 0
+    for i in a:
+        template.append(i[2])
+        total += i[2]
+    template.append(total)
+    template.append(n)
+    return template
 
 
-def get_user_result(userid):
-    pass
+def get_user_result(userid, timer=timegm(gmtime())):
+    cur_time = timegm(gmtime())
+    res = []
+    for i in range(1, 28):
+        s = f'select count(result) from WorkResult join Problem on Problem.ProblemID = WorkResult.ProblemID where StudentID={userid} and Type={i} and date >= {cur_time - timer}'
+        a = get_data(s)
+        n_i = a[0][0]
+        s = f'select count(result) from WorkResult join Problem on Problem.ProblemID = WorkResult.ProblemID where StudentID={userid} and Type={i} and date >= {cur_time - timer} and result=1'
+        a = get_data(s)
+        r_i = a[0][0]
+        res.append([r_i, n_i])
+    return res
+
+
+def get_group_result_work(groupid, workid, timer=timegm(gmtime())):
+    cur_time = timegm(gmtime())
+    title = ['Имя', 'Фамилия']
+    s = f'select ProblemID from WorkProblem where WorkID = {workid} order by ProblemID desc'
+    a = get_data(s)
+    for i in a:
+        title.append(i[0])
+    n = len(title) - 2
+    title.append('Всего верных')
+    title.append('Всего задач')
+    res = [title]
+    s = f'select distinct StudentID from WorkResult where WorkID={workid} and GroupID={groupid} and date >= {cur_time - timer}'
+    a = get_data(s)
+    students = []
+    for i in a:
+        students.append(i[0])
+    for stud in students:
+        res.append(get_user_result_work(stud, groupid, workid, timer))
+    return res
+
+
+def get_group_result(groupid, timer=timegm(gmtime())):
+    res = []
+    for i in range(27):
+        res.append([0, 0])
+    s = f'select distinct StudID from GroupStud where GroupID={groupid}'
+    a = get_data(s)
+    students = []
+    for i in a:
+        students.append(i[0])
+    for stud in students:
+        rr = get_user_result(stud)
+        for i in range(27):
+            res[i][0] += rr[i][0]
+            res[i][1] += rr[i][1]
+    return res
+
+
+def get_user(username=None, email = None):
+    c = _sqlite3.connect('db.db')
+    curs = c.cursor()
+    what = f"select * from Users where username = '{username}'"
+    what1 = f"select * from Users where username = '{email}'"
+    curs.execute(what)
+    line = curs.fetchall()
+    c.commit()
+    c.close()
+    c = _sqlite3.connect('db.db')
+    curs = c.cursor()
+    curs.execute(what1)
+    line2 = curs.fetchall()
+    c.commit()
+    c.close()
+    if len(line) == 1:
+        line = line[0]
+    if len(line2) == 1:
+        line2 = line2[0]
+    if len(line) == 0 and len(line2) == 0:
+        return 'No such user'
+    x = line
+    if len(line) == 0:
+        x = line2
+    user = {
+        "StudentID": x[0],
+        "username": x[1],
+        "email": x[2].replace('?', '@'),
+        "phone": x[3],
+        "password": x[4],
+        "name": x[5],
+        "surname": x[6],
+        "grade": x[7],
+        "color": x[9],
+        "bright": x[10]
+    }
+    user['results'] = get_user_result(user['StudentID'])
+    return user
