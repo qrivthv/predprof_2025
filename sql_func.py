@@ -1,5 +1,6 @@
 import _sqlite3
 
+
 def get_data(what):
     c = _sqlite3.connect('db.db')
     curs = c.cursor()
@@ -127,3 +128,18 @@ def get_my(id):
         g.append(k)
     r = [b, c, d, e, f, g]
     return r
+
+
+def upd(s):
+    c = _sqlite3.connect('db.db')
+    curs = c.cursor()
+    curs.execute(s)
+    c.commit()
+    c.close()
+
+def get_group_result(groupid):
+    pass
+
+
+def get_user_result(userid):
+    pass

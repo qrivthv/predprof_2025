@@ -10,14 +10,14 @@
                   <div class="row g-0">
                 <div class="my-3 col-4">
                 <div class="">
-                  <label class="form-check-label" for="kim" style="width: 100%">Минут</label>
-                  <input type="number" id="kim" name="kim" class="form-control" style="width: fit-content" value="{{min}}">
+                  <label class="form-check-label" for="kim" style="width: 100%">Номер в КИМ (от 1 до 27)</label>
+                  <input type="number" id="kim" name="kim" class="form-control" style="width: fit-content" value="{{kim}}">
                 </div>
               </div>
                   <div class="my-3 col-4">
                 <div class="">
-                  <label class="form-check-label" for="diff" style="width: 100%">Часов</label>
-                  <input type="number" id="diff" name="diff" class="form-control" style="width: fit-content" value="{{hour}}">
+                  <label class="form-check-label" for="diff" style="width: 100%">Сложность (1 - база, 3 - сюрприз от Кирилла Евгеньевича)</label>
+                  <input type="number" id="diff" name="diff" class="form-control" style="width: fit-content" value="{{diff}}">
                 </div>
               </div>
                               <div class="my-3 col-4">
@@ -29,6 +29,7 @@
                   <a class="btn btn-secondary tea" href="/forum">Сбросить</a>
               </div>
                   <button type="submit" class="btn btn-primary" style="width:fit-content">Применить</button>
+                  </div>
               </form>
             </details>
 
@@ -49,9 +50,20 @@
                     <p>Сложность: решаемо</p>
                     {%endif%}
                     <label for="task{{i}}" class="form-label">{{tasks[i][1]}}</label>
+                    {%if tasks[i][10] != None%}
+                    <div class="d-flex">
+                        <img src="{{url_for('static', filename=tasks[i][10])}}" style="max-width: 20vh; height: auto; margin-bottom:1em;">
+                        {%if tasks[i][11] != None%}
+                        <img src="{{url_for('static', filename=tasks[i][11])}}" style="max-width: 15vh; height: auto; margin-left:1em; margin-bottom:1em;">
+                        {%endif%}
+                    </div>
+                    {%endif%}
                     <input type="text" name="task{{i}}" class="form-control" id="task{{i}}" placeholder="" value="">
                     <div ><output id="val{{i}}"></output></div>
-
+                    {%if tasks[i][8]%}
+                    <h5>Файлы для скачивания:</h5>
+                    <a href="{{url_for('static', filename=tasks[i][9])}}" download target="_blank" style="text-decorations: none">{{tasks[i][9][6:]}}</a>
+                    {%endif%}
                     <div>
                         <details>
                             <summary>Показать ответ</summary>
