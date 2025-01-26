@@ -197,29 +197,78 @@ def test(num):
     x = get_data(s)
     o = len(x)
     if request.method == 'GET':
-        return render_template('test.html', tasks=x, theme=theme)
+        return render_template('test.html', tasks=x, theme=theme, loggedin=loggedin, currentuser=currentuser)
     if request.method == 'POST':
+        cur_time = timegm(gmtime())
         results = []
         rcount = 0
         for i in range(o):
             results.append([0, 0, 0])
         for i in range(o):
             name = f'{x[i][0]}'
+            s = 'insert into WorkResults (ProblemID, WorkID, GroupID, date, result) values (? ? ? ? ?)'
+            res = [int(name), 0, 0, cur_time]
             if request.form[name].strip() != '':
                 ans = int(request.form[name].strip())
                 results[i][1] = ans
                 results[i][0] = i
                 if ans == int(x[i][2]):
-                    results[i][2] = "right"
+                    results[i][2] = 1
+                    res.append(1)
                     rcount += 1
                 else:
-                    results[i][2] = "wrong"
+                    results[i][2] = 0
+                    res.append(0)
             else:
+                res.append(0)
                 results[i][0] = i
                 results[i][1] = ""
-                results[i][2] = "wrong"
+                results[i][2] = 0
+            insrt(res, s)
         show = str(request.form.get("show")) != "None"
-        return render_template('results.html', tasks=x, res=results, show=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
+        return render_template('results.html', tasks=x, res=results,  showAns=show, showScore=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
+
+
+@app.route('/work/<int:workid>/<int:groupid>', methods=['POST', 'GET'])
+def work(workid, groupid):
+    s = f'select ShowAns, ShowScore from WorkGroup where WorkID={workid} and GroupID={groupid}'
+    dt = get_data(s)
+    dt = dt[0]
+    s = f'''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, file, filename, img1, img2
+        from Problem join WorkProblem on Problem.ProblemID = WorkProblem.ProblemID where WorkID = {workid}'''
+    tasks = get_data(s)
+    o = len(tasks)
+    if request.method == "GET":
+        return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser)
+    elif request.method == 'POST':
+        cur_time = timegm(gmtime())
+        results = []
+        rcount = 0
+        for i in range(o):
+            results.append([0, 0, 0])
+        for i in range(o):
+            name = f'{tasks[i][0]}'
+            s = 'insert into WorkResults (ProblemID, WorkID, GroupID, date, result) values (? ? ? ? ?)'
+            res = [int(name), workid, groupid, cur_time]
+            if request.form[name].strip() != '':
+                ans = int(request.form[name].strip())
+                results[i][1] = ans
+                results[i][0] = i
+                if ans == int(tasks[i][2]):
+                    results[i][2] = 1
+                    res.append(1)
+                    rcount += 1
+                else:
+                    results[i][2] = 0
+                    res.append(0)
+            else:
+                res.append(0)
+                results[i][0] = i
+                results[i][1] = ""
+                results[i][2] = 0
+            insrt(res, s)
+            return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
+                               **currentuser, loggedin=loggedin)
 
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
