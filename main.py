@@ -50,15 +50,24 @@ def index():
     return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
 
 
-@app.route('/my_profile')
+@app.route('/my_profile', methods=['POST', 'GET'])
 def myprofile():
     global loggedin
     global currentuser
     if loggedin:
-        print(currentuser)
-        print(loggedin)
-        x = get_my(currentuser['StudentID'])
-        return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
+        if request.method =='GET':
+            x = get_my(currentuser['StudentID'])
+            return render_template('myprofile.html', res=currentuser['results'], **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
+        if request.method=='POST':
+            x = get_my(currentuser['StudentID'])
+            o = {}  # фильтрация по времени
+            for key in request.form:
+                if request.form[key] == '':
+                    o[key] = 0
+                else:
+                    o[key] = int(request.form[key])
+            timer = 60 * o['min'] + 3600 * o['hour'] + 86400 * o['day'] + 2629743 * o['month'] + 31556926 * o['year']
+            return render_template('myprofile.html', res=get_user_result(currentuser['StudentID'], timer), **currentuser, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
     else:
         return redirect(url_for("login"))
 
@@ -504,11 +513,9 @@ def add_group():
     if request.method == 'GET':
         return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
-        print(-1)
         name = request.form['name']
         students = request.form['stud'].split()
         teachers = request.form['teach'].split()
-        print(0)
         s = f'select GroupID from Groups where GroupName = "{name}"'
         a = get_data(s)
         if a !=[]:
@@ -516,7 +523,6 @@ def add_group():
         s = f'insert into Groups (GroupName) values (?)'
         a = [name]
         insrt(a, s)
-        print(1)
         s = f'select GroupID from Groups where GroupName = "{name}"'
         a = get_data(s)
         a = a[0]
@@ -526,9 +532,7 @@ def add_group():
             id = a
         s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
         a = [id, currentuser['StudentID']]
-        print(a)
         insrt(a, s)
-        print(1)
         if teachers != []:
             for user in teachers:
                 if ',' in user:
@@ -616,11 +620,9 @@ def addTest():
         arr = []
         for i in x:
             arr.append(int(i))
-        print(arr)
         for i in arr:
             s1 = f'insert into WorkProblem (WorkID, ProblemID) values (?, ?)'
             a1 = [wID, i]
-            print(1)
             insrt(a1, s1)
 
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
@@ -631,7 +633,6 @@ def add1(id):
     if request.method == 'GET':
         return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
-        print(-1)
         students = request.form['stud'].split()
         teachers = request.form['teach'].split()
         if teachers != []:
@@ -684,13 +685,11 @@ def work_result(workid, groupid):
         while type(a) is not str:
             a = a[0]
         work_name = a
-        print(work_name)
         s = f'select GroupName from Groups where GroupID = {groupid}'
         a = get_data(s)
         while type(a) is not str:
             a = a[0]
         group_name = a
-        print(group_name)
         return render_template('work_results.html',  theme=theme, **currentuser, loggedin=loggedin, group_name=group_name, work_name=work_name, work_results=results)
     else:
         #return redirect(url_for('restricted'))
