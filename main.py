@@ -40,7 +40,7 @@ def logout():
     global loggedin
     global currentu
     loggedin = False
-    currentu = []
+    currentu = {}
     return redirect(url_for("index"))
 
 
@@ -215,25 +215,40 @@ def test(num):
             results.append([0, 0, 0])
         for i in range(o):
             name = f'{x[i][0]}'
-            s = 'insert into WorkResult (ProblemID, WorkID, GroupID, date, result) values (?, ?, ?, ?, ?)'
-            res = [int(name), 0, 0, cur_time]
-            if request.form[name].strip() != '':
-                ans = int(request.form[name].strip())
-                results[i][1] = ans
-                results[i][0] = i
-                if ans == int(x[i][2]):
-                    results[i][2] = 1
-                    res.append(1)
-                    rcount += 1
+            if loggedin:
+                s = 'insert into WorkResult (ProblemID, WorkID, GroupID, StudentID, date, result) values (?, ?, ?, ?, ?, ?)'
+                res = [int(name), 0, 0, currentuser['StudentID'], cur_time]
+                if request.form[name].strip() != '':
+                    ans = int(request.form[name].strip())
+                    results[i][1] = ans
+                    results[i][0] = i
+                    if ans == int(x[i][2]):
+                        results[i][2] = 1
+                        res.append(1)
+                        rcount += 1
+                    else:
+                        results[i][2] = 0
+                        res.append(0)
                 else:
-                    results[i][2] = 0
                     res.append(0)
+                    results[i][0] = i
+                    results[i][1] = ""
+                    results[i][2] = 0
+                insrt(res, s)
             else:
-                res.append(0)
-                results[i][0] = i
-                results[i][1] = ""
-                results[i][2] = 0
-            insrt(res, s)
+                if request.form[name].strip() != '':
+                    ans = int(request.form[name].strip())
+                    results[i][1] = ans
+                    results[i][0] = i
+                    if ans == int(x[i][2]):
+                        results[i][2] = 1
+                        rcount += 1
+                    else:
+                        results[i][2] = 0
+                else:
+                    results[i][0] = i
+                    results[i][1] = ""
+                    results[i][2] = 0
         show = str(request.form.get("show")) != "None"
         return render_template('results.html', tasks=x, res=results,  showAns=show, showScore=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
 
@@ -356,13 +371,13 @@ def add():
             img1.save(path)
             s = f'update Problem set img1="{path[7:]}" where ProblemID={a}'
             upd(s)
-        if img2name:
+        if if_img2:
             s = f'select ProblemID from Problem where Statement="{statement}"'
             a = get_data(s)
             while type(a) is not int:
                 a = a[0]
             typee = img2name.split('.')[1]
-            path = 'static/files/img2' + str(a) + str(typee)
+            path = 'static/files/img2' + str(a) + '.' + str(typee)
             img2.save(path)
             s = f'update Problem set img2="{path[7:]}" where ProblemID={a}'
             upd(s)
@@ -483,7 +498,7 @@ def ask():
 
 @app.route('/bank', methods=['POST', 'GET'])
 def bank():
-    s = f"select * from Problem order by ProblemID, Diff "
+    s = f"select * from Problem order by ProblemID desc, Diff "
     a = get_data(s)
     b = []
     tm = timegm(gmtime())

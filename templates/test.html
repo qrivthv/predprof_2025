@@ -18,7 +18,19 @@
                     <p>Сложность: решаемо</p>
                     {%endif%}
                     <label for="{{task[0]}}" class="form-label">{{task[1]}}</label>
+                    {%if task[10] != None%}
+                    <div class="d-flex">
+                        <img src="{{url_for('static', filename=task[10])}}" style="max-width: 20vh; height: auto; margin-bottom:1em;">
+                        {%if task[11] != None%}
+                        <img src="{{url_for('static', filename=task[11])}}" style="max-width: 15vh; height: auto; margin-left:1em; margin-bottom:1em;">
+                        {%endif%}
+                    </div>
+                    {%endif%}
                     <input type="number" name="{{task[0]}}" class="form-control" id="{{task[0]}}" placeholder="" value="">
+                    {%if task[8]%}
+                    <h5>Файлы для скачивания:</h5>
+                    <a href="{{url_for('static', filename=task[9])}}" download target="_blank" style="text-decorations: none">{{task[9][6:]}}</a>
+                    {%endif%}
 
                 </div>
                   {% endfor %}
