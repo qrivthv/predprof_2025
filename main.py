@@ -266,8 +266,7 @@ def work(workid, groupid):
     tasks = get_data(s)
     o = len(tasks)
     if request.method == "GET":
-        print(tasks)
-        return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser)
+        return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser, if_work=True)
     elif request.method == 'POST':
         cur_time = timegm(gmtime())
         results = []
@@ -295,7 +294,6 @@ def work(workid, groupid):
                 results[i][1] = ""
                 results[i][2] = 0
             insrt(res, s)
-        print(results)
         currentuser['results'] = get_user_result(currentuser['StudentID'])
         return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
                            **currentuser, loggedin=loggedin)
@@ -502,7 +500,7 @@ def ask():
 
 @app.route('/bank', methods=['POST', 'GET'])
 def bank():
-    s = f"select * from Problem order by ProblemID desc, Diff "
+    s = f"select * from Problem order by Type asc, Diff "
     a = get_data(s)
     b = []
     tm = timegm(gmtime())
@@ -513,16 +511,25 @@ def bank():
         return render_template('bank.html', category="Все", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
         b = []
+
+        kim = request.form['kim']
+        diff = request.form['diff']
+        txt = request.form['txt']
         for i in a:
             k = list(i)
-            kim = request.form['kim']
-            diff = request.form['diff']
-            txt = request.form['txt']
             if (len(kim) != 0 and k[3] == int(kim)) or len(kim) == 0:
                 if (len(diff) != 0 and k[7] == int(diff)) or len(diff) == 0:
                     if (len(txt) != 0 and txt in k[1]) or len(txt) == 0:
                         b.append(k)
-        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
+        if kim != '':
+            n = int(kim)
+        else:
+            n = 0
+        if diff != '':
+            d = int(diff)
+        else:
+            d = 0
+        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme, **currentuser, loggedin=loggedin, n=n, d=d, txt=txt)
 
 
 @app.route('/add_group', methods=['POST', 'GET'])

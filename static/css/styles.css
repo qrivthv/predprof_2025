@@ -116,13 +116,13 @@ html,body {
 .btn-secondary{
     margin-top: 1em;
     font-size: medium;
-    background: #C79480;
+    background: #F2ADCC;
     border: none;
 }
 .btn-secondary:hover{
     font-size: medium;
-    background: #C79480;
-    border: #C79480 solid;
+    background: #F2ADCC;
+    border: #F2ADCC solid;
 }
 
 a:active{
