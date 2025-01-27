@@ -359,7 +359,7 @@ def add():
             while type(a) is not int:
                 a = a[0]
             typee = filename.split('.')[1]
-            path = 'static/files/problem' + str(a) + str(typee)
+            path = 'static/files/problem' + str(a) + '.' + str(typee)
             file.save(path)
             s = f'update Problem set filename="{path[7:]}" where ProblemID={a}'
             upd(s)
@@ -383,7 +383,7 @@ def add():
             img2.save(path)
             s = f'update Problem set img2="{path[7:]}" where ProblemID={a}'
             upd(s)
-        return redirect(url_for('bank'))
+        return redirect(url_for('index'))
 
 
 @app.route('/settings', methods=['POST', 'GET'])
