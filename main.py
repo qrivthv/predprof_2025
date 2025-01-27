@@ -215,7 +215,7 @@ def test(num):
             results.append([0, 0, 0])
         for i in range(o):
             name = f'{x[i][0]}'
-            s = 'insert into WorkResults (ProblemID, WorkID, GroupID, date, result) values (? ? ? ? ?)'
+            s = 'insert into WorkResult (ProblemID, WorkID, GroupID, date, result) values (?, ?, ?, ?, ?)'
             res = [int(name), 0, 0, cur_time]
             if request.form[name].strip() != '':
                 ans = int(request.form[name].strip())
@@ -259,7 +259,7 @@ def work(workid, groupid):
             results.append([0, 0, 0])
         for i in range(o):
             name = f'{tasks[i][0]}'
-            s = 'insert into WorkResults (ProblemID, WorkID, GroupID, date, result) values (? ? ? ? ?)'
+            s = 'insert into WorkResult (ProblemID, WorkID, GroupID, date, result) values (?, ?, ?, ?, ?)'
             res = [int(name), workid, groupid, cur_time]
             if request.form[name].strip() != '':
                 ans = int(request.form[name].strip())
