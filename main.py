@@ -140,7 +140,7 @@ def register():
         s = f'''
         insert into Users (username, email, phone, password, SName, SSurname,  Grade, avgresults, color, bright, adm) 
         values 
-        (?, ?, ?, ?, ?, ?,  ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?)
         '''
         rr = "0!0$"*27
         a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"], new_user["surname"], int(new_user["grade"]), rr, new_user["colour"], new_user["bright"], 0)
