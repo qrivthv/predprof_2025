@@ -235,6 +235,7 @@ def test(num):
                     results[i][1] = ""
                     results[i][2] = 0
                 insrt(res, s)
+                currentuser['results'] = get_user_result(currentuser['StudentID'])
             else:
                 if request.form[name].strip() != '':
                     ans = int(request.form[name].strip())
@@ -293,6 +294,7 @@ def work(workid, groupid):
                 results[i][1] = ""
                 results[i][2] = 0
             insrt(res, s)
+            currentuser['results'] = get_user_result(currentuser['StudentID'])
             return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
                                **currentuser, loggedin=loggedin)
 
