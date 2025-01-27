@@ -89,7 +89,7 @@
                     {%endif%}
                     <input type="text" name="task{{i}}" class="form-control" id="task{{i}}" placeholder="" value="">
                     <div ><output id="val{{i}}"></output></div>
-                    {%if tasks[i][8]%}
+                    {%if tasks[i][8] and tasks[i][9] != None%}
                     <h5>Файлы для скачивания:</h5>
                     <a href="{{url_for('static', filename=tasks[i][9])}}" download target="_blank" style="text-decorations: none">{{tasks[i][9][6:]}}</a>
                     {%endif%}
