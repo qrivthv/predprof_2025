@@ -251,7 +251,7 @@ def test(num):
                     results[i][1] = ""
                     results[i][2] = 0
         show = str(request.form.get("show")) != "None"
-        return render_template('results.html', tasks=x, res=results,  showAns=show, showScore=show, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
+        return render_template('results.html', tasks=x, res=results,  showAns=show, showScore=True, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @app.route('/work/<int:workid>/<int:groupid>', methods=['POST', 'GET'])
