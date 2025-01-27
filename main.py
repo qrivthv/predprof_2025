@@ -266,6 +266,7 @@ def work(workid, groupid):
     tasks = get_data(s)
     o = len(tasks)
     if request.method == "GET":
+        print(tasks)
         return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser)
     elif request.method == 'POST':
         cur_time = timegm(gmtime())
@@ -275,8 +276,8 @@ def work(workid, groupid):
             results.append([0, 0, 0])
         for i in range(o):
             name = f'{tasks[i][0]}'
-            s = 'insert into WorkResult (ProblemID, WorkID, GroupID, date, result) values (?, ?, ?, ?, ?)'
-            res = [int(name), workid, groupid, cur_time]
+            s = 'insert into WorkResult (ProblemID, WorkID, GroupID, StudentID, date, result) values (?, ?, ?, ?, ?, ?)'
+            res = [int(name), workid, groupid, currentuser['StudentID'], cur_time]
             if request.form[name].strip() != '':
                 ans = int(request.form[name].strip())
                 results[i][1] = ans
@@ -294,9 +295,10 @@ def work(workid, groupid):
                 results[i][1] = ""
                 results[i][2] = 0
             insrt(res, s)
-            currentuser['results'] = get_user_result(currentuser['StudentID'])
-            return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
-                               **currentuser, loggedin=loggedin)
+        print(results)
+        currentuser['results'] = get_user_result(currentuser['StudentID'])
+        return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
+                           **currentuser, loggedin=loggedin)
 
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
