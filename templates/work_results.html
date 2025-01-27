@@ -27,9 +27,9 @@
               <td scope="col">{{result[1]}}</td>
               {%for rr in result[2:-2]%}
                 {%if rr%}
-                <th scope="col" class="right">id: {{rr}}</th>
+                <th scope="col" class="right">{{rr}}</th>
                 {%else%}
-                <th scope="col" class="wrong">id: {{rr}}</th>
+                <th scope="col" class="wrong">{{rr}}</th>
                 {%endif%}
                 {%endfor%}
               <th scope="col">{{result[-2]}}</th>
