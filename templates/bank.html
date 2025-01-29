@@ -71,9 +71,9 @@
           {% for i in range(tasks|length) %}
                 <div class="col-12 {{theme}}" id="card-task{{i}}">
                     <span style="font-size: 1.1rem; font-style: italic">id {{tasks[i][0]}} - № в КИМ {{tasks[i][3]}}</span>
-                    {%if tasks[i][6] == 1%}
+                    {%if tasks[i][7] == 1%}
                     <p>Сложность: база</p>
-                    {%elif tasks[i][6] == 3%}
+                    {%elif tasks[i][7] == 3%}
                     <p>Сложность: сюрприз от Кирилла Евгеньевича</p>
                     {%else%}
                     <p>Сложность: решаемо</p>

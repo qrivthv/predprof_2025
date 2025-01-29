@@ -19,7 +19,7 @@
               <label for="firstName" class="form-label">Имя</label>
               <input type="text" name="name" class="form-control" id="firstName" placeholder="" value="{{name}}">
               <div class="invalid-feedback">
-                Valid first name is required.
+                Пожалуйста, введите имя.
               </div>
             </div>
 
@@ -27,7 +27,7 @@
               <label for="lastName" class="form-label">Фамилия</label>
               <input type="text" name="surname" class="form-control" id="lastName" placeholder="" value="{{surname}}">
               <div class="invalid-feedback">
-                Valid last name is required.
+                Пожалуйста, введите фамилию.
               </div>
             </div>
 
@@ -37,7 +37,7 @@
                 <span class="input-group-text">@</span>
                 <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{username}}">
               <div class="invalid-feedback">
-                  Your username is required.
+                  Пожалуйста, введите username.
                 </div>
               </div>
             </div>
@@ -46,14 +46,14 @@
               <label for="email" class="form-label">Email</label>
               <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email" value="{{email}}">
               <div class="invalid-feedback">
-                Please enter a valid email address.
+                Пожалуйста, введите почту.
               </div>
             </div>
             <div class="col-12 has-validation">
               <label for="tel" class="form-label">Номер телефона </label>
               <input type="tel" class="form-control" id="tel" placeholder="+x (xxx) xxx-xx-xx" name="phone" value="{{phone}}">
               <div class="invalid-feedback">
-                Please enter a valid phone number.
+                Пожалуйста, введите номер телефона
               </div>
             </div>
             <div class="col-md-4">
@@ -65,18 +65,21 @@
                 <option value="nsk">Новосибирск</option>
                 <option value="ekb">Екатеринбург</option>
               </select>
-              <div class="invalid-feedback">
-                Please provide a valid state.
-              </div>
             </div>
             <hr class="my-4">
             <div class="has-validation">
               <label class="form-check-label" for="password" style="width:100%">Введите пароль</label>
               <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="{{password}}">
+              <div class="invalid-feedback">
+                Пожалуйста, введите пароль.
+              </div>
             </div>
             <div class="has-validation">
               <label class="form-check-label" for="passwordcheck" style="width:100%">Повторите пароль</label>
               <input type="password" name="passwordcheck" id="passwordcheck" class="form-control" placeholder="Password" value="{{password}}">
+              <div class="invalid-feedback">
+                Пожалуйста, введите пароль.
+              </div>
             </div>
           </div>
 
