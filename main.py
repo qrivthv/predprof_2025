@@ -30,10 +30,23 @@ def gn_user_check(user):
     return user
 
 
+@app.errorhandler(404)
+@app.errorhandler(400)
+@app.errorhandler(500)
+def smth_happened(error):
+    return redirect(url_for('err'))
+
+
 @app.route('/error')
 def err():
     return render_template('error.html', message="Этой страницы пока нет :(", theme=theme, loggedin=loggedin, **currentuser)
 
+
+@app.errorhandler(401)
+def unauthorized():
+    if loggedin:
+        redirect('logout')
+    return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
