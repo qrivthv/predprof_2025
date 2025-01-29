@@ -13,19 +13,19 @@
 
     <div class="container">
       <div class="width1">
-        <form class="" method="post">
+        <form class="needs-validation" method="post">
           <div class="row g-3">
-            <div class="col-sm-6">
+            <div class="col-sm-6 has-validation">
               <label for="firstName" class="form-label">Имя</label>
-              <input type="text" name="name" class="form-control" id="firstName" placeholder="" value="{{name}}">
-              <div class="invalid-feedback">
+              <input type="text" name="name" class="form-control" id="firstName" aria-describedby="NameFeedback" required>
+              <div class="invalid-feedback" style="color: red !important" id="NameFeedback">
                 Пожалуйста, введите имя.
               </div>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-sm-6 has-validation">
               <label for="lastName" class="form-label">Фамилия</label>
-              <input type="text" name="surname" class="form-control" id="lastName" placeholder="" value="{{surname}}">
+              <input type="text" name="surname" class="form-control" id="lastName" required>
               <div class="invalid-feedback">
                 Пожалуйста, введите фамилию.
               </div>
@@ -35,7 +35,7 @@
               <label for="username" class="form-label">Username</label>
               <div class="input-group has-validation">
                 <span class="input-group-text">@</span>
-                <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{username}}">
+                <input type="text" class="form-control" id="username" placeholder="Username" name="username" required>
               <div class="invalid-feedback">
                   Пожалуйста, введите username.
                 </div>
@@ -44,14 +44,14 @@
 
             <div class="col-12 has-validation">
               <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email" value="{{email}}">
+              <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email" required>
               <div class="invalid-feedback">
                 Пожалуйста, введите почту.
               </div>
             </div>
             <div class="col-12 has-validation">
               <label for="tel" class="form-label">Номер телефона </label>
-              <input type="tel" class="form-control" id="tel" placeholder="+x (xxx) xxx-xx-xx" name="phone" value="{{phone}}">
+              <input type="tel" class="form-control" id="tel" placeholder="+x (xxx) xxx-xx-xx" name="phone" required>
               <div class="invalid-feedback">
                 Пожалуйста, введите номер телефона
               </div>
@@ -69,14 +69,14 @@
             <hr class="my-4">
             <div class="has-validation">
               <label class="form-check-label" for="password" style="width:100%">Введите пароль</label>
-              <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="{{password}}">
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password" required>
               <div class="invalid-feedback">
                 Пожалуйста, введите пароль.
               </div>
             </div>
             <div class="has-validation">
               <label class="form-check-label" for="passwordcheck" style="width:100%">Повторите пароль</label>
-              <input type="password" name="passwordcheck" id="passwordcheck" class="form-control" placeholder="Password" value="{{password}}">
+              <input type="password" name="passwordcheck" id="passwordcheck" class="form-control" placeholder="Password" required>
               <div class="invalid-feedback">
                 Пожалуйста, введите пароль.
               </div>
@@ -107,7 +107,7 @@
 <!--            <div class="my-3">-->
 <!--            <div class="has-validation">-->
 <!--              <label class="form-check-label" for="when" style="width: 100%">В котором часу вы ложитесь спать</label>-->
-<!--              <input type="time" id="when" name="when" class="form-control" style="width: fit-content" placeholder="" value="04:00">-->
+<!--              <input type="time" id="when" name="when" class="form-control" style="width: fit-content" value="04:00">-->
 <!--            </div>-->
 <!--          </div>-->
 <!--          </div>-->
@@ -120,7 +120,7 @@
           <div class="my-3">
             <div class="input-group" >
               <label class="form-check-label" for="colour" style="width:100%">Ваш любимый цвет <span class="text-body-secondary">(будут сделаны темы на основе ваших пожеланий)</span></label>
-              <input id="colour" name="colour" type="color" class="form-control mt-2" value="{{favcolor}}">
+              <input id="colour" name="colour" type="color" class="form-control mt-2">
             </div>
 <!--            <div class="input-group" style="width: fit-content;">-->
 <!--              <p style="width:100%"></p>-->
