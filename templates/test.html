@@ -10,9 +10,9 @@
                   {% for task in tasks %}
                 <div class="col-12">
                     <span style="font-size: 1.1rem; font-style: italic">id {{task[0]}}</span>
-                    {%if task[6] == 'base'%}
+                    {%if task[7] == 'base'%}
                     <p>Сложность: база</p>
-                    {%elif task[6] == 'ke'%}
+                    {%elif task[7] == 'ke'%}
                     <p>Сложность: сюрприз от Кирилла Евгеньевича</p>
                     {%else%}
                     <p>Сложность: решаемо</p>
