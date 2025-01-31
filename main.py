@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for
 from time import *
 from calendar import *
-# from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 # import sqlalchemy
 # from flask_login import UserMixin
 import json
 import _sqlite3
 from sql_func import *
 app = Flask(__name__)
-
 theme = 'dark'
 currentuser = {}
 loggedin = False
@@ -39,7 +38,7 @@ def smth_happened(error):
 
 @app.route('/error')
 def err():
-    return render_template('error.html', message="Этой страницы пока нет :(", theme=theme, loggedin=loggedin, **currentuser)
+    return render_template('error.html', message="Что-то пошло не так<br>Вероятно, этой страницы пока нет :(", theme=theme, loggedin=loggedin, **currentuser)
 
 
 @app.errorhandler(401)
@@ -47,6 +46,7 @@ def unauthorized():
     if loggedin:
         redirect('logout')
     return redirect(url_for('login'))
+
 
 @app.route('/logout')
 def logout():
@@ -122,7 +122,12 @@ def register():
         return render_template("register.html", s="Зарегистрироваться", loggedin=loggedin, message='', theme=theme, **currentuser)
     elif request.method == 'POST':
         new_user = {}
+        important = ['name', 'surname', 'username', 'email', 'password']
         for k in request.form:
+            if k in important and request.form[k] == "":
+                return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin,
+                                       message="К сожалению, вы не заполнили жизненно важные поля", theme=theme, **currentuser)
+
             new_user[k] = request.form[k].strip()
         new_user["password"] = request.form['password'].strip()
         new_user["passwordcheck"] = request.form['passwordcheck'].strip()
