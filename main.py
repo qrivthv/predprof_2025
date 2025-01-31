@@ -489,11 +489,17 @@ def ans(qid):
 
 @app.route('/course/<int:id>/<int:num>')
 def course(id, num):
+    s = f'select distinct Type from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} order by Type asc'
+    a = get_data(s)
+    types = []
+    for i in a:
+        types.append(i[0])
     s = f'select Courses.CID, CName, Type, Link, text, lang, code from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
     a = get_data(s)
     if len(a) == 1:
         a = a[0]
-    return render_template('course.html', course=a, theme=theme, **currentuser, loggedin=loggedin)
+    print(a)
+    return render_template('course.html', course=a, theme=theme, **currentuser, loggedin=loggedin, types=types)
 
 
 @app.route('/ask', methods=['POST', 'GET'])
