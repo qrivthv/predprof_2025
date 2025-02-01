@@ -5,7 +5,11 @@ from calendar import *
 
 def get_user_by_id(user_id):
     s = f"select * from Users where StudentID = {user_id}"
-    return get_data(s)
+    a = get_data(s)
+    a = a[0]
+    a = list(a)
+    a.append(get_user_result(user_id))
+    return a
 
 
 def get_data(what):
@@ -204,3 +208,6 @@ def get_user(username=None, email = None):
     }
     user['results'] = get_user_result(user['StudentID'])
     return user
+
+
+get_user_by_id(5)

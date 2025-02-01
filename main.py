@@ -222,6 +222,18 @@ def edit():
 def test(num):
     s = f'select * from Problem where Type = {num}'
     x = get_data(s)
+    b = []
+    if request.method == 'GET':
+        for i in x:
+            k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
+            b.append(k)
+    x = b
     o = len(x)
     if request.method == 'GET':
         return render_template('test.html', tasks=x, theme=theme, loggedin=loggedin, currentuser=currentuser)
@@ -282,6 +294,17 @@ def work(workid, groupid):
     s = f'''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, file, filename, img1, img2
         from Problem join WorkProblem on Problem.ProblemID = WorkProblem.ProblemID where WorkID = {workid}'''
     tasks = get_data(s)
+    b = []
+    for i in tasks:
+        k = list(i)
+        if k[8] == None:
+            k[8] = ""
+        if k[9] == None:
+            k[9] = ""
+        k[8] = k[8].split()
+        k[9] = k[9].split()
+        b.append(k)
+    tasks = b
     o = len(tasks)
     if request.method == "GET":
         return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser, if_work=True)
@@ -321,6 +344,18 @@ def work(workid, groupid):
 def train(num):
     s = f'select * from Problem where Type = {num}'
     x = get_data(s)
+    b = []
+    if request.method == 'GET':
+        for i in x:
+            k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
+            b.append(k)
+    x = b
     o = len(x)
     ans = []
     for task in x:
@@ -531,6 +566,12 @@ def bank():
     if request.method == 'GET':
         for i in a:
             k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
             b.append(k)
         return render_template('bank.html', category="Все", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
@@ -541,6 +582,12 @@ def bank():
         txt = request.form['txt']
         for i in a:
             k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
             if (len(kim) != 0 and k[3] == int(kim)) or len(kim) == 0:
                 if (len(diff) != 0 and k[7] == int(diff)) or len(diff) == 0:
                     if (len(txt) != 0 and txt in k[1]) or len(txt) == 0:

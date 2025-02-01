@@ -8,6 +8,8 @@ import json
 import _sqlite3
 from sql_func1 import *
 app = Flask(__name__)
+
+app.config['SECRET_KEY'] = 'secret_key'
 theme = 'dark'
 currentuser = {}
 loggedin = False
@@ -26,18 +28,18 @@ def load_user(user_id):
 
 class User(UserMixin):
     def __init__(self, user_data):
-        self.id = user_data['StudentID']
-        self.username = user_data['username']
-        self.password = user_data['password']
-        self.name = user_data['name']
-        self.surname = user_data['surname']
-        self.email = user_data['email']
-        self.phone = user_data['phone']
-        self.grade = user_data['grade']
-        self.colour = user_data['colour']
-        self.bright = user_data['bright']
-        self.adm = user_data['adm']
-        self.results = user_data['results']
+        self.id = user_data[0]
+        self.username = user_data[1]
+        self.password = user_data[4]
+        self.name = user_data[5]
+        self.surname = user_data[6]
+        self.email = user_data[2]
+        self.phone = user_data[3]
+        self.grade = user_data[7]
+        self.color = user_data[8]
+        self.bright = user_data[9]
+        self.adm = user_data[10]
+        self.results = user_data[11]
 
 
 def gn_user_check(user):
@@ -242,6 +244,17 @@ def edit():
 def test(num):
     s = f'select * from Problem where Type = {num}'
     x = get_data(s)
+    b = []
+    for i in x:
+        k = list(i)
+        if k[8] == None:
+            k[8] = ""
+        if k[9] == None:
+            k[9] = ""
+        k[8] = k[8].split()
+        k[9] = k[9].split()
+        b.append(k)
+    x = b
     o = len(x)
     if request.method == 'GET':
         return render_template('test.html', tasks=x, theme=theme, loggedin=loggedin, currentuser=currentuser)
@@ -302,6 +315,17 @@ def work(workid, groupid):
     s = f'''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, file, filename, img1, img2
         from Problem join WorkProblem on Problem.ProblemID = WorkProblem.ProblemID where WorkID = {workid}'''
     tasks = get_data(s)
+    b = []
+    for i in tasks:
+        k = list(i)
+        if k[8] == None:
+            k[8] = ""
+        if k[9] == None:
+            k[9] = ""
+        k[8] = k[8].split()
+        k[9] = k[9].split()
+        b.append(k)
+    tasks = b
     o = len(tasks)
     if request.method == "GET":
         return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser, if_work=True)
@@ -341,6 +365,18 @@ def work(workid, groupid):
 def train(num):
     s = f'select * from Problem where Type = {num}'
     x = get_data(s)
+    b = []
+    if request.method == 'GET':
+        for i in x:
+            k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
+            b.append(k)
+    x = b
     o = len(x)
     ans = []
     for task in x:
@@ -353,19 +389,16 @@ def add():
     if request.method == 'GET':
         return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
+        allowed = ('jpg', 'png', 'jpeg', 'docx', 'doc', 'xls', 'xlsx', 'txt', 'csv')
         statement = request.form['stat']
         answer = request.form['ans']
         solution = request.form['sol'].replace('\n', '<br>')
         diff = request.form['diff']
         typ = int(request.form['type'])
         creator = request.form['author']
-        filename = request.files['file'].filename
-        file = request.files['file']
-        img1name = request.files['img1'].filename
-        img1 = request.files['img1']
-        img2name = request.files['img2'].filename
-        img2 = request.files['img2']
-
+        files = request.files.getlist('file')
+        imgs = request.files.getlist('img')
+        dbfiles = ""
         s = f'select * from Problem where Statement="{statement}"'
         a = get_data(s)
         if diff == 'base':
@@ -376,51 +409,40 @@ def add():
             diff = 2
         if a != []:
             return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin, message='Задача с таким условием уже есть :(')
-        if filename != '':
-            if_file = 1
-        else:
-            if_file = 0
-        if img1name != '':
-            if_img1 = 1
-        else:
-            if_img1 = 0
-        if img2name != '':
-            if_img2 = 1
-        else:
-            if_img2 = 0
-        s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff, file) values (?, ?, ?, ?, ?, ?, ?)'
-        a = [statement, answer, typ, creator, solution, diff, if_file]
+        s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
+        a = [statement, answer, typ, creator, solution, diff]
         insrt(a, s)
-        if if_file:
-            s = f'select ProblemID from Problem where Statement="{statement}"'
-            a = get_data(s)
-            while type(a) is not int:
-                a = a[0]
-            typee = filename.split('.')[1]
-            path = 'static/files/problem' + str(a) + '.' + str(typee)
+        cnt = 0
+        s = f'select ProblemID from Problem where Statement="{statement}"'
+        a = get_data(s)
+        while type(a) is not int:
+            a = a[0]
+        for file in files:
+            if file.filename == '':
+                continue
+            if file.filename.split('.')[1] not in allowed:
+                return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin,
+                                       message='Вы прикрепили файл с недопустимым разрешением :(')
+            path = 'static/files/problem' + str(a) + '0' + str(cnt) + '.' + file.filename.split('.')[1]
             file.save(path)
-            s = f'update Problem set filename="{path[7:]}" where ProblemID={a}'
-            upd(s)
-        if if_img1:
-            s = f'select ProblemID from Problem where Statement="{statement}"'
-            a = get_data(s)
-            while type(a) is not int:
-                a = a[0]
-            typee = img1name.split('.')[1]
-            path = 'static/files/img1' + str(a) + '.' + str(typee)
-            img1.save(path)
-            s = f'update Problem set img1="{path[7:]}" where ProblemID={a}'
-            upd(s)
-        if if_img2:
-            s = f'select ProblemID from Problem where Statement="{statement}"'
-            a = get_data(s)
-            while type(a) is not int:
-                a = a[0]
-            typee = img2name.split('.')[1]
-            path = 'static/files/img2' + str(a) + '.' + str(typee)
-            img2.save(path)
-            s = f'update Problem set img2="{path[7:]}" where ProblemID={a}'
-            upd(s)
+            dbfiles += path[7:] + ' '
+            cnt += 1
+        s = f'update Problem set filename="{dbfiles}" where ProblemID={a}'
+        upd(s)
+        cnt = 0
+        imgss = ""
+        for file in imgs:
+            if file.filename == '':
+                continue
+            if file.filename.split('.')[1] not in allowed:
+                return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin,
+                                       message=f'Вы прикрепили файл с недопустимым разрешением ({file.filename.split(".")[1]}) :(')
+            path = 'static/files/problem' + str(a) + '1' + str(cnt) + '.' + file.filename.split('.')[1]
+            file.save(path)
+            imgss += path[7:] + ' '
+            cnt += 1
+        s = f'update Problem set img="{imgss}" where ProblemID={a}'
+        upd(s)
         return redirect(url_for('index'))
 
 
@@ -460,7 +482,7 @@ def forum():
         return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
         tm = timegm(gmtime())
-        b =[]
+        b = []
         o = {}  # фильтрация по времени
         for key in request.form:
             if key != 'txt':
@@ -518,10 +540,10 @@ def course(id, num):
     a = get_data(s)
     if len(a) == 1:
         a = a[0]
-    print(a)
     return render_template('course.html', course=a, theme=theme, **currentuser, loggedin=loggedin, types=types)
 
 
+@login_required
 @app.route('/ask', methods=['POST', 'GET'])
 def ask():
     if request.method == 'GET':
@@ -551,16 +573,27 @@ def bank():
     if request.method == 'GET':
         for i in a:
             k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
             b.append(k)
         return render_template('bank.html', category="Все", tasks=b, theme=theme, **currentuser, loggedin=loggedin)
     elif request.method == 'POST':
         b = []
-
         kim = request.form['kim']
         diff = request.form['diff']
         txt = request.form['txt']
         for i in a:
             k = list(i)
+            if k[8] == None:
+                k[8] = ""
+            if k[9] == None:
+                k[9] = ""
+            k[8] = k[8].split()
+            k[9] = k[9].split()
             if (len(kim) != 0 and k[3] == int(kim)) or len(kim) == 0:
                 if (len(diff) != 0 and k[7] == int(diff)) or len(diff) == 0:
                     if (len(txt) != 0 and txt in k[1]) or len(txt) == 0:

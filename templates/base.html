@@ -24,7 +24,7 @@
               <img src="{{url_for('static', filename='img/profile.png')}}" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu {{theme}}">
-              {%if loggedin%}
+              {%if current_user.is_authenticated%}
               <li><a class="dropdown-item nav-link {{theme}}" href="/my_profile">Профиль</a> </li>
               <li><a class="dropdown-item nav-link {{theme}}" href="/logout">Выйти</a> </li>
               {%else%}
@@ -41,10 +41,11 @@
 
     </nav>
     </header>
+    <a id="top"></a>
 
 {%block content%}
 {%endblock%}
-
+<a href="#top" id="back-to-top" title="Наверх">^</a>
 
    <footer class="fixed-bottom d-flex flex-wrap justify-content-between align-items-center py-3 border-top" >
     <p class="col-md-4 mb-0 text-muted ml-2">By Maria Somova, Sophie Petrova</p>
