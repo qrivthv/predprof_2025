@@ -8,13 +8,21 @@
           <h4>{{question[2]}}</h4>
           <p>{{question[3]}}</p>
           <p>Ответов: {{answers|length}}  - {%if question[4]%} Дискуссия открыта {%else%} искуссия завершена {%endif%}</p>
+          {% if current_user.adm == 1 %}
+            <a href="/delete_post/{{question[0]}}" style="display: block;">Удалить пост </a>
+          {%if question[4]%}
+            <a href="/close_post/{{question[0]}}" style="display: block;">Закрыть пост</a>
+              {%else%}
+            <a href="/open_post/{{question[0]}}" style="display: block;">Открыть пост</a>
+              {%endif%}
+          {% endif %}
             {%if question[4]%}
           <hr>
           <form method="post" class="widthTest">
-          <div class="form-floating">
-              <input type="text" name="username" class="form-control {{theme}}" id="username" placeholder="" style="width: 10vw; height: 8vh; vertical-align: top; font-size: small;">
-              <label for="username">username</label>
-          </div>
+<!--          <div class="form-floating">-->
+<!--              <input type="text" name="username" class="form-control {{theme}}" id="username" placeholder="" style="width: 10vw; height: 8vh; vertical-align: top; font-size: small;">-->
+<!--              <label for="username">username</label>-->
+<!--          </div>-->
           <div class="form-floating" style="margin-top: 1vh">
               <textarea name="answer" class="form-control {{theme}}" id="answer" placeholder="" rows="5" cols="1"> </textarea>
               <label for="answer">Текст комментария</label>
@@ -30,6 +38,9 @@
 				<strong class="d-block text-gray-dark">@{{q[2]}}</strong>
 				{{q[3]}}
                 <br>
+                  {% if current_user.adm == 1 %}
+                    <a href="/delete_comment/{{q[0]}}" style="display: block;">Удалить комментарий</a>
+                  {% endif %}
 			  </p>
 			</div>
             <hr style="width: 80vh">

@@ -28,18 +28,17 @@ def load_user(user_id):
 
 class User(UserMixin):
     def __init__(self, user_data):
-        print(user_data)
-        self.id = int(user_data[0])
+        self.id = user_data[0]
         self.username = user_data[1]
         self.password = user_data[4]
         self.name = user_data[5]
         self.surname = user_data[6]
         self.email = user_data[2]
-        self.phone = int(user_data[3])
-        self.grade = int(user_data[7])
+        self.phone = user_data[3]
+        self.grade = user_data[7]
         self.color = user_data[8]
-        self.bright = int(user_data[9])
-        self.adm = int(user_data[10])
+        self.bright = user_data[9]
+        self.adm = user_data[10]
         self.results = user_data[11]
 
 
@@ -63,7 +62,6 @@ def gn_user_check(user):
 @app.errorhandler(400)
 @app.errorhandler(500)
 def smth_happened(error):
-    print(error)
     return redirect(url_for('err'))
 
 
@@ -517,11 +515,14 @@ def ans(qid):
     s1 = f'select * from Questions where QID = {qid}'
     x1 = get_data(s1)
     if request.method == 'POST':
-        user = request.form['username']
+        if current_user.is_authenticated:
+            username = current_user.username
+        else:
+            username = "неизвестный"
         tm = timegm(gmtime())
         text = request.form['answer']
         s = f'insert into Answers (QID, Author, Statement, date) values (?, ?, ?, ?)'
-        a = [qid, user, text, tm]
+        a = [qid, username, text, tm]
         insrt(a, s)
     s2 = f'select * from Answers where QID = {qid} order by date desc'
     x2 = get_data(s2)
@@ -532,6 +533,53 @@ def ans(qid):
     ss = str(ss)
     q[3] = ss[4:16] + ss[19:]
     return render_template('question.html', answers=x2, question=q, theme=theme, **currentuser, loggedin=loggedin)
+
+
+@app.route('/delete_comment/<int:comment_id>')
+@login_required
+def delete_comment(comment_id):
+    if current_user.adm == 1:
+        s = f'DELETE FROM Answers WHERE AId = {comment_id}'
+        upd(s)
+        return redirect(request.referrer)  # Возвращаем пользователя на предыдущую страницу
+    else:
+        return "У вас нет прав для выполнения этого действия", 403
+
+
+@app.route('/delete_post/<int:qid>')
+@login_required
+def delete_post(qid):
+    if current_user.adm == 1:
+        s1 = f'DELETE FROM Answers WHERE QID = {qid}'
+        upd(s1)
+        s2 = f'DELETE FROM Questions WHERE QID = {qid}'
+        upd(s2)
+        return redirect(url_for('forum'))
+    else:
+        return "У вас нет прав для выполнения этого действия", 403
+
+
+@app.route('/close_post/<int:qid>')
+@login_required
+def close_post(qid):
+    if current_user.adm == 1:
+        s = f'UPDATE Questions SET Open = 0 WHERE QID = {qid}'
+        upd(s)
+        return redirect(request.referrer)
+    else:
+        return "У вас нет прав для выполнения этого действия", 403
+
+
+@app.route('/open_post/<int:qid>')
+@login_required
+def open_post(qid):
+    if current_user.adm == 1:
+        s = f'UPDATE Questions SET Open = 1 WHERE QID = {qid}'
+        upd(s)
+        return redirect(request.referrer)
+    else:
+        return "У вас нет прав для выполнения этого действия", 403
+
 
 
 @app.route('/course/<int:id>/<int:num>')
@@ -555,12 +603,13 @@ def ask():
         return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
         question = request.form['q']
-        user = request.form['username']
-        if user == '':
-            user = 'неизвестный'
+        if current_user.is_authenticated:
+            username = current_user.username
+        else:
+            username = "неизвестный"
         tm = timegm(gmtime())
         s = f'insert into Questions (Author, Statement, date, Open) values (?, ?, ?, ?)'
-        a = [user, question, tm, 1]
+        a = [username, question, tm, 1]
         insrt(a, s)
         s = f'select QID from Questions where date = {tm}'
         x = get_data(s)
