@@ -22,6 +22,40 @@
 
     <main style="height: fit-content; padding: 1.5em">
       <div class="container">
+        <h3>Рекомендации от разработчиков</h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
+        {%for course in favcourses%}
+              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
+                <div class="card-body" style="">
+                  <p class="card-text">{{course[1]}}</p>
+                  <p class="card-text">{{course[2]}}</p>
+                    <div class="btn-group">
+                        <a href="/course/{{course[0]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                    </div>
+
+                </div>
+              </div>
+              {%endfor%}
+        </div>
+        <hr>
+      <h3>Краткий курс, как не завалиться на экзамене (и в жизни)</h3>
+        <br>
+        <div class="steps">
+          <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-text">Шаг 1: Зарегистрируйтесь на платформе.</div>
+          </div>
+          <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-text">Шаг 2: Выберите курс из каталога.</div>
+          </div>
+          <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-text">Шаг 3: Начните обучение и выполняйте задания.</div>
+          </div>
+      </div>
+          <br>
+        <hr>
           <h3 style="text-align: center; margin-right: 5em">Задачи</h3>
         {%set arr=[
           " ",

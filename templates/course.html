@@ -6,7 +6,7 @@
 
 <nav class="nav" style="margin-top: 3em; margin-left: 2em">
     {%for type in types%}
-      <a class="nav-link" href="/course/{{course[0]}}/{{i}}">№{{type}}</a>
+      <a class="nav-link" href="/course/{{course[0]}}/{{type}}">№{{type}}</a>
     {%endfor%}
 </nav>
 <main class="{{theme}}">
@@ -22,11 +22,11 @@
         <br>
         <h4>Отработка задания</h4>
         <a href="/test/{{course[2]}}" class="btn btn-primary tea" style="width:fit-content; background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
-        {%if text != ''%}
+        {%if text != None%}
         <h4>Текстовая версия</h4>
         <p>{{course[4]|safe}}</p>
         {%endif%}
-        {%if text != ''%}
+        {%if text != None%}
         <h4>Код для задачи</h4>
         <pre><code class="language-{{course[5]}}">{{course[6]}}</code></pre>
         {%endif%}

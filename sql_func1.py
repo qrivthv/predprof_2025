@@ -203,8 +203,9 @@ def get_user(username=None, email = None):
         "name": x[5],
         "surname": x[6],
         "grade": x[7],
-        "color": x[9],
-        "bright": x[10]
+        "color": x[8],
+        "bright": x[10],
+        "adm": x[10]
     }
     user['results'] = get_user_result(user['StudentID'])
     return user

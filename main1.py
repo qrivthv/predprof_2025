@@ -28,17 +28,18 @@ def load_user(user_id):
 
 class User(UserMixin):
     def __init__(self, user_data):
-        self.id = user_data[0]
+        print(user_data)
+        self.id = int(user_data[0])
         self.username = user_data[1]
         self.password = user_data[4]
         self.name = user_data[5]
         self.surname = user_data[6]
         self.email = user_data[2]
-        self.phone = user_data[3]
-        self.grade = user_data[7]
+        self.phone = int(user_data[3])
+        self.grade = int(user_data[7])
         self.color = user_data[8]
-        self.bright = user_data[9]
-        self.adm = user_data[10]
+        self.bright = int(user_data[9])
+        self.adm = int(user_data[10])
         self.results = user_data[11]
 
 
@@ -62,6 +63,7 @@ def gn_user_check(user):
 @app.errorhandler(400)
 @app.errorhandler(500)
 def smth_happened(error):
+    print(error)
     return redirect(url_for('err'))
 
 
@@ -87,7 +89,9 @@ def logout():
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
+    s = f'select * from Courses where CID = 1 or CID = 8 or cID == 9'
+    favcourses = get_data(s)
+    return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser, favcourses=favcourses)
 
 
 @app.route('/my_profile', methods=['POST', 'GET'])
@@ -129,6 +133,7 @@ def login():
         u = get_user(s, s)
         if u != 'No such user' and u != ():
             if u['password'] == request.form["password"].strip():
+                u = get_user_by_id(u['StudentID'])
                 user = User(u)
                 login_user(user)
                 return redirect(url_for("myprofile"))
@@ -178,14 +183,14 @@ def register():
             return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
         #  genius user check
         s = f'''
-        insert into Users (username, email, phone, password, SName, SSurname,  Grade, avgresults, color, bright, adm) 
+        insert into Users (username, email, phone, password, SName, SSurname,  Grade, color, bright, adm) 
         values 
-        (?, ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?,  ?, ?, ?, ?)
         '''
         rr = "0!0$"*27
         a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"], new_user["surname"], int(new_user["grade"]), rr, new_user["colour"], new_user["bright"], 0)
         insrt(a, s)
-        return redirect('login')
+        return redirect(url_for('login'))
 
 
 @app.route('/edit', methods=['POST', 'GET'])
