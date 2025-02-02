@@ -17,7 +17,7 @@
           <div class="row g-3">
             <div class="col-sm-6 ">
               <label for="FName" class="form-label">Имя</label>
-              <input type="text" name="name" class=" form-control" id="FName">
+              <input type="text" name="name" class=" form-control" id="FName" value="{{current_user.name}}">
 <!--              <div class="invalid-feedback text-danger" style="color: red !important">-->
 <!--                Пожалуйста, введите имя.-->
 <!--              </div>-->
@@ -25,7 +25,7 @@
 
             <div class="col-sm-6 has-validation">
               <label for="lastName" class="form-label">Фамилия</label>
-              <input type="text" name="surname" class="form-control" id="lastName">
+              <input type="text" name="surname" class="form-control" id="lastName" value="{{current_user.surname}}">
               <div class="invalid-feedback">
                 Пожалуйста, введите фамилию.
               </div>
@@ -35,7 +35,7 @@
               <label for="username" class="form-label">Username</label>
               <div class="input-group has-validation">
                 <span class="input-group-text">@</span>
-                <input type="text" class="form-control" id="username" placeholder="Username" name="username">
+                <input type="text" class="form-control" id="username" placeholder="Username" name="username" value="{{current_user.username}}">
               <div class="invalid-feedback">
                   Пожалуйста, введите username.
                 </div>
@@ -44,14 +44,14 @@
 
             <div class="col-12 has-validation">
               <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email">
+              <input type="email" class="form-control" id="email" placeholder="you@example.com" name="email" value="{{current_user.email}}">
               <div class="invalid-feedback">
                 Пожалуйста, введите почту.
               </div>
             </div>
             <div class="col-12 has-validation">
               <label for="tel" class="form-label">Номер телефона </label>
-              <input type="tel" class="form-control" id="tel" placeholder="+x (xxx) xxx-xx-xx" name="phone">
+              <input type="tel" class="form-control" id="tel" placeholder="+x (xxx) xxx-xx-xx" name="phone" value="{{current_user.phone}}">
               <div class="invalid-feedback">
                 Пожалуйста, введите номер телефона
               </div>
@@ -88,7 +88,7 @@
           <div class="my-3">
             <div class="has-validation">
               <label class="form-check-label" for="grade" style="width: 100%">В каком вы классе? (пропустите это поле, если вы учитель)</label>
-              <input type="number" id="grade" name="grade" class="form-control" style="width: fit-content" placeholder="enter grade" value="{{grade}}">
+              <input type="number" id="grade" name="grade" class="form-control" style="width: fit-content" placeholder="enter grade" value="{{current_user.grade}}">
             </div>
           </div>
           <hr class="my-4">
@@ -120,7 +120,7 @@
           <div class="my-3">
             <div class="input-group" >
               <label class="form-check-label" for="colour" style="width:100%">Ваш любимый цвет <span class="text-body-secondary">(будут сделаны темы на основе ваших пожеланий)</span></label>
-              <input id="colour" name="colour" type="color" class="form-control mt-2">
+              <input id="colour" name="colour" type="color" class="form-control mt-2" value="{{current_user.color}}">
             </div>
 <!--            <div class="input-group" style="width: fit-content;">-->
 <!--              <p style="width:100%"></p>-->

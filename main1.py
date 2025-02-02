@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from time import *
 from calendar import *
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -33,7 +33,7 @@ class User(UserMixin):
         self.password = user_data[4]
         self.name = user_data[5]
         self.surname = user_data[6]
-        self.email = user_data[2]
+        self.email = user_data[2].replace('?', '@')
         self.phone = user_data[3]
         self.grade = user_data[7]
         self.color = user_data[8]
@@ -193,49 +193,62 @@ def register():
 
 @app.route('/edit', methods=['POST', 'GET'])
 def edit():
-    return render_template('error.html', message='Этой страницы пока нет', loggedin=loggedin, **currentuser)
-    # global currentu
-    # if request.method == "GET":
-    #     return render_template('register.html', s="Редактировать", auth=loggedin, **currentu, message='')
-    # elif request.method == "POST":
-    #     for i in range(len(data)):
-    #         user = data[i]
-    #         if user["username"] == currentu["username"]:
-    #             in_db1 = True
-    #             n_u = currentu
-    #             for k in request.form:
-    #                 if k == 'username' and n_u['username'] != request.form[k]:
-    #                     for user in data:
-    #                         if user["username"] == request.form["username"].strip():
-    #                             in_db1 = True
-    #                             break
-    #                     if in_db1:
-    #                         return render_template('register.html', s="Редактировать", auth=loggedin,
-    #                                                message="К сожалению этот никнейм уже занят")
-    #                     else:
-    #                         n_u[k] = request.form[k]
-    #                     continue
-    #                 if k == 'email' and n_u['email'] != request.form[k]:
-    #                     for user in data:
-    #                         if user["email"] == request.form["email"].strip():
-    #                             in_db1 = True
-    #                             break
-    #                     if in_db1:
-    #                         return render_template('register.html', s="Редактировать", auth=loggedin,
-    #                                                message="К сожалению, эта почта уже занята")
-    #                     else:
-    #                         n_u[k] = request.form[k]
-    #                     continue
-    #                 if request.form[k] != "":
-    #                     n_u[k] = request.form[k]
-    #
-    #             # genius user check
-    #             n_u = gn_user_check(n_u)
-    #             currentu = n_u
-    #             data[i] = n_u
-    #             with open("users.json", "w", encoding='utf-8') as file:
-    #                 json.dump(data, file, indent=2, ensure_ascii=False)
-    #             return logout()
+    if request.method == 'GET':
+        # Отображаем форму редактирования с текущими данными пользователя
+        return render_template('register.html', s="Редактировать", message='', theme=theme)
+
+    elif request.method == 'POST':
+        new_username = request.form.get('username', '').strip()
+        new_email = request.form.get('email', '').strip().replace('@', '?')
+        new_phone = int(request.form.get('phone', '').strip())
+        new_name = request.form.get('name', '').strip()
+        new_surname = request.form.get('surname', '').strip()
+        new_color = request.form.get('colour', '').strip()
+        bright = current_user.bright
+        new_grade = int(request.form.get('grade', ''))
+        r = int(str(new_color)[1:3], 16)
+        g = int(str(new_color)[3:5], 16)
+        b = int(str(new_color)[5:7], 16)
+        if r > 150 or b > 150 or g > 150:
+            bright = True
+        # Проверка, что новый username не занят другим пользователем
+        if new_username != current_user.username:
+            s = f'SELECT username FROM Users WHERE username = "{new_username}"'
+            existing_user = get_data(s)
+            if existing_user:
+                flash("К сожалению, этот никнейм уже занят.", "error")
+                return render_template('register.html', user=current_user, s='Редактировать',
+                                       message="К сожалению, этот никнейм уже занят", theme=theme)
+
+        # Проверка, что новый email не занят другим пользователем
+        if new_email.replace('?', '@') != current_user.email:
+            s = f'SELECT email FROM Users WHERE email = "{new_email}"'
+            existing_email = get_data(s)
+            if existing_email:
+                flash("К сожалению, эта почта уже занята.", "error")
+                return render_template('register.html', user=current_user,
+                                       message="К сожалению, эта почта уже занята", theme=theme)
+
+        # Обновление данных пользователя в базе данных
+        s = f'''
+                UPDATE Users 
+                SET username = "{new_username}", email = "{new_email}", phone = {new_phone}, SName = "{new_name}", SSurname = "{new_surname}", color = "{new_color}", bright={bright}, Grade={new_grade}
+                WHERE StudentID = {current_user.id}
+            '''
+        print(s)
+        upd(s)
+
+        # Обновляем данные в текущем пользователе (current_user)
+        current_user.username = new_username
+        current_user.email = new_email.replace('?', '@')
+        current_user.phone = new_phone
+        current_user.name = new_name
+        current_user.surname = new_surname
+        current_user.color = new_color
+        current_user.bright = bright
+        current_user.grade = new_grade
+        flash("Профиль успешно обновлен.", "success")
+        return redirect(url_for('myprofile'))
 
 
 # @app.route('/results')
