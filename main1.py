@@ -73,7 +73,7 @@ def err():
 @app.errorhandler(401)
 def unauthorized():
     if loggedin:
-        redirect('logout')
+        redirect(url_for('logout'))
     return redirect(url_for('login'))
 
 
@@ -143,7 +143,7 @@ def login():
 def register():
     if request.method == 'GET':
         if current_user.is_authenticated:
-            return redirect('my_profile')
+            return redirect(url_for('my_profile'))
         return render_template("register.html", s="Зарегистрироваться", loggedin=loggedin, message='', theme=theme)
     elif request.method == 'POST':
         new_user = {}
@@ -852,6 +852,12 @@ def work_result(workid, groupid):
         #return redirect(url_for('restricted'))
         return redirect(url_for('error'))
 
+
+@login_required
+@app.route('/my_group/<int:groupid>')
+def my_group(groupid):
+    results = get_user_results_in_group(current_user.id, groupid)
+    return render_template('user_results.html', theme=theme, results=results)
 
 
 if __name__ == "__main__":

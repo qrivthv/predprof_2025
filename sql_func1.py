@@ -211,4 +211,56 @@ def get_user(username=None, email = None):
     return user
 
 
-get_user_by_id(5)
+def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
+    works = []
+    s = f'select distinct workID from WorkGroup where GroupID = {groupid} and ShowScore=1'
+    a = get_data(s)
+    for i in a:
+        works.append(i[0])
+    results = []
+    for workid in works:
+        template = []
+        t = []
+        s = f'select count(distinct ProblemID) from WorkProblem where WorkID = {workid}'
+        a = get_data(s)
+        if not a:
+            continue
+        while type(a) is not int:
+            a = a[0]
+        n = a
+        s = f'select distinct ProblemID from WorkProblem where WorkID = {workid} order by ProblemID desc'
+        a = get_data(s)
+        t.append(a)
+        s = f'select WorkName from Work where WorkID={workid}'
+        a = get_data(s)
+        if not a:
+            return []
+        while type(a) is not str:
+            a = a[0]
+        b = ["Название работы"]
+        for i in a:
+            b.append(i[0])
+        b.append("Всего решено")
+        b.append("Всего")
+        a = b
+        template.append(a)
+        cur_time = timegm(gmtime())
+        s = f'''select distinct ProblemID, StudentID, result
+            from WorkResult
+            where date >= {cur_time - timer} and GroupID={groupid} and WorkID={workid} and StudentID="{userid}" 
+            order by ProblemID desc, date desc'''
+        a = get_data(s)
+        total = 0
+        x = {}
+        for i in a:
+            x[i[0]] = i[2]
+        for i in a:
+            template.append(max(i[2], x[i[0]]))
+            total += i[2]
+        template.append(total)
+        template.append(n)
+        t.append(template)
+        results.append(t)
+    print(results)
+    return results
+
