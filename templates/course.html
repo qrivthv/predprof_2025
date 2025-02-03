@@ -20,16 +20,30 @@
         </iframe>
         <hr>
         <br>
+
         <h4>Отработка задания</h4>
         <a href="/test/{{course[2]}}" class="btn btn-primary tea" style="width:fit-content; background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
-        {%if text != None%}
+        {%if course[7] != None%}
+        <hr>
+        <br>
+        <h4>Методические материалы</h4>
+        <embed src="{{url_for('static', filename=course[7])}}" width="1000px" height="800px"/>
+        <hr>
+        <br>
+        {%endif%}
+        {%if course[4] != None%}
         <h4>Текстовая версия</h4>
         <p>{{course[4]|safe}}</p>
+        <hr>
+        <br>
         {%endif%}
-        {%if text != None%}
+        {%if course[6] != None%}
         <h4>Код для задачи</h4>
         <pre><code class="language-{{course[5]}}">{{course[6]}}</code></pre>
+        <hr>
+        <br>
         {%endif%}
+
     </div>
 </main>
 {%endblock%}

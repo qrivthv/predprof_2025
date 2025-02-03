@@ -615,11 +615,12 @@ def course(id, num):
     types = []
     for i in a:
         types.append(i[0])
-    s = f'select Courses.CID, CName, Type, Link, text, lang, code from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
+    s = f'select Courses.CID, CName, Type, Link, text, lang, code, files from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
     a = get_data(s)
     if len(a) == 1:
         a = a[0]
-    return render_template('course.html', course=a, theme=theme, **currentuser, loggedin=loggedin, types=types)
+    b = list(a)
+    return render_template('course.html', course=b, theme=theme, types=types)
 
 
 @login_required
