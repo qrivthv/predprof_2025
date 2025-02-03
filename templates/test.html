@@ -9,7 +9,9 @@
               <div class="row g-3">
                   {% for task in tasks %}
                 <div class="col-12">
+                    {%if not if_work%}
                     <span style="font-size: 1.1rem; font-style: italic">id {{task[0]}}</span>
+                    {%endif%}
                     {%if task[7] == 'base'%}
                     <p>Сложность: база</p>
                     {%elif task[7] == 'ke'%}
@@ -18,18 +20,19 @@
                     <p>Сложность: решаемо</p>
                     {%endif%}
                     <label for="{{task[0]}}" class="form-label">{{task[1]}}</label>
-                    {%if task[10] != None%}
+                    {%if task[9] != []%}
                     <div class="d-flex">
-                        <img src="{{url_for('static', filename=task[10])}}" style="max-width: 20vh; height: auto; margin-bottom:1em;">
-                        {%if task[11] != None%}
-                        <img src="{{url_for('static', filename=task[11])}}" style="max-width: 15vh; height: auto; margin-left:1em; margin-bottom:1em;">
-                        {%endif%}
+                        {%for img in task[9]%}
+                        <img src="{{url_for('static', filename=img)}}" style="max-height: 20vh; width: auto; margin-bottom:1em;">
+                        {%endfor%}
                     </div>
                     {%endif%}
                     <input type="number" name="{{task[0]}}" class="form-control" id="{{task[0]}}" placeholder="" value="">
-                    {%if task[8]%}
+                    {%if task[8] != []%}
                     <h5>Файлы для скачивания:</h5>
-                    <a href="{{url_for('static', filename=task[9])}}" download target="_blank" style="text-decorations: none">{{task[9][6:]}}</a>
+                    {%for file in task[8]%}
+                    <a href="{{url_for('static', filename=file)}}" download target="_blank" style="text-decorations: none">{{file[6:]}}</a>
+                    {%endfor%}
                     {%endif%}
 
                 </div>

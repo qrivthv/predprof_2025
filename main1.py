@@ -284,7 +284,7 @@ def test(num):
             name = f'{x[i][0]}'
             if loggedin:
                 s = 'insert into WorkResult (ProblemID, WorkID, GroupID, StudentID, date, result) values (?, ?, ?, ?, ?, ?)'
-                res = [int(name), 0, 0, currentuser['StudentID'], cur_time]
+                res = [int(name), 0, 0, current_user.id, cur_time]
                 if request.form[name].strip() != '':
                     ans = int(request.form[name].strip())
                     results[i][1] = ans
@@ -302,7 +302,7 @@ def test(num):
                     results[i][1] = ""
                     results[i][2] = 0
                 insrt(res, s)
-                currentuser['results'] = get_user_result(currentuser['StudentID'])
+                current_user.results = get_user_result(current_user.id)
             else:
                 if request.form[name].strip() != '':
                     ans = int(request.form[name].strip())
@@ -321,14 +321,13 @@ def test(num):
         return render_template('results.html', tasks=x, res=results,  showAns=show, showScore=True, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
 
 
+@login_required
 @app.route('/work/<int:workid>/<int:groupid>', methods=['POST', 'GET'])
 def work(workid, groupid):
-    if not loggedin:
-        return redirect(url_for('login'))
     s = f'select ShowAns, ShowScore from WorkGroup where WorkID={workid} and GroupID={groupid}'
     dt = get_data(s)
     dt = dt[0]
-    s = f'''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, file, filename, img1, img2
+    s = f'''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, filename, img
         from Problem join WorkProblem on Problem.ProblemID = WorkProblem.ProblemID where WorkID = {workid}'''
     tasks = get_data(s)
     b = []
@@ -354,7 +353,7 @@ def work(workid, groupid):
         for i in range(o):
             name = f'{tasks[i][0]}'
             s = 'insert into WorkResult (ProblemID, WorkID, GroupID, StudentID, date, result) values (?, ?, ?, ?, ?, ?)'
-            res = [int(name), workid, groupid, currentuser['StudentID'], cur_time]
+            res = [int(name), workid, groupid, current_user.id, cur_time]
             if request.form[name].strip() != '':
                 ans = int(request.form[name].strip())
                 results[i][1] = ans
@@ -372,9 +371,9 @@ def work(workid, groupid):
                 results[i][1] = ""
                 results[i][2] = 0
             insrt(res, s)
-        currentuser['results'] = get_user_result(currentuser['StudentID'])
+        current_user.results = get_user_result(current_user.id)
         return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
-                           **currentuser, loggedin=loggedin)
+                           loggedin=loggedin)
 
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
@@ -715,7 +714,7 @@ def add_group():
         else:
             id = a
         s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
-        a = [id, currentuser['StudentID']]
+        a = [id, current_user.id]
         insrt(a, s)
         if teachers != []:
             for user in teachers:
@@ -747,10 +746,9 @@ def add_group():
         return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
 
 
+@login_required
 @app.route('/dashboard/<int:id>')
 def dashboard(id):
-    if not loggedin:
-        return redirect(url_for('login'))
     s = f'select GroupName from Groups where GroupID = {id}'
     a = get_data(s)
     a = a[0]
@@ -762,7 +760,7 @@ def dashboard(id):
     teachers = get_data(s)
     teacher = False
     for i in teachers:
-        if currentuser['username'] in i:
+        if current_user.username in i:
             teacher = True
             break
     s = f'select SName, SSurname, username from GroupStud join Users on GroupStud.StudID = Users.StudentID where GroupID = {id}'
@@ -855,6 +853,7 @@ def add1(id):
         return redirect(url_for('dashboard', id=id))
 
 
+@login_required
 @app.route('/work_results/<int:workid>/<int:groupid>')
 def work_result(workid, groupid):
     s = f'select distinct CreatorID from GroupTeacher where GroupID={groupid}'
@@ -862,7 +861,7 @@ def work_result(workid, groupid):
     teachers = []
     for i in a:
         teachers.append(i[0])
-    if loggedin and currentuser['StudentID'] in teachers:
+    if current_user.id in teachers:
         results = get_group_result_work(groupid, workid)
         s = f'select WorkName from Work where WorkID = {workid}'
         a = get_data(s)

@@ -219,8 +219,9 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         works.append(i[0])
     results = []
     for workid in works:
-        template = []
-        t = []
+        this_result = []
+        template_result = []
+        problem_ids = []
         s = f'select count(distinct ProblemID) from WorkProblem where WorkID = {workid}'
         a = get_data(s)
         if not a:
@@ -230,20 +231,23 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         n = a
         s = f'select distinct ProblemID from WorkProblem where WorkID = {workid} order by ProblemID desc'
         a = get_data(s)
-        t.append(a)
+        problem_ids.append(a)
         s = f'select WorkName from Work where WorkID={workid}'
         a = get_data(s)
         if not a:
             return []
         while type(a) is not str:
             a = a[0]
-        b = ["Название работы"]
-        for i in a:
-            b.append(i[0])
-        b.append("Всего решено")
-        b.append("Всего")
-        a = b
-        template.append(a)
+        workName = a
+        header = []
+        header.append("Название работы")
+        for j in problem_ids:
+            for i in j:
+                header.append(i[0])
+        header.append("Всего решено")
+        header.append("Всего")
+        a = header
+        template_result.append(workName)
         cur_time = timegm(gmtime())
         s = f'''select distinct ProblemID, StudentID, result
             from WorkResult
@@ -255,11 +259,11 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         for i in a:
             x[i[0]] = i[2]
         for i in a:
-            template.append(max(i[2], x[i[0]]))
+            template_result.append(max(i[2], x[i[0]]))
             total += i[2]
-        template.append(total)
-        template.append(n)
-        t.append(template)
-        results.append(t)
+        template_result.append(total)
+        template_result.append(n)
+        this_result.append(header)
+        this_result.append(template_result)
+        results.append(this_result)
     return results
-

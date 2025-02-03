@@ -5,33 +5,32 @@
     <div class="container {{theme}}">
         <h4>Мои результаты</h4>
       <div class="table-responsive {{theme}}">
+        <br>
         <table class="table table-striped table-sm {{theme}}">
             {%for result in results%}
           <thead>
             <tr>
-                <th scope="col">{{results[0][0]}}</th>
+                <th scope="col">{{result[0][0]}}</th>
                 {%for rr in result[0][1:-2]%}
-              <th scope="col">id: {{rr}}</th>
+              <th scope="col">id {{rr}}</th>
                 {%endfor%}
                 <th scope="col">{{result[0][-2]}}</th>
                 <th scope="col">{{result[0][-1]}}</th>
             </tr>
           </thead>
           <tbody class="{{theme}}">
-          {%for result1 in result[1]%}
             <tr class="{{theme}}">
-              <td scope="col">{{result1[0]}}</td>
-              {%for rr in result1[1:-2]%}
+              <td scope="col">{{result[1][0]}}</td>
+              {%for rr in result[1][1:-2]%}
                 {%if rr%}
                 <th scope="col" class="right">{{rr}}</th>
                 {%else%}
                 <th scope="col" class="wrong">{{rr}}</th>
                 {%endif%}
                 {%endfor%}
-              <th scope="col">{{result1[-2]}}</th>
-              <th scope="col">{{result1[-1]}}</th>
+              <th scope="col">{{result[1][-2]}}</th>
+              <th scope="col">{{result[1][-1]}}</th>
             </tr>
-          {%endfor%}
           </tbody>
           {%endfor%}
         </table>
