@@ -479,6 +479,20 @@ def courses():
     return render_template('courses.html', courses=a, theme=theme, **currentuser, loggedin=loggedin)
 
 
+@login_required
+@app.route('/enter/<int:id>')
+def enter_course(id):
+    s = f'select distinct StudID from CourseStud where CID={id}'
+    a = get_data(s)
+    for i in a:
+        if current_user.id in i:
+            return redirect(url_for('course', id=id, num=1))
+    s = f'insert into CourseStud (CID, StudID) values (?, ?)'
+    a = [id, current_user.id]
+    insrt(a, s)
+    return redirect(url_for('course', id=id, num=1))
+
+
 @app.route('/forum', methods=['POST', 'GET'])
 def forum():
     s = f"select * from Questions order by date desc"
@@ -592,7 +606,6 @@ def open_post(qid):
         return redirect(request.referrer)
     else:
         return "У вас нет прав для выполнения этого действия", 403
-
 
 
 @app.route('/course/<int:id>/<int:num>')

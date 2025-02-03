@@ -11,6 +11,9 @@
                   <p class="card-text">{{course[2]}}</p>
                     <div class="btn-group">
                         <a href="/course/{{course[0]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+                        {%if current_user.is_authenticated%}
+                        <a href="/enter/{{course[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Записаться</a>
+                        {%endif%}
                     </div>
 
                 </div>

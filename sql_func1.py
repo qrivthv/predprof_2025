@@ -261,6 +261,5 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         template.append(n)
         t.append(template)
         results.append(t)
-    print(results)
     return results
 
