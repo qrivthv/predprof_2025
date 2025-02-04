@@ -10,18 +10,19 @@
             <p> </p>
           <p style="width: 80%" style="font-size: 1.1rem; font-style: italic">№{{tasks[r[0]][0]}} <span style="color: #009600">Верный ответ</span></p>
           <p style="width: 80%">{{tasks[r[0]][1]}}</p>
-            {%if tasks[r[0]][10] != None%}
+            {%if tasks[r[0]][9] != []%}
             <div class="d-flex">
-                <img src="{{url_for('static', filename=tasks[r[0]][10])}}" style="max-width: 20vh; height: auto; margin-bottom:1em;">
-                {%if tasks[r[0]][11] != None%}
-                <img src="{{url_for('static', filename=tasks[r[0]][11])}}" style="max-width: 15vh; height: auto; margin-left:1em; margin-bottom:1em;">
-                {%endif%}
+                {%for img in tasks[r[0]][9]%}
+                <img src="{{url_for('static', filename=img)}}" style="max-height: 20vh; width: auto; margin-bottom:1em;">
+                {%endfor%}
             </div>
             {%endif%}
           <input class="col-4 themed-grid-col" disabled value="{{r[1]}}"></input>
-            {%if tasks[r[0]][8]%}
+            {%if tasks[r[0]][8] != []%}
             <h5>Файлы для скачивания:</h5>
-            <a href="{{url_for('static', filename=tasks[r[0]][9])}}" download target="_blank" style="text-decorations: none">{{tasks[r[0]][9][6:]}}</a>
+            {%for file in tasks[r[0]][8]%}
+            <a href="{{url_for('static', filename=file)}}" download target="_blank" style="text-decorations: none">{{file[6:]}}</a>
+            {%endfor%}
             {%endif%}
             <p></p>
 
@@ -35,19 +36,20 @@
             <p> </p>
             <p style="width: 80%">№{{tasks[r[0]][0]}} <span style="color: #960000">Неверный ответ</span></p>
           <p style="width: 80%">{{tasks[r[0]][1]}}</p>
-            {%if tasks[r[0]][10] != None%}
+            {%if tasks[r[0]][9] != []%}
             <div class="d-flex">
-                <img src="{{url_for('static', filename=tasks[r[0]][10])}}" style="max-width: 20vh; height: auto; margin-bottom:1em;">
-                {%if tasks[r[0]][11] != None%}
-                <img src="{{url_for('static', filename=tasks[r[0]][11])}}" style="max-width: 15vh; height: auto; margin-left:1em; margin-bottom:1em;">
-                {%endif%}
+                {%for img in tasks[r[0]][9]%}
+                <img src="{{url_for('static', filename=img)}}" style="max-height: 20vh; width: auto; margin-bottom:1em;">
+                {%endfor%}
             </div>
             {%endif%}
           <input class="col-4 themed-grid-col" disabled value="{{r[1]}}"></input>
             <p></p>
-            {%if tasks[r[0]][8]%}
+            {%if tasks[r[0]][8] != []%}
             <h5>Файлы для скачивания:</h5>
-            <a href="{{url_for('static', filename=tasks[r[0]][9])}}" download target="_blank" style="text-decorations: none">{{tasks[9][6:]}}</a>
+            {%for file in tasks[r[0]][8]%}
+            <a href="{{url_for('static', filename=file)}}" download target="_blank" style="text-decorations: none">{{file[6:]}}</a>
+            {%endfor%}
             {%endif%}
             {%if showAns%}
           <p class="col-4 themed-grid-col">Правильный ответ: {{tasks[r[0]][2]}}</p>
@@ -59,19 +61,20 @@
             <p> </p>
             <p style="width: 80%">№{{tasks[r[0]][0]}}</p>
           <p style="width: 80%">{{tasks[r[0]][1]}}</p>
-            {%if tasks[r[0]][10] != None%}
+            {%if tasks[r[0]][9] != []%}
             <div class="d-flex">
-                <img src="{{url_for('static', filename=tasks[r[0]][10])}}" style="max-width: 20vh; height: auto; margin-bottom:1em;">
-                {%if tasks[r[0]][11] != None%}
-                <img src="{{url_for('static', filename=tasks[r[0]][11])}}" style="max-width: 15vh; height: auto; margin-left:1em; margin-bottom:1em;">
-                {%endif%}
+                {%for img in tasks[r[0]][9]%}
+                <img src="{{url_for('static', filename=img)}}" style="max-height: 20vh; width: auto; margin-bottom:1em;">
+                {%endfor%}
             </div>
             {%endif%}
           <input class="col-4 themed-grid-col" disabled value="{{r[1]}}"></input>
             <p></p>
-            {%if tasks[r[0]][8]%}
+            {%if tasks[r[0]][8] != []%}
             <h5>Файлы для скачивания:</h5>
-            <a href="{{url_for('static', filename=tasks[r[0]][9])}}" download target="_blank" style="text-decorations: none">{{tasks[r[0]][9][6:]}}</a>
+            {%for file in tasks[r[0]][8]%}
+            <a href="{{url_for('static', filename=file)}}" download target="_blank" style="text-decorations: none">{{file[6:]}}</a>
+            {%endfor%}
             {%endif%}
         </div>
         {%endif%}

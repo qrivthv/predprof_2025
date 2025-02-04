@@ -83,7 +83,7 @@
                     {%if tasks[i][9] != []%}
                     <div class="d-flex">
                         {%for img in tasks[i][9]%}
-                        <img src="{{url_for('static', filename=file)}}" style="max-height: 20vh; width: auto; margin-bottom:1em;">
+                        <img src="{{url_for('static', filename=img)}}" style="max-height: 20vh; width: auto; margin-bottom:1em;">
                         {%endfor%}
                     </div>
                     {%endif%}
