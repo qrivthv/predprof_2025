@@ -4,18 +4,19 @@ from calendar import *
 
 
 def get_user_by_id(user_id):
-    s = f"select * from Users where StudentID = {user_id}"
-    a = get_data(s)
+    s = "select * from Users where StudentID = ?"
+    ss = [user_id]
+    a = get_data(s, ss)
     a = a[0]
     a = list(a)
     a.append(get_user_result(user_id))
     return a
 
 
-def get_data(what):
+def get_data(what, base):
     c = _sqlite3.connect('db.db')
     curs = c.cursor()
-    curs.execute(what)
+    curs.execute(what, base)
     line = curs.fetchall()
     c.commit()
     c.close()
@@ -33,8 +34,9 @@ def insrt(data, what):
 
 
 def get_my(id):
-    s = f'select * from PrepCourse join Courses on PrepCourse.CID = Courses.CID where PrepID={id}'
-    a = get_data(s)
+    ss = [id]
+    s = 'select * from PrepCourse join Courses on PrepCourse.CID = Courses.CID where PrepID=?'
+    a = get_data(s, ss)
     b = []
     for i in a:
         k = list(i)
@@ -44,15 +46,15 @@ def get_my(id):
             temp.append(j)
         k = temp
         b.append(k)
-    s = f'select * from Groups join GroupTeacher on Groups.GroupID = GroupTeacher.GroupID where GroupTeacher.CreatorID = {id}'
-    a = get_data(s)
+    s = 'select * from Groups join GroupTeacher on Groups.GroupID = GroupTeacher.GroupID where GroupTeacher.CreatorID = ?'
+    a = get_data(s, ss)
     c = []
     for i in a:
         k = list(i)
         k = k[:-1]
         c.append(k)
-    s = f'select * from Work where CreatorID={id}'
-    a = get_data(s)
+    s = 'select * from Work where CreatorID=?'
+    a = get_data(s, ss)
     d = []
     for i in a:
         k = list(i)
@@ -60,23 +62,23 @@ def get_my(id):
     for i in a:
         k = list(i)
         d.append(k)
-    s = f'select * from CourseStud join Courses on CourseStud.CID = Courses.CID where StudID={id}'
-    a = get_data(s)
+    s = 'select * from CourseStud join Courses on CourseStud.CID = Courses.CID where StudID=?'
+    a = get_data(s, ss)
     e = []
     for i in a:
         k = list(i)
         temp = []
         k = k[2:]
         e.append(k)
-    s = f'select * from Groups join GroupStud on Groups.GroupID = GroupStud.GroupID where GroupStud.StudID = {id}'
-    a = get_data(s)
+    s = 'select * from Groups join GroupStud on Groups.GroupID = GroupStud.GroupID where GroupStud.StudID = ?'
+    a = get_data(s, ss)
     f = []
     for i in a:
         k = list(i)
         k = k[:-1]
         f.append(k)
-    s = f'select WorkGroup.WorkID, WorkName from Work join WorkGroup on Work.WorkID = WorkGroup.WorkID join GroupStud on WorkGroup.GroupID = GroupStud.GroupID where StudID = {id}'
-    a = get_data(s)
+    s = 'select WorkGroup.WorkID, WorkName from Work join WorkGroup on Work.WorkID = WorkGroup.WorkID join GroupStud on WorkGroup.GroupID = GroupStud.GroupID where StudID = ?'
+    a = get_data(s, ss)
     g = []
     for i in a:
         k = list(i)
@@ -85,30 +87,33 @@ def get_my(id):
     return r
 
 
-def upd(s):
+def upd(s, data):
     c = _sqlite3.connect('db.db')
     curs = c.cursor()
-    curs.execute(s)
+    curs.execute(s, data)
     c.commit()
     c.close()
 
 
 def get_user_result_work(userid, groupid, workid, timer=timegm(gmtime())):
     template = ['name', 'surname']
-    s = f'select SSurname, SName from Users where StudentID = {userid}'
-    a = get_data(s)
+    ss = [userid]
+    s = 'select SSurname, SName from Users where StudentID = ?'
+    a = get_data(s, ss)
     template = [a[0][0], a[0][1]]
-    s = f'select count(ProblemID) from WorkProblem where WorkID = {workid}'
-    a = get_data(s)
+    ss = [workid]
+    s = 'select count(ProblemID) from WorkProblem where WorkID = ?'
+    a = get_data(s, ss)
     while type(a) is not int:
         a = a[0]
     n = a
     cur_time = timegm(gmtime())
-    s = f'''select distinct ProblemID, StudentID, result
+    s = '''select distinct ProblemID, StudentID, result
         from WorkResult
-        where date >= {cur_time - timer} and GroupID={groupid} and WorkID={workid} and StudentID="{userid}" 
+        where date >= ? and GroupID=? and WorkID = ? and StudentID= ?
         order by ProblemID desc, date desc'''
-    a = get_data(s)
+    ss = [cur_time - timer, groupid, workid, userid]
+    a = get_data(s, ss)
     total = 0
     for i in a:
         template.append(i[2])
@@ -122,12 +127,13 @@ def get_user_result(userid, timer=timegm(gmtime())):
     cur_time = timegm(gmtime())
     res = []
     for i in range(1, 28):
-        s = f'select count(result) from WorkResult join Problem on Problem.ProblemID = WorkResult.ProblemID where StudentID={userid} and Type={i} and date >= {cur_time - timer}'
-        a = get_data(s)
-        n_i = a[0][0]
-        s = f'select count(result) from WorkResult join Problem on Problem.ProblemID = WorkResult.ProblemID where StudentID={userid} and Type={i} and date >= {cur_time - timer} and result=1'
-        a = get_data(s)
-        r_i = a[0][0]
+        s = 'select count(result) from WorkResult join Problem on Problem.ProblemID = WorkResult.ProblemID where StudentID=? and Type=? and date >= ?'
+        ss = [userid, i, cur_time - timer]
+        a = get_data(s, ss)
+        n_i = a[0][0] if a else 0
+        s = 'select count(result) from WorkResult join Problem on Problem.ProblemID = WorkResult.ProblemID where StudentID = ? and Type = ? and date >= ? and result=1'
+        a = get_data(s, ss)
+        r_i = a[0][0] if a else 0
         res.append([r_i, n_i])
     return res
 
@@ -135,16 +141,18 @@ def get_user_result(userid, timer=timegm(gmtime())):
 def get_group_result_work(groupid, workid, timer=timegm(gmtime())):
     cur_time = timegm(gmtime())
     title = ['Имя', 'Фамилия']
-    s = f'select ProblemID from WorkProblem where WorkID = {workid} order by ProblemID desc'
-    a = get_data(s)
+    ss = [workid]
+    s = 'select ProblemID from WorkProblem where WorkID = ? order by ProblemID desc'
+    a = get_data(s, ss)
     for i in a:
         title.append(i[0])
     n = len(title) - 2
     title.append('Всего верных')
     title.append('Всего задач')
     res = [title]
-    s = f'select distinct StudentID from WorkResult where WorkID={workid} and GroupID={groupid} and date >= {cur_time - timer}'
-    a = get_data(s)
+    s = 'select distinct StudentID from WorkResult where WorkID=? and GroupID=? and date >= ?'
+    ss = [workid, groupid, cur_time - timer]
+    a = get_data(s, ss)
     students = []
     for i in a:
         students.append(i[0])
@@ -157,11 +165,10 @@ def get_group_result(groupid, timer=timegm(gmtime())):
     res = []
     for i in range(27):
         res.append([0, 0])
-    s = f'select distinct StudID from GroupStud where GroupID={groupid}'
-    a = get_data(s)
-    students = []
-    for i in a:
-        students.append(i[0])
+    s = 'select distinct StudID from GroupStud where GroupID=?'
+    ss = [groupid]
+    a = get_data(s, ss)
+    students = [i[0] for i in a] if a else []
     for stud in students:
         rr = get_user_result(stud, timer)
         for i in range(27):
@@ -173,15 +180,17 @@ def get_group_result(groupid, timer=timegm(gmtime())):
 def get_user(username=None, email = None):
     c = _sqlite3.connect('db.db')
     curs = c.cursor()
-    what = f"select * from Users where username = '{username}'"
-    what1 = f"select * from Users where username = '{email}'"
-    curs.execute(what)
+    what = "select * from Users where username = ?"
+    ss1 = [username]
+    what1 = "select * from Users where username = ?"
+    ss2 = [email]
+    curs.execute(what, ss1)
     line = curs.fetchall()
     c.commit()
     c.close()
     c = _sqlite3.connect('db.db')
     curs = c.cursor()
-    curs.execute(what1)
+    curs.execute(what1, ss2)
     line2 = curs.fetchall()
     c.commit()
     c.close()
@@ -213,8 +222,9 @@ def get_user(username=None, email = None):
 
 def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
     works = []
-    s = f'select distinct workID from WorkGroup where GroupID = {groupid} and ShowScore=1'
-    a = get_data(s)
+    s = 'select distinct workID from WorkGroup where GroupID = ? and ShowScore=1'
+    ss = [groupid]
+    a = get_data(s, ss)
     for i in a:
         works.append(i[0])
     results = []
@@ -222,38 +232,29 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         this_result = []
         template_result = []
         problem_ids = []
-        s = f'select count(distinct ProblemID) from WorkProblem where WorkID = {workid}'
-        a = get_data(s)
+        s = 'select count(distinct ProblemID) from WorkProblem where WorkID = ?'
+        ss = [workid]
+        a = get_data(s, ss)
         if not a:
             continue
-        while type(a) is not int:
-            a = a[0]
-        n = a
-        s = f'select distinct ProblemID from WorkProblem where WorkID = {workid} order by ProblemID desc'
-        a = get_data(s)
-        problem_ids.append(a)
-        s = f'select WorkName from Work where WorkID={workid}'
-        a = get_data(s)
+        n = a[0][0] if a else 0
+        s = 'select distinct ProblemID from WorkProblem where WorkID = ? order by ProblemID desc'
+        a = get_data(s, ss)
+        problem_ids = [i[0] for i in a] if a else []
+        s = 'select WorkName from Work where WorkID=?'
+        a = get_data(s, ss)
         if not a:
             return []
-        while type(a) is not str:
-            a = a[0]
-        workName = a
-        header = []
-        header.append("Название работы")
-        for j in problem_ids:
-            for i in j:
-                header.append(i[0])
-        header.append("Всего решено")
-        header.append("Всего")
-        a = header
+        workName = a[0][0] if a else ""
+        header = ["Название работы"] + problem_ids + ["Всего решено", "Всего"]
         template_result.append(workName)
         cur_time = timegm(gmtime())
-        s = f'''select distinct ProblemID, StudentID, result
+        s = '''select distinct ProblemID, StudentID, result
             from WorkResult
-            where date >= {cur_time - timer} and GroupID={groupid} and WorkID={workid} and StudentID="{userid}" 
+            where date >= ? and GroupID=? and WorkID=? and StudentID=? 
             order by ProblemID desc, date desc'''
-        a = get_data(s)
+        ss = [cur_time - timer, groupid, workid, userid]
+        a = get_data(s, ss)
         total = 0
         x = {}
         for i in a:

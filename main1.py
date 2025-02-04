@@ -87,8 +87,8 @@ def logout():
 @app.route('/')
 @app.route('/index')
 def index():
-    s = f'select * from Courses where CID = 1 or CID = 8 or cID == 9'
-    favcourses = get_data(s)
+    s = 'select * from Courses where CID = ? or CID = ? or CID == ?'
+    favcourses = get_data(s, [1, 9, 8])
     return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser, favcourses=favcourses)
 
 
@@ -112,7 +112,6 @@ def myprofile():
 
 @app.route('/profile')
 def profile(username):
-    # s = f"select * from Users where username = '{username}'"
     x = get_user(username)
     return render_template('profile.html',res=x['results'], user=x, **currentuser, loggedin=loggedin, theme=theme)
 
@@ -167,12 +166,12 @@ def register():
             new_user["bright"] = True
         else:
             new_user["bright"] = False
-        s1 = f'select email, username, phone from Users where email = "{email}"'
-        s2 = f'select email, username, phone from Users where username = "{new_user["username"]}"'
-        s3 = f'select email, username, phone from Users where phone="{new_user["phone"]}"'
-        x1 = get_data(s1)
-        x2 = get_data(s2)
-        x3 = get_data(s3)
+        s1 = 'select email, username, phone from Users where email = ?'
+        s2 = 'select email, username, phone from Users where username = ?'
+        s3 = 'select email, username, phone from Users where phone=?'
+        x1 = get_data(s1, [email])
+        x2 = get_data(s2, [new_user["username"]])
+        x3 = get_data(s3, [new_user['phone']])
         if len(x2) != 0:
             return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот никнейм уже занят", theme=theme)
         if len(x1) != 0:
@@ -180,7 +179,7 @@ def register():
         if len(x3) != 0:
             return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
         #  genius user check
-        s = f'''
+        s = '''
         insert into Users (username, email, phone, password, SName, SSurname,  Grade, color, bright, adm) 
         values 
         (?, ?, ?, ?, ?, ?,  ?, ?, ?, ?)
@@ -213,8 +212,8 @@ def edit():
             bright = True
         # Проверка, что новый username не занят другим пользователем
         if new_username != current_user.username:
-            s = f'SELECT username FROM Users WHERE username = "{new_username}"'
-            existing_user = get_data(s)
+            s = 'SELECT username FROM Users WHERE username = ?'
+            existing_user = get_data(s, [new_username])
             if existing_user:
                 flash("К сожалению, этот никнейм уже занят.", "error")
                 return render_template('register.html', user=current_user, s='Редактировать',
@@ -222,21 +221,21 @@ def edit():
 
         # Проверка, что новый email не занят другим пользователем
         if new_email.replace('?', '@') != current_user.email:
-            s = f'SELECT email FROM Users WHERE email = "{new_email}"'
-            existing_email = get_data(s)
+            s = 'SELECT email FROM Users WHERE email = ?'
+            existing_email = get_data(s, [new_email])
             if existing_email:
                 flash("К сожалению, эта почта уже занята.", "error")
                 return render_template('register.html', user=current_user,
                                        message="К сожалению, эта почта уже занята", theme=theme)
 
         # Обновление данных пользователя в базе данных
-        s = f'''
+        s = '''
                 UPDATE Users 
-                SET username = "{new_username}", email = "{new_email}", phone = {new_phone}, SName = "{new_name}", SSurname = "{new_surname}", color = "{new_color}", bright={bright}, Grade={new_grade}
-                WHERE StudentID = {current_user.id}
+                SET username = ?, email = ?, phone = ?, SName = ?, SSurname = ?, color = ?, bright=?, Grade=?
+                WHERE StudentID = ?
             '''
-        print(s)
-        upd(s)
+        ss = [new_username, new_email, new_phone, new_name, new_surname, new_color, bright, new_grade, current_user.id]
+        upd(s, ss)
 
         # Обновляем данные в текущем пользователе (current_user)
         current_user.username = new_username
@@ -258,8 +257,8 @@ def edit():
 
 @app.route('/test/<int:num>', methods=['POST', 'GET'])
 def test(num):
-    s = f'select * from Problem where Type = {num}'
-    x = get_data(s)
+    s = 'select * from Problem where Type = ?'
+    x = get_data(s, [num])
     b = []
     for i in x:
         k = list(i)
@@ -324,12 +323,12 @@ def test(num):
 @login_required
 @app.route('/work/<int:workid>/<int:groupid>', methods=['POST', 'GET'])
 def work(workid, groupid):
-    s = f'select ShowAns, ShowScore from WorkGroup where WorkID={workid} and GroupID={groupid}'
-    dt = get_data(s)
+    s = 'select ShowAns, ShowScore from WorkGroup where WorkID=? and GroupID=?'
+    dt = get_data(s, [workid, groupid])
     dt = dt[0]
-    s = f'''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, filename, img
-        from Problem join WorkProblem on Problem.ProblemID = WorkProblem.ProblemID where WorkID = {workid}'''
-    tasks = get_data(s)
+    s = '''select Problem.ProblemID, Statement, Answer, Type, Creator, Solution, code, Diff, filename, img
+        from Problem join WorkProblem on Problem.ProblemID = WorkProblem.ProblemID where WorkID = ?'''
+    tasks = get_data(s, [workid])
     b = []
     for i in tasks:
         k = list(i)
@@ -378,8 +377,8 @@ def work(workid, groupid):
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
 def train(num):
-    s = f'select * from Problem where Type = {num}'
-    x = get_data(s)
+    s = 'select * from Problem where Type = ?'
+    x = get_data(s, [num])
     b = []
     if request.method == 'GET':
         for i in x:
@@ -414,8 +413,8 @@ def add():
         files = request.files.getlist('file')
         imgs = request.files.getlist('img')
         dbfiles = ""
-        s = f'select * from Problem where Statement="{statement}"'
-        a = get_data(s)
+        s = 'select * from Problem where Statement=?'
+        a = get_data(s, [statement])
         if diff == 'base':
             diff = 1
         elif diff == 'ke':
@@ -424,12 +423,12 @@ def add():
             diff = 2
         if a != []:
             return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin, message='Задача с таким условием уже есть :(')
-        s = f'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
+        s = 'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
         a = [statement, answer, typ, creator, solution, diff]
         insrt(a, s)
         cnt = 0
-        s = f'select ProblemID from Problem where Statement="{statement}"'
-        a = get_data(s)
+        s = 'select ProblemID from Problem where Statement=?'
+        a = get_data(s, [statement])
         while type(a) is not int:
             a = a[0]
         for file in files:
@@ -442,8 +441,8 @@ def add():
             file.save(path)
             dbfiles += path[7:] + ' '
             cnt += 1
-        s = f'update Problem set filename="{dbfiles}" where ProblemID={a}'
-        upd(s)
+        s = 'update Problem set filename=? where ProblemID=?'
+        upd(s, [dbfiles, a])
         cnt = 0
         imgss = ""
         for file in imgs:
@@ -456,8 +455,8 @@ def add():
             file.save(path)
             imgss += path[7:] + ' '
             cnt += 1
-        s = f'update Problem set img="{imgss}" where ProblemID={a}'
-        upd(s)
+        s = 'update Problem set img="? where ProblemID=?'
+        upd(s, [imgss, a])
         return redirect(url_for('index'))
 
 
@@ -474,19 +473,19 @@ def settings():
 @app.route('/courses')
 def courses():
     s = f"select * from Courses"
-    a = get_data(s)
+    a = get_data(s, [])
     return render_template('courses.html', courses=a, theme=theme, **currentuser, loggedin=loggedin)
 
 
 @login_required
 @app.route('/enter/<int:id>')
 def enter_course(id):
-    s = f'select distinct StudID from CourseStud where CID={id}'
-    a = get_data(s)
+    s = 'select distinct StudID from CourseStud where CID=?'
+    a = get_data(s, [id])
     for i in a:
         if current_user.id in i:
             return redirect(url_for('course', id=id, num=1))
-    s = f'insert into CourseStud (CID, StudID) values (?, ?)'
+    s = 'insert into CourseStud (CID, StudID) values (?, ?)'
     a = [id, current_user.id]
     insrt(a, s)
     return redirect(url_for('course', id=id, num=1))
@@ -495,7 +494,7 @@ def enter_course(id):
 @app.route('/forum', methods=['POST', 'GET'])
 def forum():
     s = f"select * from Questions order by date desc"
-    a = get_data(s)
+    a = get_data(s, [])
     b = []
     tm = timegm(gmtime())
     if request.method == 'GET':
@@ -538,8 +537,8 @@ def forum():
 
 @app.route('/question/<int:qid>', methods=['POST', 'GET'])
 def ans(qid):
-    s1 = f'select * from Questions where QID = {qid}'
-    x1 = get_data(s1)
+    s1 = 'select * from Questions where QID = ?'
+    x1 = get_data(s1, [qid])
     if request.method == 'POST':
         if current_user.is_authenticated:
             username = current_user.username
@@ -547,11 +546,11 @@ def ans(qid):
             username = "неизвестный"
         tm = timegm(gmtime())
         text = request.form['answer']
-        s = f'insert into Answers (QID, Author, Statement, date) values (?, ?, ?, ?)'
+        s = 'insert into Answers (QID, Author, Statement, date) values (?, ?, ?, ?)'
         a = [qid, username, text, tm]
         insrt(a, s)
-    s2 = f'select * from Answers where QID = {qid} order by date desc'
-    x2 = get_data(s2)
+    s2 = 'select * from Answers where QID = ? order by date desc'
+    x2 = get_data(s2, [qid])
     q = list(x1[0])
     dd = x1[0][3]
     ss = gmtime(dd)
@@ -565,8 +564,8 @@ def ans(qid):
 @login_required
 def delete_comment(comment_id):
     if current_user.adm == 1:
-        s = f'DELETE FROM Answers WHERE AId = {comment_id}'
-        upd(s)
+        s = 'DELETE FROM Answers WHERE AId = ?'
+        upd(s, [comment_id])
         return redirect(request.referrer)  # Возвращаем пользователя на предыдущую страницу
     else:
         return "У вас нет прав для выполнения этого действия", 403
@@ -576,10 +575,10 @@ def delete_comment(comment_id):
 @login_required
 def delete_post(qid):
     if current_user.adm == 1:
-        s1 = f'DELETE FROM Answers WHERE QID = {qid}'
-        upd(s1)
-        s2 = f'DELETE FROM Questions WHERE QID = {qid}'
-        upd(s2)
+        s1 = 'DELETE FROM Answers WHERE QID = ?'
+        upd(s1, [qid])
+        s2 = 'DELETE FROM Questions WHERE QID = ?'
+        upd(s2, [qid])
         return redirect(url_for('forum'))
     else:
         return "У вас нет прав для выполнения этого действия", 403
@@ -589,8 +588,8 @@ def delete_post(qid):
 @login_required
 def close_post(qid):
     if current_user.adm == 1:
-        s = f'UPDATE Questions SET Open = 0 WHERE QID = {qid}'
-        upd(s)
+        s = 'UPDATE Questions SET Open = 0 WHERE QID = ?'
+        upd(s, [qid])
         return redirect(request.referrer)
     else:
         return "У вас нет прав для выполнения этого действия", 403
@@ -600,8 +599,8 @@ def close_post(qid):
 @login_required
 def open_post(qid):
     if current_user.adm == 1:
-        s = f'UPDATE Questions SET Open = 1 WHERE QID = {qid}'
-        upd(s)
+        s = 'UPDATE Questions SET Open = 1 WHERE QID = ?'
+        upd(s, [qid])
         return redirect(request.referrer)
     else:
         return "У вас нет прав для выполнения этого действия", 403
@@ -609,13 +608,13 @@ def open_post(qid):
 
 @app.route('/course/<int:id>/<int:num>')
 def course(id, num):
-    s = f'select distinct Type from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} order by Type asc'
-    a = get_data(s)
+    s = 'select distinct Type from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = ? order by Type asc'
+    a = get_data(s, [id])
     types = []
     for i in a:
         types.append(i[0])
-    s = f'select Courses.CID, CName, Type, Link, text, lang, code, files from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = {id} and Type={num}'
-    a = get_data(s)
+    s = 'select Courses.CID, CName, Type, Link, text, lang, code, files from CourseMaterial join Courses on Courses.CID = CourseMaterial.CID where Courses.CID = ? and Type=?'
+    a = get_data(s, [id, num])
     if len(a) == 1:
         a = a[0]
     b = list(a)
@@ -634,11 +633,11 @@ def ask():
         else:
             username = "неизвестный"
         tm = timegm(gmtime())
-        s = f'insert into Questions (Author, Statement, date, Open) values (?, ?, ?, ?)'
+        s = 'insert into Questions (Author, Statement, date, Open) values (?, ?, ?, ?)'
         a = [username, question, tm, 1]
         insrt(a, s)
-        s = f'select QID from Questions where date = {tm}'
-        x = get_data(s)
+        s = 'select QID from Questions where date = ?'
+        x = get_data(s, [tm])
         x = x[0]
         return render_template('tea.html', theme=theme, **currentuser, loggedin=loggedin)
     return render_template('ask.html', theme=theme, **currentuser, loggedin=loggedin)
@@ -647,7 +646,7 @@ def ask():
 @app.route('/bank', methods=['POST', 'GET'])
 def bank():
     s = f"select * from Problem order by Type asc, Diff "
-    a = get_data(s)
+    a = get_data(s, [])
     b = []
     tm = timegm(gmtime())
     if request.method == 'GET':
@@ -699,48 +698,48 @@ def add_group():
         name = request.form['name']
         students = request.form['stud'].split()
         teachers = request.form['teach'].split()
-        s = f'select GroupID from Groups where GroupName = "{name}"'
-        a = get_data(s)
+        s = 'select GroupID from Groups where GroupName = ?'
+        a = get_data(s, [name])
         if a !=[]:
             return render_template('add_group.html', message='Группа с таким названием уже есть', theme=theme, **currentuser, loggedin=loggedin)
-        s = f'insert into Groups (GroupName) values (?)'
+        s = 'insert into Groups (GroupName) values (?)'
         a = [name]
         insrt(a, s)
-        s = f'select GroupID from Groups where GroupName = "{name}"'
-        a = get_data(s)
+        s = 'select GroupID from Groups where GroupName = ?'
+        a = get_data(s, name)
         a = a[0]
         if type(a) is not int:
             id = a[0]
         else:
             id = a
-        s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
+        s = 'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
         a = [id, current_user.id]
         insrt(a, s)
         if teachers != []:
             for user in teachers:
                 if ',' in user:
                     user = user.replace(',', '')
-                s = f'select StudentID from Users where username="{user}"'
-                a = get_data(s)
+                s = 'select StudentID from Users where username=?'
+                a = get_data(s, [user])
                 a = a[0]
                 if type(a) is not int:
                     id1 = a[0]
                 else:
                     id1 = a
-                s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
+                s = 'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
                 a = [id, id1]
                 insrt(a, s)
         for user in students:
             if ',' in user:
                 user = user.replace(',', '')
-            s = f'select StudentID from Users where username="{user}"'
-            a = get_data(s)
+            s = 'select StudentID from Users where username=?'
+            a = get_data(s, [user])
             a = a[0]
             if type(a) is not int:
                 id1 = a[0]
             else:
                 id1 = a
-            s = f'insert into GroupStud (GroupID, StudID) values (?, ?)'
+            s = 'insert into GroupStud (GroupID, StudID) values (?, ?)'
             a = [id, id1]
             insrt(a, s)
         return render_template('tea.html', theme=theme, loggedin=loggedin, **currentuser)
@@ -749,24 +748,24 @@ def add_group():
 @login_required
 @app.route('/dashboard/<int:id>')
 def dashboard(id):
-    s = f'select GroupName from Groups where GroupID = {id}'
-    a = get_data(s)
+    s = 'select GroupName from Groups where GroupID = ?'
+    a = get_data(s, [id])
     a = a[0]
     if type(a) is not str:
         GName = a[0]
     else:
         GName = a
-    s = f'select SName, SSurname, username from GroupTeacher join Users on GroupTeacher.CreatorID = Users.StudentID where GroupID = {id}'
-    teachers = get_data(s)
+    s = 'select SName, SSurname, username from GroupTeacher join Users on GroupTeacher.CreatorID = Users.StudentID where GroupID = ?'
+    teachers = get_data(s, [id])
     teacher = False
     for i in teachers:
         if current_user.username in i:
             teacher = True
             break
-    s = f'select SName, SSurname, username from GroupStud join Users on GroupStud.StudID = Users.StudentID where GroupID = {id}'
-    students = get_data(s)
-    s = f'select Work.WorkID, CreatorID, WorkName from WorkGroup join Work on WorkGroup.WorkID = Work.WorkID where GroupID = {id}'
-    works = get_data(s)
+    s = 'select SName, SSurname, username from GroupStud join Users on GroupStud.StudID = Users.StudentID where GroupID = ?'
+    students = get_data(s, [id])
+    s = 'select Work.WorkID, CreatorID, WorkName from WorkGroup join Work on WorkGroup.WorkID = Work.WorkID where GroupID = ?'
+    works = get_data(s, [id])
     return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName, teachers=teachers, students=students, works=works, id=id, teacher=teacher)
 
 
@@ -786,11 +785,11 @@ def addTest():
                 id = i[0]
                 break
 
-        s = f'insert into Work (CreatorID, WorkName) values (?, ?)'
+        s = 'insert into Work (CreatorID, WorkName) values (?, ?)'
         a = [id, answer]
         insrt(a, s)
 
-        sW = f'select * from Work order by CreatorID'
+        sW = 'select * from Work order by CreatorID'
         aW = get_data(sW)
         wID = 0
 
@@ -803,7 +802,7 @@ def addTest():
         for i in x:
             arr.append(int(i))
         for i in arr:
-            s1 = f'insert into WorkProblem (WorkID, ProblemID) values (?, ?)'
+            s1 = 'insert into WorkProblem (WorkID, ProblemID) values (?, ?)'
             a1 = [wID, i]
             insrt(a1, s1)
 
@@ -821,33 +820,33 @@ def add1(id):
             for user in teachers:
                 if ',' in user:
                     user = user.replace(',', '')
-                s = f'select StudentID from Users where username="{user}"'
-                a = get_data(s)
+                s = 'select StudentID from Users where username=?'
+                a = get_data(s, [user])
                 a = a[0]
                 if type(a) is not int:
                     id1 = a[0]
                 else:
                     id1 = a
-                s = f'select GroupID, CreatorID from GroupTeacher where CreatorID={id1} and GroupID={id}'
-                a = get_data(s)
+                s = 'select GroupID, CreatorID from GroupTeacher where CreatorID=? and GroupID=?'
+                a = get_data(s, [id1, id])
                 if a == []:
-                    s = f'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
+                    s = 'insert into GroupTeacher (GroupID, CreatorID) values (?, ?)'
                     a = [id, id1]
                     insrt(a, s)
         for user in students:
             if ',' in user:
                 user = user.replace(',', '')
-            s = f'select StudentID from Users where username="{user}"'
-            a = get_data(s)
+            s = 'select StudentID from Users where username=?'
+            a = get_data(s, [user])
             a = a[0]
             if type(a) is not int:
                 id1 = a[0]
             else:
                 id1 = a
-            s = f'select GroupID, StudID from GroupStud where StudID={id1} and GroupID={id}'
-            a = get_data(s)
+            s = 'select GroupID, StudID from GroupStud where StudID=? and GroupID=?'
+            a = get_data(s, [id1, id])
             if a == []:
-                s = f'insert into GroupStud (GroupID, StudID) values (?, ?)'
+                s = 'insert into GroupStud (GroupID, StudID) values (?, ?)'
                 a = [id, id1]
                 insrt(a, s)
         return redirect(url_for('dashboard', id=id))
@@ -856,20 +855,23 @@ def add1(id):
 @login_required
 @app.route('/work_results/<int:workid>/<int:groupid>')
 def work_result(workid, groupid):
-    s = f'select distinct CreatorID from GroupTeacher where GroupID={groupid}'
-    a = get_data(s)
+    s = 'select distinct CreatorID from GroupTeacher where GroupID=?'
+    ss = [groupid]
+    a = get_data(s, ss)
     teachers = []
     for i in a:
         teachers.append(i[0])
     if current_user.id in teachers:
         results = get_group_result_work(groupid, workid)
-        s = f'select WorkName from Work where WorkID = {workid}'
-        a = get_data(s)
+        s = 'select WorkName from Work where WorkID = ?'
+        ss = [workid]
+        a = get_data(s, ss)
         while type(a) is not str:
             a = a[0]
         work_name = a
-        s = f'select GroupName from Groups where GroupID = {groupid}'
-        a = get_data(s)
+        s = 'select GroupName from Groups where GroupID = ?'
+        ss = [groupid]
+        a = get_data(s, ss)
         while type(a) is not str:
             a = a[0]
         group_name = a
