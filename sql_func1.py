@@ -108,16 +108,25 @@ def get_user_result_work(userid, groupid, workid, timer=timegm(gmtime())):
         a = a[0]
     n = a
     cur_time = timegm(gmtime())
-    s = '''select distinct ProblemID, StudentID, result
+    s = '''select distinct ProblemID, StudentID, result, date
         from WorkResult
         where date >= ? and GroupID=? and WorkID = ? and StudentID= ?
-        order by ProblemID desc, date desc'''
+        order by date desc, ProblemID desc'''
     ss = [cur_time - timer, groupid, workid, userid]
     a = get_data(s, ss)
     total = 0
+    dates = []
     for i in a:
-        template.append(i[2])
-        total += i[2]
+        if i[3] not in dates:
+            dates.append(i[3])
+    if len(dates) > 1:
+        date = max(dates)
+    else:
+        date = dates[0]
+    for i in a:
+        if i[3] == date:
+            template.append(i[2])
+            total += i[2]
     template.append(total)
     template.append(n)
     return template
@@ -249,7 +258,7 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         header = ["Название работы"] + problem_ids + ["Всего решено", "Всего"]
         template_result.append(workName)
         cur_time = timegm(gmtime())
-        s = '''select distinct ProblemID, StudentID, result
+        s = '''select distinct ProblemID, StudentID, result, date
             from WorkResult
             where date >= ? and GroupID=? and WorkID=? and StudentID=? 
             order by ProblemID desc, date desc'''
@@ -257,11 +266,19 @@ def get_user_results_in_group(userid, groupid, timer=timegm(gmtime())):
         a = get_data(s, ss)
         total = 0
         x = {}
+        dates = []
+        for i in a:
+            if i[3] not in dates:
+                dates.append(i[3])
+        if len(dates) > 1:
+            date = max(dates)
+        else:
+            date = dates[0]
         for i in a:
             x[i[0]] = i[2]
-        for i in a:
-            template_result.append(max(i[2], x[i[0]]))
-            total += i[2]
+            if i[3] == date:
+                template_result.append(i[2])
+                total += i[2]
         template_result.append(total)
         template_result.append(n)
         this_result.append(header)
