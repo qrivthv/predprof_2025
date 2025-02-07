@@ -1,248 +1,266 @@
 {% extends "base.html" %}
 
-{%block content%}
-<div class="container">
-    <main>
-        <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center">
-      <div class="col col-lg-9 col-xl-8">
-        <div class="card">
-          <div class="rounded-top text-white d-flex flex-row" style="background-color: {{color}}; height:200px;">
-            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px; margin-top: 120px !important;">
-              <div class="btn-group-vertical">
-                {% if bright %}
-              <a role="button" href="/edit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1; margin-bottom: 0 !important;">
-                Редактировать
-              </a>
-              <a role="button" href="/error" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-dark text-body" data-mdb-ripple-color="dark" style="z-index: 1;">
-                Как я выгляжу?
-              </a>
-                {%else%}
-                <a  role="button" href="/edit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light" data-mdb-ripple-color="light" style="z-index: 1; margin-bottom: 0 !important;">
-                Редактировать
-              </a>
-              <a  role="button" href="/error" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light" data-mdb-ripple-color="light" style="z-index: 1;">
-                Как я выгляжу?
-              </a>
-                {%endif%}
+{% block content %}
+<div class="profile-container {{theme}} py-5">
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header" style="background-color: {{color}};">
+            <div class="profile-header-content">
+                <div class="profile-info">
+                    <h1 class="profile-name" style="color: {% if bright %}black{% else %}white{% endif %}">
+                        {{name}} {{surname}}
+                    </h1>
+                    <p class="profile-username" style="color: {% if bright %}black{% else %}white{% endif %}">@{{username}}</p>
+                </div>
+                <div class="profile-actions">
+                    {% if bright %}
+                    <a href="/edit" class="btn btn-light"><i class="fas fa-edit me-2"></i>Редактировать</a>
+                    <a href="/error" class="btn btn-light"><i class="fas fa-eye me-2"></i>Как я выгляжу?</a>
+                    {% else %}
+                    <a href="/edit" class="btn btn-dark"><i class="fas fa-edit me-2"></i>Редактировать</a>
+                    <a href="/error" class="btn btn-dark"><i class="fas fa-eye me-2"></i>Как я выгляжу?</a>
+                    {% endif %}
                 </div>
             </div>
-            {% if bright %}
-            <div class="ms-3" style="margin-top: 130px; color: black;">
-              <h5>{{name}} {{surname}}</h5>
-            </div>
-            {%else%}
-            <div class="ms-3" style="margin-top: 130px; color: white;">
-              <h5>{{name}} {{surname}}</h5>
-            </div>
-            {%endif%}
-          </div>
-          <div class="card-body p-4 text-black {{theme}}">
-            <div class="mb-5  text-body {{theme}}">
-              <p class="lead fw-normal mb-1">Обо мне</p>
-              <div class="p-4 bg-body-tertiary">
-                <p class="font-italic mb-1">Username: {{username}}</p>
-                {%if email != ""%}
-                <p class="font-italic mb-1">Email: {{email}}</p>
-                {%endif%}
-                {%if tel != ""%}
-                <p class="font-italic mb-1">Phone number: {{phone}}</p>
-                {%endif%}
-              </div>
-            </div>
-            {%if courses|length != 0 or mycourses|length != 0%}
-            <hr>
-            <div class="courses {{theme}}">
-              {%if courses|length != 0%}
-              <h4>Мои курсы (я учитель)</h4>
-              {%for c in courses%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <h5 class="card-title">{{c[1]}}</h5>
-                  <p class="card-text">{{c[2]}}</p>
-                    <div class="btn-group">
-                        <a href="/course/{{c[1]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
-                    </div>
-                </div>
-              </div>
-              {%endfor%}
-              <hr>
-              {%endif%}
-              {%if mycourses|length != 0%}
-            <div class="courses {{theme}}">
-              <h4>Мои курсы (я ученик)</h4>
-              {%for c in mycourses%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <h5 class="card-title">{{c[2]}}</h5>
-                  <p class="card-text">{{c[3]}}</p>
-                    <div class="btn-group">
-                        <a href="/course/{{c[1]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
-                    </div>
-                </div>
-              </div>
-              {%endfor%}
-            </div>
-              <hr>
-              {%endif%}
-            </div>
-
-            {%endif%}
-            <a href="" class="btn btn-primary tea">Добавить курс</a>
-            {%if works|length != 0 or myworks|length != 0%}
-            <hr>
-            <div class="works {{theme}}">
-              {%if works|length != 0%}
-              <h4>Мои работы (я составитель)</h4>
-              {%for c in works%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <p class="card-text">{{c[2]}}</p>
-                    <div class="btn-group">
-                        <a href="/test/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
-                    </div>
-                </div>
-              </div>
-              {%endfor%}
-              <hr>
-              {%endif%}
-              {%if myworks|length != 0%}
-            <div class="courses {{theme}}">
-              <h4>Мои работы (я ученик)</h4>
-              {%for c in myworks%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <h5 class="card-title">id : {{c[0]}}</h5>
-                  <p class="card-text">{{c[1]}}</p>
-                    <div class="btn-group">
-                        <a href="/test/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
-                    </div>
-                </div>
-              </div>
-              {%endfor%}
-            </div>
-
-              {%endif%}
-            </div>
-
-            {%endif%}
-            <hr>
-            <a href="/addTest" class="btn btn-primary tea">Добавить работу</a>
-
-            {%if groups|length != 0 or mygroups|length != 0%}
-            <hr>
-            <div class="groups {{theme}}">
-              {%if groups|length != 0%}
-              <h4>Мои группы (я учитель)</h4>
-              {%for c in groups%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <h5 class="card-title"> {{c[1]}}</h5>
-                    <div class="btn-group">
-                        <a href="/dashboard/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
-                    </div>
-                </div>
-              </div>
-              {%endfor%}
-              <hr>
-              {%endif%}
-              {%if mygroups|length != 0%}
-            <div class="courses {{theme}}">
-              <h4>Мои группы (я ученик)</h4>
-              {%for c in mygroups%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <p class="card-text">{{c[1]}}</p>
-                    <div class="btn-group">
-                        <a href="/dashboard/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
-                        <a href="/my_group/{{c[0]}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Мои результаты</a>
-                    </div>
-                </div>
-              </div>
-              {%endfor%}
-            </div>
-              {%endif%}
-
-            </div>
-            {%endif%}
-            <hr>
-            <a href="/add_group" class="btn btn-primary tea">Добавить группу</a>
-            <hr>
-            {%if res|length != 0%}
-            <div class="res {{theme}}" style="height:fit-content">
-              <details>
-              <summary><h5>Общие результаты</h5></summary>
-
-              <details>
-              <summary class="toggle"><span>Фильтры:</span></summary>
-              <form method="POST">
-                <h5>За последние:</h5>
-                  <div class="row g-0">
-                <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="min" style="width: 100%">Минут</label>
-                  <input type="number" id="min" name="min" class="form-control" style="width: fit-content" value="{{min}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="hour" style="width: 100%">Часов</label>
-                  <input type="number" id="hour" name="hour" class="form-control" style="width: fit-content" value="{{hour}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="day" style="width: 100%">Дней</label>
-                  <input type="number" id="day" name="day" class="form-control" style="width: fit-content" value="{{day}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="month" style="width: 100%">Месяцев</label>
-                  <input type="number" id="month" name="month" class="form-control" style="width: fit-content" value="{{month}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="year" style="width: 100%">Лет</label>
-                  <input type="number" id="year" name="year" class="form-control" style="width: fit-content" value="{{year}}">
-                </div>
-              </div>
-                  </div>
-                  <a class="btn btn-secondary tea" href="/my_profile">Сбросить</a>
-                  <button type="submit" class="btn btn-primary" style="width:fit-content">Применить</button>
-              </form>
-            </details>
-
-              <ul style="height:fit-content">
-                {%for i in range(1, 28)%}
-                <li style="height: 2.5em; margin-top: 1em">{{i}} :
-                  {%if res[i - 1][1] == 0%}
-                  <span class="{{theme}} wrong">{{0}}%</span>
-                  {%elif 100*res[i - 1][0]/res[i - 1][1] <= 50%}
-                  <span class="{{theme}} wrong">{{100*res[i - 1][0]/res[i - 1][1]|round(1)}}%</span>
-                  {%else%}
-                  <span class="{{theme}} right">{{(100*res[i - 1][0]/res[i - 1][1])|round(1)}}%</span>
-                  {%endif%}
-                  <span>Всего решено: {{res[i - 1][1]}} задач</span>
-                </li>
-                {%endfor%}
-              </ul>
-              </details>
-            </div>
-
-            {%endif%}
-
-          </div>
-
-
         </div>
-      </div>
+
+        <div class="profile-content">
+            <!-- Left Column -->
+            <div class="profile-sidebar">
+                <!-- About Section -->
+                <div class="profile-section">
+                    <h3><i class="fas fa-user me-2"></i>Контакты</h3>
+                    <div class="info-card">
+                        {% if email != "" %}
+                        <div class="info-item">
+                            <i class="fas fa-envelope me-2"></i>
+                            <span>{{email}}</span>
+                        </div>
+                        {% endif %}
+                        {% if phone != "" %}
+                        <div class="info-item">
+                            <i class="fas fa-phone me-2"></i>
+                            <span>{{phone}}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Statistics Section -->
+                {% if res|length != 0 %}
+                <div class="profile-section">
+                    <h3><i class="fas fa-chart-bar me-2"></i>Статистика</h3>
+                    <div class="stats-card">
+                        <details>
+                            <summary class="stats-toggle">Общие результаты</summary>
+                            <div class="stats-content">
+                                {% for i in range(1, 28) %}
+                                <div class="stat-item">
+                                    <span class="stat-label">Задание {{i}}</span>
+                                    <div class="stat-bar">
+                                        <div class="progress">
+                                            <div class="progress-bar {% if res[i-1][1] == 0 or 100*res[i-1][0]/res[i-1][1] <= 50 %}bg-danger{% else %}bg-success{% endif %}"
+                                                 role="progressbar"
+                                                 style="width: {{100*res[i-1][0]/res[i-1][1] if res[i-1][1] > 0 else 0}}%">
+                                                {{(100*res[i-1][0]/res[i-1][1])|round(1) if res[i-1][1] > 0 else 0}}%
+                                            </div>
+                                        </div>
+                                        <small>Решено: {{res[i-1][1]}}</small>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column -->
+            <div class="profile-main">
+                <!-- Courses Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-graduation-cap me-2"></i>Курсы</h3>
+                        <a href="" class="btn btn-primary btn-sm"><i class="fas fa-plus me-2"></i>Добавить курс</a>
+                    </div>
+                    
+                    {% if courses|length != 0 %}
+                    <h4 class="subsection-title">Преподаю</h4>
+                    <div class="cards-grid">
+                        {% for c in courses %}
+                        <div class="content-card">
+                            <h5>{{c[1]}}</h5>
+                            <p>{{c[2]}}</p>
+                            <a href="/course/{{c[1]}}/1" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>Смотреть
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if mycourses|length != 0 %}
+                    <h4 class="subsection-title">Изучаю</h4>
+                    <div class="cards-grid">
+                        {% for c in mycourses %}
+                        <div class="content-card">
+                            <h5>{{c[2]}}</h5>
+                            <p>{{c[3]}}</p>
+                            <a href="/course/{{c[1]}}/1" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>Смотреть
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Groups Section -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-users me-2"></i>Группы</h3>
+                        <a href="/add_group" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-2"></i>Добавить группу
+                        </a>
+                    </div>
+
+                    {% if groups|length != 0 %}
+                    <h4 class="subsection-title">Преподаю</h4>
+                    <div class="cards-grid">
+                        {% for c in groups %}
+                        <div class="content-card">
+                            <h5>{{c[1]}}</h5>
+                            <a href="/dashboard/{{c[0]}}" class="btn btn-primary">
+                                <i class="fas fa-eye me-2"></i>Смотреть
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if mygroups|length != 0 %}
+                    <h4 class="subsection-title">Учусь</h4>
+                    <div class="cards-grid">
+                        {% for c in mygroups %}
+                        <div class="content-card">
+                            <h5>{{c[1]}}</h5>
+                            <div class="btn-group">
+                                <a href="/dashboard/{{c[0]}}" class="btn btn-primary">
+                                    <i class="fas fa-eye me-2"></i>Смотреть
+                                </a>
+                                <a href="/my_group/{{c[0]}}" class="btn btn-primary">
+                                    <i class="fas fa-chart-line me-2"></i>Результаты
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-    </main>
 </div>
 
+<style>
+    .profile-container {
+        min-height: 100vh;
+        background: var(--bg-color);
+    }
 
+    .profile-header {
+        border-radius: 15px;
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
 
-{%endblock%}
+    .profile-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .profile-name {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-username {
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+
+    .profile-content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+    }
+
+    .profile-section {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .content-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .content-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(230, 91, 154, 0.15);
+    }
+
+    .stat-item {
+        margin-bottom: 1rem;
+    }
+
+    .stat-bar {
+        margin-top: 0.5rem;
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Dark theme support */
+    .dark .profile-section,
+    .dark .content-card {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .profile-content {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
