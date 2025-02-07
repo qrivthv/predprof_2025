@@ -1,28 +1,141 @@
 {% extends "base.html" %}
 
-{%block content%}
-  <main class="{{theme}}">
-      <div class="container">
-      <div class="py-5 text-center">
-          <h2>Настройки</h2>
-          <p class="lead">Минимализм - наше все</p>
-      </div>
-      <form method="post" class="width2">
-          <h4 class="mb-3">Тема сайта</h4>
-          <div class="my-3">
-            <div class="form-check">
-              <input id="dark" name="changetheme" value="dark" type="radio" class="form-check-input" checked >
-              <label class="form-check-label" for="dark">Темная</label>
-            </div>
-            <div class="form-check">
-              <input id="light" name="changetheme" value="light" type="radio" class="form-check-input">
-              <label class="form-check-label" for="light">Светлая</label>
-            </div>
-          </div>
+{% block content %}
+<main class="{{theme}} settings-page">
+    <div class="container">
+        <div class="settings-header text-center">
+            <i class="fas fa-cog settings-icon"></i>
+            <h2>Настройки</h2>
+            <p class="lead">Минимализм - наше все</p>
+        </div>
+        
+        <div class="settings-card">
+            <form method="post">
+                <h4 class="settings-title">
+                    <i class="fas fa-palette me-2"></i>
+                    Тема сайта
+                </h4>
+                
+                <div class="theme-options">
+                    <div class="theme-option">
+                        <input id="dark" name="changetheme" value="dark" type="radio" checked>
+                        <label for="dark">
+                            <i class="fas fa-moon"></i>
+                            <span>Темная</span>
+                        </label>
+                    </div>
+                    
+                    <div class="theme-option">
+                        <input id="light" name="changetheme" value="light" type="radio">
+                        <label for="light">
+                            <i class="fas fa-sun"></i>
+                            <span>Светлая</span>
+                        </label>
+                    </div>
+                </div>
 
-          <button class="btn btn-primary  py-2" type="submit" style="width: fit-content; margin-top:2vh">Готово</button>
-      </form>
+                <button class="settings-btn" type="submit">
+                    <i class="fas fa-check me-2"></i>Готово
+                </button>
+            </form>
+        </div>
     </div>
-  </main>
+</main>
 
-{%endblock%}
+<style>
+    .settings-page {
+        min-height: 100vh;
+        padding: 4rem 0;
+    }
+
+    .settings-header {
+        margin-bottom: 3rem;
+    }
+
+    .settings-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        animation: spin 20s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .settings-card {
+        max-width: 600px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .settings-title {
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        font-weight: 600;
+    }
+
+    .theme-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .theme-option {
+        position: relative;
+    }
+
+    .theme-option input {
+        display: none;
+    }
+
+    .theme-option label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .theme-option label:hover {
+        transform: translateY(-2px);
+        background: rgba(230, 91, 154, 0.1);
+    }
+
+    .theme-option input:checked + label {
+        border-color: var(--primary-color);
+        background: rgba(230, 91, 154, 0.15);
+    }
+
+    .settings-btn {
+        background: linear-gradient(45deg, #E65B9A, #ff80b3);
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(230, 91, 154, 0.3);
+    }
+
+    .settings-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(230, 91, 154, 0.4);
+    }
+
+    /* Dark theme support */
+    .dark .settings-card {
+        background: rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
