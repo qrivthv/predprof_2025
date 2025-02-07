@@ -1,139 +1,288 @@
 {% extends "base.html" %}
 
-{%block content%}
-    <div id="carouselExampleCaptions" class="carousel slide" style="margin-top: 3em; height: 57vh">
-<!--      <div class="carousel-indicators">-->
-<!--        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>-->
-<!--      </div>-->
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-            <div class="box">
-                <img src="{{url_for('static', filename='img/frog.jpg')}}" class="" alt="...">
+{% block content %}
+<div class="main-container {{theme}} py-5">
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section text-center mb-5">
+            <div class="hero-content">
+                <h1 class="main-title">Подготовка к ЕГЭ по информатике</h1>
+                <p class="lead">Изучайте, практикуйтесь и достигайте высоких результатов</p>
             </div>
-                <!--          <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: First slide" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#777"></rect><text x="50%" y="50%" fill="#555" dy=".3em"></text></svg>-->
-          <div class="carousel-caption d-none d-md-block">
-            <h3>ЕГЭ по информатике</h3>
-            <h4>Это программа сдохни или умри! </h4>
-          </div>
-        </div>
-    </div>
-    </div>
+        </section>
 
-
-    <main style="height: fit-content; padding: 1.5em">
-      <div class="container">
-        <h3>Рекомендации от разработчиков</h3>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
-        {%for course in favcourses%}
-              <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-                <div class="card-body" style="">
-                  <p class="card-text">{{course[1]}}</p>
-                  <p class="card-text">{{course[2]}}</p>
-                    <div class="btn-group">
-                        <a href="/course/{{course[0]}}/1" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Смотреть</a>
+        <!-- Featured Courses -->
+        {% if favcourses|length != 0 %}
+        <section class="featured-courses mb-5">
+            <h2 class="section-title"><i class="fas fa-star me-2"></i>Популярные курсы</h2>
+            <div class="courses-grid">
+                {% for course in favcourses %}
+                <div class="course-card">
+                    <div class="course-content">
+                        <h3 class="course-title">{{course[1]}}</h3>
+                        <p class="course-description">{{course[2]}}</p>
+                        <div class="course-actions">
+                            <a href="/course/{{course[0]}}/1" class="btn btn-primary">
+                                <i class="fas fa-play-circle me-2"></i>Начать
+                            </a>
+                            <a href="/enter/{{course[0]}}" class="btn btn-outline-primary">
+                                <i class="fas fa-bookmark me-2"></i>Записаться
+                            </a>
+                        </div>
                     </div>
-
                 </div>
-              </div>
-              {%endfor%}
-        </div>
-        <hr>
-      <h3>Краткий курс, как не завалиться на экзамене (и в жизни)</h3>
-        <br>
-        <div class="steps">
-          <div class="step">
-              <div class="step-number">1</div>
-              <div class="step-text">Шаг 1: Зарегистрируйтесь на платформе.</div>
-          </div>
-          <div class="step">
-              <div class="step-number">2</div>
-              <div class="step-text">Шаг 2: Выберите курс из каталога.</div>
-          </div>
-          <div class="step">
-              <div class="step-number">3</div>
-              <div class="step-text">Шаг 3: Начните обучение и выполняйте задания.</div>
-          </div>
-      </div>
-          <br>
-        <hr>
-          <h3 style="text-align: center; margin-right: 5em">Задачи</h3>
-        {%set arr=[
-          " ",
-          "Анализ информационных моделей",
-          "Построение таблиц истинности логических выражений",
-          "Поиск информации в реляционных базах данных",
-          "Кодирование и декодирование информации", "Анализ и построение алгоритмов для исполнителей",
-          "Определение результатов работы простейших алгоритмов",
-          "Кодирование и декодирование информации. Передача информации",
-          "Перебор слов и системы счисления",
-          "Работа с таблицами",
-          "Поиск символов в текстовом редакторе",
-          "Вычисление количества информации",
-          "Выполнение алгоритмов для исполнителей",
-          "Организация компьютерных сетей. Адресация",
-          "Кодирование чисел. Системы счисления",
-          "Преобразование логических выражений",
-          "Рекурсивные алгоритмы",
-          "Обработки числовой последовательности",
-          "Робот-сборщик монет",
-          "Выигрышная стратегия. Задание 1",
-          "Выигрышная стратегия. Задание 2",
-          "Выигрышная стратегия. Задание 3",
-          "Многопроцессорные системы",
-          "Оператор присваивания и ветвления. Перебор вариантов, построение дерева",
-          "Обработка символьных строк",
-          "Обработка целочисленной информации",
-          "Обработка целочисленной информации",
-          "Программирование"
-          ]%}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-0">
-          {%for i in range(1, 28)%}
-          <div class="card mb-3 {{theme}}"  style="width: 18rem;">
-            <div class="card-body" style="">
-              <h5 class="card-title">№{{i}}</h5>
-              <p class="card-text">{{arr[i]}}</p>
-                <a href="/test/{{i}}" class="btn btn-primary tea" style="background: #E65B9A; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
-
+                {% endfor %}
             </div>
-          </div>
-          {%endfor%}
-        </div>
-        </div>
-        <div style="margin-bottom: 5em"></div>
-<!--            <h3 class="{{theme}}">FAQs</h3>-->
-<!--            <div class="dropdown" style="width: fit-content;">-->
-<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--                Question 1-->
-<!--              </a>-->
-<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
-<!--                Your answer 1 is not ready, soory :/ Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste corporis minus et voluptatibus consequuntur quia non voluptate porro, repellat, cumque necessitatibus, explicabo provident eius eveniet libero facere. Hic, repellat provident!-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="dropdown" style="width: fit-content;">-->
-<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--                Question 2-->
-<!--              </a>-->
-<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
-<!--                Your answer 2 is not ready, soory :/-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="dropdown" style="width: fit-content;">-->
-<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--                Question 3-->
-<!--              </a>-->
-<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
-<!--                Your answer 3 is not ready, soory :/-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div class="dropdown" style="width: fit-content;">-->
-<!--              <a class="btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--                Question 4-->
-<!--              </a>-->
-<!--              <p class="dropdown-menu {{theme}}" style="width:max-content !important; max-width: 70vw !important;">-->
-<!--                Your answer 4 is not ready, soory :/-->
-<!--              </p>-->
-<!--            </div>-->
+        </section>
+        {% endif %}
 
+        <!-- Quick Stats -->
+        <section class="stats-section mb-5">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-book-reader stat-icon"></i>
+                    <h3>100+</h3>
+                    <p>Уроков</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-tasks stat-icon"></i>
+                    <h3>500+</h3>
+                    <p>Заданий</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users stat-icon"></i>
+                    <h3>1000+</h3>
+                    <p>Учеников</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-trophy stat-icon"></i>
+                    <h3>90+</h3>
+                    <p>Баллов на ЕГЭ</p>
+                </div>
+            </div>
+        </section>
 
-    </main>
-{%endblock%}
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 class="section-title"><i class="fas fa-check-circle me-2"></i>Почему мы?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-graduation-cap feature-icon"></i>
+                    <h4>Опытные преподаватели</h4>
+                    <p>Учитесь у лучших экспертов в области информатики</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-laptop-code feature-icon"></i>
+                    <h4>Практические задания</h4>
+                    <p>Закрепляйте знания на реальных задачах</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h4>Отслеживание прогресса</h4>
+                    <p>Анализируйте свои результаты и улучшайте их</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<style>
+    .main-container {
+        min-height: 100vh;
+    }
+
+    .hero-section {
+        position: relative;
+        padding: 4rem 0;
+        height: 40vh;
+        width: 100%;
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        background-image: url("{{url_for('static', filename='img/frog.jpg')}}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .main-title {
+        color: #ffffff;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .lead {
+        font-size: 1.25rem;
+        color: #ffffff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        font-weight: 600;
+    }
+
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .course-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(230, 91, 154, 0.2);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    /* Dark theme support */
+    .dark .course-card,
+    .dark .stat-card,
+    .dark .feature-card {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .lead {
+        color: #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 2rem;
+        }
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .course-actions .btn {
+        flex: 1;
+        height: 48px;
+        padding: 0 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        border: 2.5px solid var(--primary-color);
+        box-shadow: 0 4px 15px rgba(230, 91, 154, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1;
+    }
+
+    .course-actions .btn-primary {
+        background: #E65B9A;
+        color: white;
+    }
+
+    .course-actions .btn-outline-primary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #E65B9A;
+        backdrop-filter: blur(5px);
+    }
+
+    .course-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(230, 91, 154, 0.4);
+    }
+
+    .course-actions .btn-primary:hover {
+        background: #f06ba8;
+    }
+
+    .course-actions .btn-outline-primary:hover {
+        background: rgba(230, 91, 154, 0.15);
+    }
+
+    /* Dark theme support */
+    .dark .course-actions .btn-outline-primary {
+        color: #ff80b3;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .course-actions .btn-outline-primary:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Center icons if present */
+    .course-actions .btn i {
+        margin-right: 8px;
+    }
+</style>
+{% endblock %}
