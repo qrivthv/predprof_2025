@@ -6,7 +6,10 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from flask_login import UserMixin
 import json
 import _sqlite3
+import datetime
+import random
 from sql_func1 import *
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'secret_key'
@@ -67,7 +70,8 @@ def smth_happened(error):
 
 @app.route('/error')
 def err():
-    return render_template('error.html', message="Что-то пошло не так<br>Вероятно, этой страницы пока нет :(", theme=theme, loggedin=loggedin, **currentuser)
+    return render_template('error.html', message="Что-то пошло не так<br>Вероятно, этой страницы пока нет :(",
+                           theme=theme, loggedin=loggedin, **currentuser)
 
 
 @app.errorhandler(401)
@@ -97,7 +101,9 @@ def index():
 def myprofile():
     if request.method == 'GET':
         x = get_my(current_user.id)
-        return render_template('myprofile.html', res=current_user.results, **current_user.__dict__, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
+        return render_template('myprofile.html', res=current_user.results, **current_user.__dict__, loggedin=loggedin,
+                               theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4],
+                               wmyorks=x[5])
     if request.method == 'POST':
         x = get_my(current_user.id)
         o = {}  # фильтрация по времени
@@ -107,13 +113,15 @@ def myprofile():
             else:
                 o[key] = int(request.form[key])
         timer = 60 * o['min'] + 3600 * o['hour'] + 86400 * o['day'] + 2629743 * o['month'] + 31556926 * o['year']
-        return render_template('myprofile.html', res=get_user_result(current_user.id, timer), **current_user.__dict__, loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3], mygroups=x[4], wmyorks=x[5])
+        return render_template('myprofile.html', res=get_user_result(current_user.id, timer), **current_user.__dict__,
+                               loggedin=loggedin, theme=theme, courses=x[0], groups=x[1], works=x[2], mycourses=x[3],
+                               mygroups=x[4], wmyorks=x[5])
 
 
 @app.route('/profile')
 def profile(username):
     x = get_user(username)
-    return render_template('profile.html',res=x['results'], user=x, **currentuser, loggedin=loggedin, theme=theme)
+    return render_template('profile.html', res=x['results'], user=x, **currentuser, loggedin=loggedin, theme=theme)
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -156,13 +164,14 @@ def register():
         new_user["password"] = request.form['password'].strip()
         new_user["passwordcheck"] = request.form['passwordcheck'].strip()
         if new_user["passwordcheck"] != new_user["password"]:
-            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, пароли не совпадают", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin,
+                                   message="К сожалению, пароли не совпадают", theme=theme)
         new_user = gn_user_check(new_user)
         email = str(new_user["email"]).replace('@', '?')
         r = int(new_user["colour"][1:3], 16)
         g = int(new_user["colour"][3:5], 16)
         b = int(new_user["colour"][5:7], 16)
-        if r > 150 or b>150 or g > 150:
+        if r > 150 or b > 150 or g > 150:
             new_user["bright"] = True
         else:
             new_user["bright"] = False
@@ -173,19 +182,23 @@ def register():
         x2 = get_data(s2, [new_user["username"]])
         x3 = get_data(s3, [new_user['phone']])
         if len(x2) != 0:
-            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот никнейм уже занят", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin,
+                                   message="К сожалению, этот никнейм уже занят", theme=theme)
         if len(x1) != 0:
-            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, эта почта уже зарегестрирована", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin,
+                                   message="К сожалению, эта почта уже зарегестрирована", theme=theme)
         if len(x3) != 0:
-            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin, message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
+            return render_template('register.html', s="Зарегистрироваться", loggedin=loggedin,
+                                   message="К сожалению, этот номер телефона уже зарегестрирован", theme=theme)
         #  genius user check
         s = '''
         insert into Users (username, email, phone, password, SName, SSurname,  Grade, color, bright, adm) 
         values 
         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         '''
-        rr = "0!0$"*27
-        a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"], new_user["surname"], int(new_user["grade"]), new_user["colour"], new_user["bright"], 0)
+        rr = "0!0$" * 27
+        a = (new_user["username"], email, int(new_user["phone"]), new_user["password"], new_user["name"],
+             new_user["surname"], int(new_user["grade"]), new_user["colour"], new_user["bright"], 0)
         insrt(a, s)
         return redirect(url_for('login'))
 
@@ -317,7 +330,8 @@ def test(num):
                     results[i][1] = ""
                     results[i][2] = 0
         show = str(request.form.get("show")) != "None"
-        return render_template('results.html', tasks=x, res=results,  showAns=show, showScore=True, right=rcount, theme=theme, **currentuser, loggedin=loggedin)
+        return render_template('results.html', tasks=x, res=results, showAns=show, showScore=True, right=rcount,
+                               theme=theme, **currentuser, loggedin=loggedin)
 
 
 @login_required
@@ -342,7 +356,8 @@ def work(workid, groupid):
     tasks = b
     o = len(tasks)
     if request.method == "GET":
-        return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser, if_work=True)
+        return render_template('test.html', tasks=tasks, theme=theme, loggedin=loggedin, currentuser=currentuser,
+                               if_work=True)
     elif request.method == 'POST':
         cur_time = timegm(gmtime())
         results = []
@@ -371,8 +386,9 @@ def work(workid, groupid):
                 results[i][2] = 0
             insrt(res, s)
         current_user.results = get_user_result(current_user.id)
-        return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount, theme=theme,
-                           loggedin=loggedin)
+        return render_template('results.html', tasks=tasks, res=results, showAns=dt[0], showScore=dt[1], right=rcount,
+                               theme=theme,
+                               loggedin=loggedin)
 
 
 @app.route('/train/<int:num>', methods=['POST', 'GET'])
@@ -422,7 +438,8 @@ def add():
         else:
             diff = 2
         if a != []:
-            return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin, message='Задача с таким условием уже есть :(')
+            return render_template('add.html', theme=theme, **currentuser, loggedin=loggedin,
+                                   message='Задача с таким условием уже есть :(')
         s = 'insert into Problem (Statement, Answer, Type, Creator, Solution, Diff) values (?, ?, ?, ?, ?, ?)'
         a = [statement, answer, typ, creator, solution, diff]
         insrt(a, s)
@@ -507,7 +524,8 @@ def forum():
             k[3] = ss[4:16] + ss[19:]
             if dd + 1737647353 >= tm and dd <= tm:
                 b.append(k)
-        return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
+        return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser,
+                               loggedin=loggedin)
     elif request.method == 'POST':
         tm = timegm(gmtime())
         b = []
@@ -531,8 +549,10 @@ def forum():
             k[3] = ss[4:16] + ss[19:]
             if (dd + delta >= tm and dd <= tm) and (txt != None and txt in i[2]):
                 b.append(k)
-        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser, loggedin=loggedin, txt=txt)
-    return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser, loggedin=loggedin)
+        return render_template('forum.html', category="Выбранные", questions=b, theme=theme, **o, **currentuser,
+                               loggedin=loggedin, txt=txt)
+    return render_template('forum.html', category="Недавние", questions=b, theme=theme, **currentuser,
+                           loggedin=loggedin)
 
 
 @app.route('/question/<int:qid>', methods=['POST', 'GET'])
@@ -685,13 +705,13 @@ def bank():
             d = int(diff)
         else:
             d = 0
-        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme, **currentuser, loggedin=loggedin, n=n, d=d, txt=txt)
+        return render_template('bank.html', category="Выбранные", tasks=b, theme=theme, **currentuser,
+                               loggedin=loggedin, n=n, d=d, txt=txt)
 
 
+@login_required
 @app.route('/add_group', methods=['POST', 'GET'])
 def add_group():
-    if not loggedin:
-        return redirect(url_for('login'))
     if request.method == 'GET':
         return render_template('add_group.html', theme=theme, **currentuser, loggedin=loggedin)
     if request.method == 'POST':
@@ -700,8 +720,9 @@ def add_group():
         teachers = request.form['teach'].split()
         s = 'select GroupID from Groups where GroupName = ?'
         a = get_data(s, [name])
-        if a !=[]:
-            return render_template('add_group.html', message='Группа с таким названием уже есть', theme=theme, **currentuser, loggedin=loggedin)
+        if a != []:
+            return render_template('add_group.html', message='Группа с таким названием уже есть', theme=theme,
+                                   **currentuser, loggedin=loggedin)
         s = 'insert into Groups (GroupName) values (?)'
         a = [name]
         insrt(a, s)
@@ -766,7 +787,8 @@ def dashboard(id):
     students = get_data(s, [id])
     s = 'select Work.WorkID, CreatorID, WorkName from WorkGroup join Work on WorkGroup.WorkID = Work.WorkID where GroupID = ?'
     works = get_data(s, [id])
-    return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName, teachers=teachers, students=students, works=works, id=id, teacher=teacher)
+    return render_template('dashboard.html', theme=theme, loggedin=loggedin, **currentuser, GName=GName,
+                           teachers=teachers, students=students, works=works, id=id, teacher=teacher)
 
 
 @app.route('/addTest', methods=['POST', 'GET'])
@@ -875,9 +897,10 @@ def work_result(workid, groupid):
         while type(a) is not str:
             a = a[0]
         group_name = a
-        return render_template('work_results.html',  theme=theme, **currentuser, loggedin=loggedin, group_name=group_name, work_name=work_name, work_results=results)
+        return render_template('work_results.html', theme=theme, **currentuser, loggedin=loggedin,
+                               group_name=group_name, work_name=work_name, work_results=results)
     else:
-        #return redirect(url_for('restricted'))
+        # return redirect(url_for('restricted'))
         return redirect(url_for('error'))
 
 
@@ -886,6 +909,47 @@ def work_result(workid, groupid):
 def my_group(groupid):
     results = get_user_results_in_group(current_user.id, groupid)
     return render_template('user_results.html', theme=theme, results=results)
+
+
+groupid_to_token = dict()
+token_info = dict()
+expiring_time_token = datetime.timedelta(minutes=10)
+
+
+def check_token(token):
+    return token in token_info and datetime.datetime.now() - token_info[token]["time"] < expiring_time_token
+
+
+def create_token(groupid):
+    token = random.randint(10000000, 99999999)
+    while check_token(token):
+        token = random.randint(10000000, 99999999)
+    groupid_to_token[groupid] = token
+    token_info[token] = {"time": datetime.datetime.now(), "groupid": groupid}
+
+
+@login_required
+@app.route('/add_participant/get_token/<int:groupid>')
+def add_participant_get_token(groupid):
+    if groupid not in groupid_to_token or not check_token(groupid_to_token[groupid]):
+        create_token(groupid)
+    return render_template("add_participant.html", token=groupid_to_token[groupid])
+
+
+@login_required
+@app.route('/add_participant/<int:token>')
+def add_participant_by_token(token):
+    if not check_token(token):
+        # error invalid token
+        return render_template("add_participant.html", token=-1)
+    s = 'select StudentID from Users where username=?'
+    a = [current_user.username]
+    d = get_data(s, a)[0][0]
+    s = 'insert into GroupStud (GroupID, StudID) values (?, ?)'
+    a = [token_info[token]["groupid"], d]
+    insrt(a, s)
+    # added user to group
+    return render_template("add_participant.html", token=-2)
 
 
 if __name__ == "__main__":
