@@ -1,49 +1,190 @@
 {% extends "base.html" %}
 
-{%block content%}
+{% block content %}
+<div class="course-container {{theme}} py-5">
+    <div class="container">
+        <h2 class="course-title text-center mb-5">{{course[1]}}</h2>
 
-<h2 style="margin-top: 3em" class="text-center">{{course[1]}}</h2>
+        <nav class="course-nav mb-5">
+            <div class="nav-wrapper">
+                {% for type in types %}
+                    <a class="lesson-link {% if type == course[2] %}active{% endif %}" 
+                       href="/course/{{course[0]}}/{{type}}">
+                        Урок {{type}}
+                    </a>
+                {% endfor %}
+            </div>
+        </nav>
 
-<nav class="nav" style="margin-top: 3em; margin-left: 2em">
-    {%for type in types%}
-      <a class="nav-link" href="/course/{{course[0]}}/{{type}}">№{{type}}</a>
-    {%endfor%}
-</nav>
-<main class="{{theme}}">
+        <div class="content-section">
+            <h3 class="lesson-number mb-4">Урок {{course[2]}}</h3>
+            
+            <div class="video-section mb-5">
+                <h4 class="section-title">Видеоурок по теме</h4>
+                <div class="video-wrapper">
+                    <iframe src="{{course[3]}}" 
+                            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" 
+                            frameborder="0" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
 
-    <div class="container {{theme}}">
-        <h3>№ {{course[2]}}</h3>
-        <h4>Видеоурок по теме</h4>
-        <iframe
-          src="{{course[3]}}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen
-          style="width: 60vw; height: 60vh">
-        </iframe>
-        <hr>
-        <br>
+            <div class="test-section mb-5">
+                <h4 class="section-title">Отработка задания</h4>
+                <a href="/test/{{course[2]}}" class="test-btn">
+                    <i class="fas fa-pencil-alt me-2"></i>Пройти тест
+                </a>
+            </div>
 
-        <h4>Отработка задания</h4>
-        <a href="/test/{{course[2]}}" class="btn btn-primary tea" style="width:fit-content; background: #7C4935; border: none; margin-bottom: 0.1em; -bottom: 1em">Тест</a>
-        {%if course[7] != None%}
-        <hr>
-        <br>
-        <h4>Методические материалы</h4>
-        <embed src="{{url_for('static', filename=course[7])}}" width="1000px" height="800px"/>
-        <hr>
-        <br>
-        {%endif%}
-        {%if course[4] != None%}
-        <h4>Текстовая версия</h4>
-        <p>{{course[4]|safe}}</p>
-        <hr>
-        <br>
-        {%endif%}
-        {%if course[6] != None%}
-        <h4>Код для задачи</h4>
-        <pre><code class="language-{{course[5]}}">{{course[6]}}</code></pre>
-        <hr>
-        <br>
-        {%endif%}
+            {% if course[7] != None %}
+            <div class="materials-section mb-5">
+                <h4 class="section-title">Методические материалы</h4>
+                <div class="pdf-wrapper">
+                    <embed src="{{url_for('static', filename=course[7])}}" type="application/pdf"/>
+                </div>
+            </div>
+            {% endif %}
 
+            {% if course[4] != None %}
+            <div class="text-section mb-5">
+                <h4 class="section-title">Текстовая версия</h4>
+                <div class="text-content">
+                    {{course[4]|safe}}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if course[6] != None %}
+            <div class="code-section mb-5">
+                <h4 class="section-title">Код для задачи</h4>
+                <div class="code-wrapper">
+                    <pre><code class="language-{{course[5]}}">{{course[6]}}</code></pre>
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
-</main>
-{%endblock%}
+</div>
+
+<style>
+    .course-container {
+        min-height: 100vh;
+        padding-top: 2rem;
+    }
+
+    .course-title {
+        color: #E65B9A;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .course-nav {
+        background: rgba(230, 91, 154, 0.1);
+        padding: 1rem;
+        border-radius: 15px;
+    }
+
+    .nav-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .lesson-link {
+        padding: 0.5rem 1.5rem;
+        border-radius: 10px;
+        color: #E65B9A;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .lesson-link:hover, .lesson-link.active {
+        background: #E65B9A;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(230, 91, 154, 0.2);
+    }
+
+    .section-title {
+        color: #E65B9A;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(230, 91, 154, 0.2);
+    }
+
+    .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .test-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #E65B9A;
+        color: white;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .test-btn:hover {
+        background: #d44584;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(230, 91, 154, 0.3);
+        color: white;
+    }
+
+    .pdf-wrapper {
+        height: 800px;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .pdf-wrapper embed {
+        width: 100%;
+        height: 100%;
+    }
+
+    .text-content {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .code-wrapper {
+        background: #1e1e1e;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Dark theme support */
+    .dark .text-content {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .course-nav {
+        background: rgba(230, 91, 154, 0.15);
+    }
+</style>
+{% endblock %}

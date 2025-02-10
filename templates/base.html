@@ -10,6 +10,35 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script>
 <!--    <link rel="stylesheet" href="/path/to/styles/default.css">-->
     <link href="/static/css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .nav-link {
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        background-color 0.4s ease,
+                        box-shadow 0.4s ease;
+            position: relative;
+            color: var(--primary-color) !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            background: rgba(230, 91, 154, 0.2);
+            box-shadow: 0 4px 15px rgba(230, 91, 154, 0.3);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(45deg, #E65B9A, #ff80b3);
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(230, 91, 154, 0.3);
+        }
+    </style>
 </head>
 <body id="all" class="{{theme}}">
     <header class="sticky-top" style="position: fixed; width: 100vw; ">

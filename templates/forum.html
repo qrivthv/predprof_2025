@@ -1,88 +1,244 @@
 {% extends "base.html" %}
 
-{%block content%}
-  <main class="{{theme}}">
-      <div class="container {{theme}}">
-          <details>
-              <summary class="toggle"><span>Фильтры:</span></summary>
-              <form method="POST">
-                <h5>За последние:</h5>
-                  <div class="row g-0">
-                <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="min" style="width: 100%">Минут</label>
-                  <input type="number" id="min" name="min" class="form-control" style="width: fit-content" value="{{min}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="hour" style="width: 100%">Часов</label>
-                  <input type="number" id="hour" name="hour" class="form-control" style="width: fit-content" value="{{hour}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="day" style="width: 100%">Дней</label>
-                  <input type="number" id="day" name="day" class="form-control" style="width: fit-content" value="{{day}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="month" style="width: 100%">Месяцев</label>
-                  <input type="number" id="month" name="month" class="form-control" style="width: fit-content" value="{{month}}">
-                </div>
-              </div>
-                  <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="year" style="width: 100%">Лет</label>
-                  <input type="number" id="year" name="year" class="form-control" style="width: fit-content" value="{{year}}">
-                </div>
-              </div>
-                  </div>
-                              <div class="my-3 col-4">
-                <div class="">
-                  <label class="form-check-label" for="txt" style="width: 100%" value="{{txt}}">Возможно, содержит</label>
-                  <input type="text" id="txt" name="txt" class="form-control" style="width: fit-content" value="{{txt}}">
-                </div>
-
-                  <a class="btn btn-secondary tea" href="/forum">Сбросить</a>
-              </div>
-                  <button type="submit" class="btn btn-primary" style="width:fit-content">Применить</button>
-              </form>
-            </details>
-
-			<hr>
-          <a href="/ask" class="btn btn-primary tea" style="width: fit-content">Задать вопрос</a>
-			<hr>
-          <h3>{{category}}: </h3>
-		  <hr>
-            <div class="my-3 p-3 rounded shadow-lg">
-          {%for q in questions%}
-                <div>
-              <div class="d-flex text-muted pt-3" style="min-width:30vh !important">
-          	<p class="pb-3 mb-0 small lh-sm">
-				<strong class="d-block text-gray-dark {{theme}}">@{{q[1]}}</strong>
-				{{q[2]}}
-                <br>
-				<small class="{{theme}}">{{q[3]}}</small>
-                <br>
-		    	<a href="/question/{{q[0]}}" class="{{theme}}">Подробнее</a>
-                  </p>
-			</div>
-                    {% if current_user.adm == 1 %}
-                <p><a href="/delete_post/{{q[0]}}" style="display: block;">Удалить пост </a>
-                  {%if q[4]%}
-                <a href="/close_post/{{q[0]}}" style="display: block;">Закрыть пост</a>
-                  {%else%}
-                <a href="/open_post/{{q[0]}}" style="display: block;">Открыть пост</a>
-                  {%endif%}
-                </p>
-                {% endif %}
+{% block content %}
+<main class="{{theme}} forum-container">
+    <div class="container {{theme}} py-5">
+        <!-- Filters Section -->
+        <div class="filters-card mb-4">
+            <details>
+                <summary class="filter-toggle">
+                    <i class="fas fa-filter me-2"></i>
+                    <span>Фильтры</span>
+                </summary>
+                <form method="POST" class="filter-form mt-3">
+                    <h5 class="filter-heading mb-4">За последние:</h5>
+                    <div class="row g-4">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="time-input">
+                                <label for="min">Минут</label>
+                                <input type="number" id="min" name="min" value="{{min}}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="time-input">
+                                <label for="hour">Часов</label>
+                                <input type="number" id="hour" name="hour" value="{{hour}}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="time-input">
+                                <label for="day">Дней</label>
+                                <input type="number" id="day" name="day" value="{{day}}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="time-input">
+                                <label for="month">Месяцев</label>
+                                <input type="number" id="month" name="month" value="{{month}}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="time-input">
+                                <label for="year">Лет</label>
+                                <input type="number" id="year" name="year" value="{{year}}" class="form-control">
+                            </div>
+                        </div>
                     </div>
-            <hr style="width: 80vh">
-          {%endfor%}
-    </div>
-      </div>
-  </main>
 
-{%endblock%}
+                    <div class="search-section mt-4">
+                        <div class="search-input">
+                            <label for="txt">Возможно, содержит</label>
+                            <input type="text" id="txt" name="txt" value="{{txt}}" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="button-group mt-4">
+                        <a href="/forum" class="btn btn-secondary">
+                            <i class="fas fa-undo me-2"></i>Сбросить
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-2"></i>Применить
+                        </button>
+                    </div>
+                </form>
+            </details>
+        </div>
+
+        <!-- Ask Question Button -->
+        <div class="action-section mb-4">
+            <a href="/ask" class="btn btn-primary ask-button">
+                <i class="fas fa-plus-circle me-2"></i>Задать вопрос
+            </a>
+        </div>
+
+        <!-- Category Title -->
+        <h3 class="category-title mb-4">{{category}}</h3>
+
+        <!-- Questions List -->
+        <div class="questions-container">
+            {% for q in questions %}
+            <div class="question-card">
+                <div class="question-content">
+                    <div class="question-header">
+                        <strong class="author">@{{q[1]}}</strong>
+                        <small class="date">{{q[3]}}</small>
+                    </div>
+                    <p class="question-text">{{q[2]}}</p>
+                    <div class="question-footer">
+                        <a href="/question/{{q[0]}}" class="details-link">
+                            <i class="fas fa-external-link-alt me-1"></i>Подробнее
+                        </a>
+                        {% if current_user.adm == 1 %}
+                        <div class="admin-actions">
+                            <a href="/delete_post/{{q[0]}}" class="admin-link text-danger">
+                                <i class="fas fa-trash me-1"></i>Удалить
+                            </a>
+                            {% if q[4] %}
+                            <a href="/close_post/{{q[0]}}" class="admin-link text-warning">
+                                <i class="fas fa-lock me-1"></i>Закрыть
+                            </a>
+                            {% else %}
+                            <a href="/open_post/{{q[0]}}" class="admin-link text-success">
+                                <i class="fas fa-lock-open me-1"></i>Открыть
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+<style>
+    .forum-container {
+        min-height: 100vh;
+        padding-top: 2rem;
+    }
+
+    .filters-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-toggle {
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+    }
+
+    .time-input {
+        margin-bottom: 1rem;
+    }
+
+    .time-input label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .ask-button {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .ask-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(230, 91, 154, 0.2);
+    }
+
+    .category-title {
+        color: var(--primary-color);
+        font-weight: 600;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(230, 91, 154, 0.2);
+    }
+
+    .question-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .question-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(230, 91, 154, 0.15);
+    }
+
+    .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .author {
+        color: var(--primary-color);
+    }
+
+    .date {
+        color: #888;
+    }
+
+    .question-text {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    .question-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .details-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .details-link:hover {
+        color: var(--accent-color);
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .admin-link {
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .admin-link:hover {
+        opacity: 0.8;
+    }
+
+    /* Dark theme support */
+    .dark .filters-card,
+    .dark .question-card {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .date {
+        color: #666;
+    }
+</style>
+{% endblock %}
