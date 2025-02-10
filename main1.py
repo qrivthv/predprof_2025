@@ -941,7 +941,7 @@ def add_participant_get_token(groupid):
             f"static/img/qrcode/{groupid_to_token[groupid]}.png",
             scale=5
         )
-        return render_template("add_participant.html", token=groupid_to_token[groupid], group_name=group_name)
+        return render_template("add_participant.html", theme=theme, token=groupid_to_token[groupid], group_name=group_name)
     if request.method == 'POST':
         students = request.form['stud'].split()
         for user in students:
@@ -967,16 +967,14 @@ def add_participant_get_token(groupid):
 @app.route('/add_participant/<int:token>')
 def add_participant_by_token(token):
     if not check_token(token):
-        # error invalid token
-        return render_template("add_participant.html", token=-1)
+        return redirect(url_for('error'))
     s = 'select StudentID from Users where username=?'
     a = [current_user.username]
     d = get_data(s, a)[0][0]
     s = 'insert into GroupStud (GroupID, StudID) values (?, ?)'
     a = [token_info[token]["groupid"], d]
     insrt(a, s)
-    # added user to group
-    return render_template("add_participant.html", token=-2)
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
