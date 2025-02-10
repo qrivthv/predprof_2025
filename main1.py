@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 # import sqlalchemy
 from flask_login import UserMixin
 import json
+import segno
 import _sqlite3
 import datetime
 import random
@@ -933,6 +934,12 @@ def create_token(groupid):
 def add_participant_get_token(groupid):
     if groupid not in groupid_to_token or not check_token(groupid_to_token[groupid]):
         create_token(groupid)
+    qrcode = segno.make_qr(f"127.0.0.1:8080/add_participant/{groupid_to_token[groupid]}")
+    qrcode.save(
+        f"static/img/qrcode/{groupid_to_token[groupid]}.png",
+        scale=5
+    )
+
     return render_template("add_participant.html", token=groupid_to_token[groupid])
 
 
