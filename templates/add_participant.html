@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {%block content%}
-<div class="container py-5">
+<div class="container py-5 {{theme}}">
     <main>
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+        <div class="row justify-content-center {{theme}}">
+            <div class="col-md-8 col-lg-6 {{theme}}">
                 <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <h2 class="card-title mb-4">Добавить участников в группу "{{group_name}}"</h2>
+                    <div class="card-body p-4 {{theme}}">
+                        <h2 class="card-title mb-4 ">Добавить участников в группу "{{group_name}}"</h2>
 
                         <form method="post" class="mb-4">
                             <div class="mb-3">
@@ -23,9 +23,9 @@
 
                         <hr class="my-4">
 
-                        <div class="text-center">
+                        <div class="text-center ">
                             <h5 class="mb-3">Или поделитесь кодом группы</h5>
-                            <div class="d-inline-block p-3 bg-light rounded mb-3">
+                            <div class="d-inline-block p-3 bg-light rounded mb-3 {{theme}}">
                                 <span class="h4 mb-0">{{token}}</span>
                             </div>
                             <div class="qr-code-container">

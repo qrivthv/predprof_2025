@@ -473,7 +473,7 @@ def add():
             file.save(path)
             imgss += path[7:] + ' '
             cnt += 1
-        s = 'update Problem set img="? where ProblemID=?'
+        s = 'update Problem set img=? where ProblemID=?'
         upd(s, [imgss, a])
         return redirect(url_for('index'))
 
