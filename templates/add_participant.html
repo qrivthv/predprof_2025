@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{%block content%}
+<div class="container py-5">
+    <main>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="card-title mb-4">Добавить участников в группу "{{group_name}}"</h2>
+
+                        <form method="post" class="mb-4">
+                            <div class="mb-3">
+                                <label for="stud" class="form-label">Перечислите через запятую никнеймы участников</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="stud"
+                                       name="stud"
+                                       placeholder="username1, username2, username3">
+                            </div>
+                            <button class="btn btn-primary" type="submit">Добавить участников</button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+                            <h5 class="mb-3">Или поделитесь кодом группы</h5>
+                            <div class="d-inline-block p-3 bg-light rounded mb-3">
+                                <span class="h4 mb-0">{{token}}</span>
+                            </div>
+                            <div class="qr-code-container">
+                                <img src="/static/img/qrcode/{{token}}.png"
+                                     alt="QR код группы"
+                                     class="img-fluid"
+                                     style="max-width: 200px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{%endblock%}
