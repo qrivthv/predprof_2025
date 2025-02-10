@@ -3,10 +3,19 @@
 {%block content%}
 <div class="container">
     <main>
-        <div class="py-5 text-center">
-            <p>{{token}}</p>
-            <img src = "/static/img/qrcode/{{token}}.png">
+        <div class="container">
+            <div class="width1">
+                <p>Добавить участников в группу {{group_name}}</p>
+                <form class="" method="post">
+                    <label for="stud" class="form-label">Перечислите через запятую никнеймы участников</label>
+                    <input type="text" class="form-control" id="stud" placeholder="" name="stud">
+                    <button class=" btn btn-primary btn-lg" type="submit" style="width: fit-content">Готово</button>
+                </form>
+                <p>Или поделитесь с участниками кодом группы: {{token}}</p>
+                <img src = "/static/img/qrcode/{{token}}.png">
+            </div>
         </div>
     </main>
 </div>
+
 {%endblock%}

@@ -930,17 +930,37 @@ def create_token(groupid):
 
 
 @login_required
-@app.route('/add_participant/get_token/<int:groupid>')
+@app.route('/add_participant/get_token/<int:groupid>',  methods=["GET", 'POST'])
 def add_participant_get_token(groupid):
-    if groupid not in groupid_to_token or not check_token(groupid_to_token[groupid]):
-        create_token(groupid)
-    qrcode = segno.make_qr(f"127.0.0.1:8080/add_participant/{groupid_to_token[groupid]}")
-    qrcode.save(
-        f"static/img/qrcode/{groupid_to_token[groupid]}.png",
-        scale=5
-    )
-
-    return render_template("add_participant.html", token=groupid_to_token[groupid])
+    if request.method == "GET":
+        group_name = get_data('select GroupName from Groups where GroupID = ?', [groupid])[0][0]
+        if groupid not in groupid_to_token or not check_token(groupid_to_token[groupid]):
+            create_token(groupid)
+        qrcode = segno.make_qr(f"127.0.0.1:8080/add_participant/{groupid_to_token[groupid]}")
+        qrcode.save(
+            f"static/img/qrcode/{groupid_to_token[groupid]}.png",
+            scale=5
+        )
+        return render_template("add_participant.html", token=groupid_to_token[groupid], group_name=group_name)
+    if request.method == 'POST':
+        students = request.form['stud'].split()
+        for user in students:
+            if ',' in user:
+                user = user.replace(',', '')
+            s = 'select StudentID from Users where username=?'
+            a = get_data(s, [user])
+            a = a[0]
+            if type(a) is not int:
+                id1 = a[0]
+            else:
+                id1 = a
+            s = 'select GroupID, StudID from GroupStud where StudID=? and GroupID=?'
+            a = get_data(s, [id1, groupid])
+            if a == []:
+                s = 'insert into GroupStud (GroupID, StudID) values (?, ?)'
+                a = [groupid, id1]
+                insrt(a, s)
+        return redirect(url_for('dashboard', id=groupid))
 
 
 @login_required
